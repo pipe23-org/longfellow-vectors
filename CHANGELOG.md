@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.0.1 - 2026-08-25
 
 - Removed every vector from the collection ahead of the first public release; vectors are readmitted from their original sources as the consumers' tests come to need them. `check()` and the loaders ignore a dotfile anywhere in the collection.
 - `tools/add_vector.py import-certificate` now admits a PEM that does not parse as X.509, omitting `public_key_x` and `public_key_y`; previously it refused the vector. `--signed-by` and `--key` are refused for such a PEM.
