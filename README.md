@@ -46,9 +46,9 @@ The docs build runs from the repository root:
 uv run --project languages/python mkdocs build --strict
 ```
 
-Vectors enter the collection through `tools/add_vector.py`, a separate uv project under
-`tools/`. `uv run add_vector.py <mode> --help` in `tools/` lists each mode's flags; the
-Admission page of the documentation holds the rules.
+Vectors enter the collection through `tools/admission/add_vector.py`, a separate uv project
+under `tools/admission/`. `uv run add_vector.py <mode> --help` in `tools/admission/` lists each
+mode's flags; the Admission page of the documentation holds the rules.
 
 ## Status
 

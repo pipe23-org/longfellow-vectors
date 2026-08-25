@@ -15,7 +15,7 @@ from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 from referencing.jsonschema import DRAFT202012
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 CIRCUITS = ROOT / "vectors" / "mdoc" / "circuits"
 PRESENTATIONS = ROOT / "vectors" / "mdoc" / "presentations"
 PROOFS = ROOT / "vectors" / "mdoc" / "proofs"

@@ -1,0 +1,29 @@
+[project]
+name = "longfellow-vectors-generation"
+version = "0.0.0"
+description = "Generation tooling for the longfellow-vectors collection. Producer-side; never published."
+requires-python = ">=3.11"
+dependencies = [
+    "cbor2>=5",
+    "cryptography>=42",
+    "longfellow-vectors",
+    "pylongfellow==0.5.2",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+longfellow-vectors = { path = "../../languages/python", editable = true }
+
+[dependency-groups]
+dev = ["pytest", "ruff"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
