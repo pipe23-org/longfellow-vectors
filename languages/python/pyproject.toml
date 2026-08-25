@@ -21,7 +21,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/pipe23-org/longfellow-vectors"
-Documentation = "https://longfellow-vectors.readthedocs.io/"
+Documentation = "https://longfellow-vectors.readthedocs.io/en/stable/"
 Repository = "https://github.com/pipe23-org/longfellow-vectors"
 Issues = "https://github.com/pipe23-org/longfellow-vectors/issues"
 
