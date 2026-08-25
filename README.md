@@ -1,12 +1,14 @@
 # longfellow-vectors
 
 longfellow-vectors is a collection of test vectors for Longfellow zero-knowledge proof
-implementations (draft-google-cfrg-libzk). The vector types are keys, credentials,
-presentations, circuits, certificates, and proofs. A vector is an example of its type, with
-its metadata stored in a `.json` sidecar. Presentation vectors (proof inputs) are bundled
-with their metadata in a `.json` file. Every vector carries provenance. The documentation
-describes each type's fields. `languages/python/` is a Python package, `longfellow-vectors`
-on PyPI, whose wheel embeds a snapshot of the collection.
+implementations (draft-google-cfrg-libzk). 
+
+The repository contains keys, credentials, presentations, circuits, certificates, and proofs. 
+
+Each vector has accompanying JSON metadata. Presentation vectors (proof inputs) are bundled
+with their metadata. 
+
+`languages/python/` is a Python package, `longfellow-vectors` on PyPI, which includes a snapshot of the collection.
 
 [![CI](https://github.com/pipe23-org/longfellow-vectors/actions/workflows/ci.yml/badge.svg)](https://github.com/pipe23-org/longfellow-vectors/actions/workflows/ci.yml)
 [![Docs](https://app.readthedocs.org/projects/longfellow-vectors/badge/?version=latest)](https://longfellow-vectors.readthedocs.io/en/latest/)
