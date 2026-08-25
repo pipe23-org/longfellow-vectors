@@ -11,7 +11,7 @@ with their metadata.
 `languages/python/` is a Python package, `longfellow-vectors` on PyPI, which includes a snapshot of the collection.
 
 [![CI](https://github.com/pipe23-org/longfellow-vectors/actions/workflows/ci.yml/badge.svg)](https://github.com/pipe23-org/longfellow-vectors/actions/workflows/ci.yml)
-[![Docs](https://app.readthedocs.org/projects/longfellow-vectors/badge/?version=latest)](https://longfellow-vectors.readthedocs.io/en/latest/)
+[![Docs](https://app.readthedocs.org/projects/longfellow-vectors/badge/?version=stable)](https://longfellow-vectors.readthedocs.io/en/stable/)
 [![PyPI](https://img.shields.io/pypi/v/longfellow-vectors)](https://pypi.org/project/longfellow-vectors/)
 [![Python](https://img.shields.io/pypi/pyversions/longfellow-vectors)](https://pypi.org/project/longfellow-vectors/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
