@@ -1,0 +1,16 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "num_attributes": 1,
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "circuits/tiny.circuit",
+    "captured": "2026-08-08",
+    "index": "circuits[0]",
+    "via": "an intermediate export"
+  },
+  "comment": "Circuit vector with version absent."
+}

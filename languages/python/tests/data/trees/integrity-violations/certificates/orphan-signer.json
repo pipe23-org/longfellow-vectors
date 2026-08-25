@@ -1,0 +1,12 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "document-signer",
+  "sha256": "c6154db975b0851196f28d36f5eb9b8f40586ad2717405567ed79de1364e4183",
+  "signed_by": "root-of-nothing",
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-08"
+  },
+  "comment": "Certificate vector whose signed_by names no certificate vector."
+}

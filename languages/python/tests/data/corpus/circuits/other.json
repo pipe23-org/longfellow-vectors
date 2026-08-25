@@ -1,0 +1,15 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "8349d0fe15cb2c176df2f7007df8f7e8651bfdca6836bcfcd7029398c28a1797",
+  "version": 7,
+  "num_attributes": 1,
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "circuits/other.circuit",
+    "captured": "2026-08-08"
+  },
+  "comment": "Circuit vector for the loader tests, at version 7 over one attribute. Its blob is one byte; provenance carries neither index nor via."
+}

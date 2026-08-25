@@ -1,0 +1,26 @@
+{
+  "schema": "mdoc-proofs-v1.schema.json",
+  "prover": "synthetic",
+  "circuit": "no-such-circuit",
+  "sha256": "5cc31a74ce6d49e961744cbb34f8d77fb334626b240dd452e8a824696f2ea908",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "claims": [
+    {
+      "namespace": "org.iso.18013.5.1",
+      "id": "age_over_18",
+      "cbor_value": "f5"
+    }
+  ],
+  "transcript": "8181",
+  "issuer_public_key_x": "1111111111111111111111111111111111111111111111111111111111111111",
+  "issuer_public_key_y": "2222222222222222222222222222222222222222222222222222222222222222",
+  "timestamp": "2026-08-21T12:00:00Z",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "proofs/badref.proof",
+    "captured": "2026-08-21"
+  },
+  "comment": "Proof vector whose circuit names no circuit vector."
+}

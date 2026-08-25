@@ -1,0 +1,17 @@
+{
+  "schema": "mdoc-presentations-v1.schema.json",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "mdoc": "a0",
+  "device_namespaces": "a0",
+  "transcript": "83",
+  "issuer_public_key_x": "1111111111111111111111111111111111111111111111111111111111111111",
+  "issuer_public_key_y": "2222222222222222222222222222222222222222222222222222222222222222",
+  "credential": "full-cred",
+  "provenance": {
+    "type": "constructed",
+    "generator": "tools/add_vector.py create-presentation",
+    "ref": "dddddddddddddddddddddddddddddddddddddddd",
+    "created": "2026-08-21"
+  },
+  "comment": "Presentation vector for the loader tests under constructed provenance, carrying every content field and a credential reference."
+}

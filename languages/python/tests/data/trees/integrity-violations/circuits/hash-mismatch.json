@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "c3f9de1321d3643b3cb1646f7359f493b60fa4e5b70d0e1e0ba0916bdc67eb6c",
+  "version": 6,
+  "num_attributes": 1,
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-08"
+  },
+  "comment": "Circuit vector whose sha256 does not match its blob."
+}

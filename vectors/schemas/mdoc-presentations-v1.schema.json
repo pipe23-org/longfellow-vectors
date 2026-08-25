@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mdoc-presentations-v1.schema.json",
+  "title": "longfellow-vectors mdoc presentation vector, v1",
+  "description": "Sidecar-only vector under vectors/mdoc/presentations/. A vector holds the CBOR DeviceResponse bytes and their provenance. The transcript and the capture facts prove() consumes are present when the source supplies them and absent otherwise. deviceAuth binds the response to the transcript, so the response is unusable with any other transcript.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "mdoc-presentations-v1.schema.json" },
+    "doctype": {
+      "type": "string",
+      "minLength": 1,
+      "description": "DocType of the response's document."
+    },
+    "mdoc": {
+      "$ref": "common-v1.schema.json#/$defs/hex",
+      "description": "CBOR DeviceResponse bytes, byte-true to the source."
+    },
+    "device_namespaces": {
+      "$ref": "common-v1.schema.json#/$defs/hex",
+      "description": "Inner bytes of the tag-24 DeviceNameSpacesBytes; a convenience copy of a value inside mdoc, verified at admission."
+    },
+    "transcript": {
+      "$ref": "common-v1.schema.json#/$defs/hex",
+      "description": "SessionTranscript bytes the response's deviceAuth signs."
+    },
+    "issuer_public_key_x": {
+      "$ref": "common-v1.schema.json#/$defs/p256coordinate",
+      "description": "Issuer (document signer) public key coordinate x; a convenience copy of the SPKI point inside the x5chain of mdoc, verified at admission."
+    },
+    "issuer_public_key_y": {
+      "$ref": "common-v1.schema.json#/$defs/p256coordinate",
+      "description": "Issuer (document signer) public key coordinate y."
+    },
+    "credential": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Vector name of the credential the DeviceResponse presents."
+    },
+    "provenance": { "$ref": "common-v1.schema.json#/$defs/provenance" },
+    "comment": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Construction facts about the vector."
+    }
+  },
+  "required": ["schema", "mdoc", "provenance"],
+  "additionalProperties": false
+}

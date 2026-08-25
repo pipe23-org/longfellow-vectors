@@ -1,0 +1,14 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "iaca",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "public_key_x": "460c9d6e9d60aa81cdeeb7020998ae2f41b6100fb40fb341927189d3a7cd2692",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "certificates/root-ca.pem",
+    "captured": "2026-08-08"
+  },
+  "comment": "Certificate vector carrying public_key_x with public_key_y absent."
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "3d05f0ecf0b966bd3e3a05808a88b2bbd11b4363d475d90a690ac392fc202915",
+  "version": 6,
+  "num_attributes": 1,
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-08"
+  },
+  "comment": "Circuit vector whose sidecar, blob, and sha256 agree. The subtree's clean vector."
+}

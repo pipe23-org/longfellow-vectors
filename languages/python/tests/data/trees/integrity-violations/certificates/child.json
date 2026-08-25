@@ -1,0 +1,12 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "document-signer",
+  "sha256": "418d00fcb73aaac21ab1e480036f75c2dd62b155b5ca07bc150363a9740873a0",
+  "signed_by": "root",
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-08"
+  },
+  "comment": "Certificate vector whose signed_by names root, which the subtree holds."
+}

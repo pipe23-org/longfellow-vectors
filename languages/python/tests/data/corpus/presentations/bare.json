@@ -1,0 +1,17 @@
+{
+  "schema": "mdoc-presentations-v1.schema.json",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "mdoc": "a1",
+  "device_namespaces": "a0",
+  "transcript": "83",
+  "issuer_public_key_x": "3333333333333333333333333333333333333333333333333333333333333333",
+  "issuer_public_key_y": "4444444444444444444444444444444444444444444444444444444444444444",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "inputs/bare.json",
+    "captured": "2026-08-21"
+  },
+  "comment": "Presentation vector for the loader tests under repository provenance, carrying doctype, device_namespaces, transcript, and the issuer key. credential is absent."
+}

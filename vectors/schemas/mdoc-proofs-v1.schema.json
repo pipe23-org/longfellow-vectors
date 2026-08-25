@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mdoc-proofs-v1.schema.json",
+  "title": "longfellow-vectors mdoc proof vector, v1",
+  "description": "Sidecar for a proof blob under vectors/mdoc/proofs/. A vector holds the proof bytes and their provenance. The statement fields hold the public statement the bytes verify against. A vector whose source supplied no recoverable statement omits them and holds the bytes alone. Statement values are equal across proofs made from one session.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "mdoc-proofs-v1.schema.json" },
+    "prover": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Implementation that produced the proof bytes, by backend registry name, e.g. google-cpp."
+    },
+    "circuit": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Vector name of the circuit the proof was made with."
+    },
+    "sha256": {
+      "$ref": "common-v1.schema.json#/$defs/sha256hex",
+      "description": "SHA-256 of the sibling .proof file's bytes."
+    },
+    "doctype": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Mdoc doctype the proof is scoped to."
+    },
+    "claims": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Attribute values the proof discloses.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "namespace": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Mdoc namespace of the attribute."
+          },
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Attribute identifier within the namespace."
+          },
+          "cbor_value": {
+            "$ref": "common-v1.schema.json#/$defs/hex",
+            "description": "CBOR encoding of the attribute's value."
+          }
+        },
+        "required": ["namespace", "id", "cbor_value"],
+        "additionalProperties": false
+      }
+    },
+    "transcript": {
+      "$ref": "common-v1.schema.json#/$defs/hex",
+      "description": "SessionTranscript bytes the proof is bound to."
+    },
+    "issuer_public_key_x": {
+      "$ref": "common-v1.schema.json#/$defs/p256coordinate",
+      "description": "Issuer (document signer) public key coordinate x."
+    },
+    "issuer_public_key_y": {
+      "$ref": "common-v1.schema.json#/$defs/p256coordinate",
+      "description": "Issuer (document signer) public key coordinate y."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}[Tt][0-9]{2}:[0-9]{2}:[0-9]{2}([.,][0-9]+)?([Zz]|[+-][0-9]{2}:[0-9]{2})(?![\\s\\S])",
+      "description": "Verification time the proof was made with, as an RFC 3339 date-time carrying a UTC offset."
+    },
+    "device_namespaces": {
+      "$ref": "common-v1.schema.json#/$defs/hex",
+      "description": "Inner bytes of the tag-24 DeviceNameSpacesBytes; a verify input of some implementations, present when the source supplies it."
+    },
+    "presentation": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Vector name of the presentation the proof was made from."
+    },
+    "provenance": { "$ref": "common-v1.schema.json#/$defs/provenance" },
+    "comment": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Construction facts about the vector."
+    }
+  },
+  "required": ["schema", "sha256", "provenance"],
+  "additionalProperties": false
+}

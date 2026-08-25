@@ -1,0 +1,32 @@
+# Changelog
+
+## Unreleased
+
+- Removed every vector from the collection ahead of the first public release; vectors are readmitted from their original sources as the consumers' tests come to need them. `check()` and the loaders ignore a dotfile anywhere in the collection.
+- `tools/add_vector.py import-certificate` now admits a PEM that does not parse as X.509, omitting `public_key_x` and `public_key_y`; previously it refused the vector. `--signed-by` and `--key` are refused for such a PEM.
+- Initial project scaffold.
+- Renamed the `Proof.proof` and `Circuit.circuit` payload attributes to `bytes`.
+- `version` and `num_attributes` are now required on circuit records.
+- Removed `block_enc_hash` and `block_enc_sig` from circuit records.
+- Hex-valued fields now reject the empty string and any trailing whitespace; previously `""` was a valid `hex` value and a trailing newline was accepted after every fixed-length hex value, the commit ref, and the repository.
+- Free-text string fields (`computed_by`, `comment`, `generator`, provenance `path`, `index`, `via`, `license`, `copyright`, `doctype`, `prover`, and claim `namespace` and `id`) now reject the empty string.
+- `captured` and `created` now require the `YYYY-MM-DD` form, and proof `timestamp` now requires an RFC 3339 date-time carrying `Z` or a numeric offset; previously any string `date.fromisoformat` or `datetime.fromisoformat` accepted was valid, including the basic form `20260825`, a bare date, and a naive timestamp.
+- Added the `p256coordinate` definition to `common-v1.schema.json`; `issuer_public_key_x` and `issuer_public_key_y` on presentation and proof records reference it in place of `sha256hex`.
+- `tools/add_vector.py` now rejects a `--name` that does not match `^[a-z0-9][a-z0-9-]*$`.
+- The wrapper and `tools/add_vector.py` depend on `jsonschema[format]`; `format: date` and `format: date-time` are checked by jsonschema's format checkers.
+- `LongfellowVectors.check()` now reports a root that is not a directory, an unknown subtree or file at the collection root, a sidecar whose schema does not belong in its subtree, a blob file whose suffix is not the subtree's, and a sidecar or blob that is not a regular file; a directory named like a sidecar and a dangling blob symlink previously raised `IsADirectoryError` and `FileNotFoundError` out of `check()`.
+- `check()` findings and loader errors now name the subtree along with the file, as `circuits/good.json: ...`; previously they named the file alone. A sidecar that is not JSON now raises `ValueError` from the loaders; previously `json.JSONDecodeError`.
+- Loading a collection whose root does not exist or is not a directory now raises `CorpusError`; previously every record type loaded empty.
+- Loading a circuit record whose `version` or `num_attributes` is a JSON number carrying a fraction now raises `ValueError`; previously the value reached the dataclass as a float.
+- Loading a sidecar whose `schema` does not belong in the subtree it sits in now raises `ValueError`; previously the record loaded.
+- Added the optional `public_key_x` and `public_key_y` fields to certificate records, required together, holding the affine coordinates of the certificate's SubjectPublicKeyInfo P-256 key.
+- Added `Certificate.public_key`, a `PublicKey` holding the coordinates the sidecar records, and `None` when the sidecar omits them.
+- Removed `circuit_id` and `computed_by` from circuit records, `Circuit.circuit_id` and `Circuit.computed_by` from the wrapper, and `--circuit-id` and `--computed-by` from `tools/add_vector.py import-circuit`.
+- Added the `p256scalar` definition to `common-v1.schema.json` and the optional `public_key_x`, `public_key_y`, and `private_key` fields to key records, holding the affine coordinates and the private scalar of an EC P-256 key. `import-key` derives them from the PEM, and `Key.public_key` and `Key.private_key` hold what the sidecar records.
+- `Presentation.issuer_public_key` and `Proof.issuer_public_key` now hold a `PublicKey`, replacing the `issuer_public_key_x` and `issuer_public_key_y` integer pairs; the sidecar fields are unchanged.
+- Added `Statement` and `Proof.statement()`, which returns the public statement the proof verifies against and raises `CorpusError` naming the first statement field the record does not carry.
+- Added `Certificate.der` and `Key.der`, the DER bytes the PEM encodes; both raise `ValueError` when the PEM is not a single block.
+- Added `py.typed` to the wrapper package.
+- `tools/add_vector.py import-proof` now takes `--doctype`, `--transcript`, `--issuer-public-key-x`, `--issuer-public-key-y`, `--claim`, and `--device-namespaces`, which record a statement for a proof whose source shelves no presentation. They are mutually exclusive with `--presentation`.
+- Moved the record naming convention from `vectors/mdoc/NAMING_CONVENTION.md` to `docs/naming.md`, and `check()` now reports every file directly under the collection root; previously `NAMING_CONVENTION.md` was accepted there.
+- `check()` findings, loader errors, by-name lookup errors, and `tools/add_vector.py` help and error text now name a collection entry a vector, as `device_key 'k' matches no key vector` and `no key vector named 'k'`; previously they named it a record.

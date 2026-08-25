@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mdoc-keys-v1.schema.json",
+  "title": "longfellow-vectors mdoc key vector, v1",
+  "description": "Sidecar for a PEM private key under vectors/mdoc/keys/.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "mdoc-keys-v1.schema.json" },
+    "role": {
+      "enum": ["iaca", "document-signer", "device"],
+      "description": "Position in the ISO 18013-5 trust chain."
+    },
+    "sha256": {
+      "$ref": "common-v1.schema.json#/$defs/sha256hex",
+      "description": "SHA-256 of the sibling .pem file's bytes."
+    },
+    "fingerprint": {
+      "$ref": "common-v1.schema.json#/$defs/sha256hex",
+      "description": "SHA-256 of the public key as DER-encoded SubjectPublicKeyInfo. Present only when the PEM parsed at write time."
+    },
+    "public_key_x": {
+      "$ref": "common-v1.schema.json#/$defs/p256coordinate",
+      "description": "Affine coordinate x of the key's public half, lowercase hex. Omitted when the PEM does not parse as an EC P-256 key."
+    },
+    "public_key_y": {
+      "$ref": "common-v1.schema.json#/$defs/p256coordinate",
+      "description": "Affine coordinate y of the key's public half, lowercase hex. Omitted when the PEM does not parse as an EC P-256 key."
+    },
+    "private_key": {
+      "$ref": "common-v1.schema.json#/$defs/p256scalar",
+      "description": "The key's private scalar, lowercase hex. Omitted when the PEM does not parse as an EC P-256 private key."
+    },
+    "provenance": { "$ref": "common-v1.schema.json#/$defs/provenance" },
+    "comment": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Construction facts about the vector."
+    }
+  },
+  "required": ["schema", "role", "sha256", "provenance"],
+  "dependentRequired": {
+    "public_key_x": ["public_key_y"],
+    "public_key_y": ["public_key_x"],
+    "private_key": ["public_key_x", "public_key_y"]
+  },
+  "additionalProperties": false
+}

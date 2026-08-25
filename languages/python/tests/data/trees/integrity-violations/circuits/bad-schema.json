@@ -1,0 +1,4 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "comment": "Circuit vector holding schema alone, with system, sha256, version, num_attributes, and provenance absent."
+}

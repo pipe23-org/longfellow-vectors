@@ -1,0 +1,15 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "document-signer",
+  "sha256": "ec5d81d730bf08976c33d1f9a65489ff81b1e1481ac77ec5c151cde2f48df693",
+  "public_key_x": "460c9d6e9d60aa81cdeeb7020998ae2f41b6100fb40fb341927189d3a7cd2692",
+  "public_key_y": "52d68cfe920979229ea1bbf2b6759f84baea8c49bf52397bb95f1c79a1397d18",
+  "signed_by": "root-ca",
+  "key": "full-key",
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-24"
+  },
+  "comment": "Certificate vector for the loader tests, carrying public_key_x, public_key_y, signed_by, and key."
+}

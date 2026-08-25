@@ -1,0 +1,22 @@
+site_name: longfellow-vectors
+repo_url: https://github.com/pipe23-org/longfellow-vectors
+
+theme:
+  name: material
+  font: false
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [languages/python/src]
+          options:
+            docstring_style: google
+
+nav:
+  - Home: index.md
+  - Vectors: vectors.md
+  - Admission: admission.md
+  - Python package: python.md
+  - Naming: naming.md

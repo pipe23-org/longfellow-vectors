@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common-v1.schema.json",
+  "title": "longfellow-vectors shared value shapes, v1",
+  "description": "Definitions referenced by the per-type vector schemas. Not a vector schema; no sidecar names this file in its `schema` field.",
+  "$defs": {
+    "hex": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{2})+(?![\\s\\S])",
+      "description": "Byte string as an even, positive number of lowercase hex digits."
+    },
+    "sha256hex": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+      "minLength": 64,
+      "maxLength": 64,
+      "description": "SHA-256 digest as 64 lowercase hex digits."
+    },
+    "p256coordinate": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+      "minLength": 64,
+      "maxLength": 64,
+      "description": "P-256 affine coordinate as 64 lowercase hex digits, left-padded with zeros."
+    },
+    "p256scalar": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}(?![\\s\\S])",
+      "minLength": 64,
+      "maxLength": 64,
+      "description": "P-256 private scalar as 64 lowercase hex digits, left-padded with zeros."
+    },
+    "provenance": {
+      "type": "object",
+      "oneOf": [
+        {
+          "properties": {
+            "type": { "const": "repository" },
+            "repo": {
+              "type": "string",
+              "pattern": "^[^/\\s]+\\.[^/\\s]+/[^/\\s]+/[^/\\s]+(?![\\s\\S])",
+              "description": "Source repository as host/owner/name, e.g. github.com/google/longfellow-zk."
+            },
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}(?![\\s\\S])",
+              "minLength": 40,
+              "maxLength": 40,
+              "description": "Full commit hash the bytes were captured at."
+            },
+            "path": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Path of the source artifact within the repository at ref."
+            },
+            "index": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Position within the source artifact when the bytes are one of several it holds, e.g. mdoc_tests[15]."
+            },
+            "via": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Intermediate artifact the bytes passed through, when not captured directly."
+            },
+            "captured": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?![\\s\\S])",
+              "minLength": 10,
+              "maxLength": 10,
+              "description": "Date the bytes were copied out of the source, as YYYY-MM-DD."
+            },
+            "license": {
+              "type": "string",
+              "minLength": 1,
+              "description": "SPDX identifier of the source's license, recorded when that license requires copied bytes to carry its terms, e.g. MPL-2.0."
+            },
+            "copyright": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Copyright notice retained from the source, e.g. Copyright 2025 ISRG."
+            }
+          },
+          "required": ["type", "repo", "ref", "path", "captured"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "constructed" },
+            "generator": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Tool and mode that produced the bytes, e.g. tools/add_vector.py create-presentation."
+            },
+            "ref": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{40}(?![\\s\\S])",
+              "minLength": 40,
+              "maxLength": 40,
+              "description": "Full commit hash of the generator at generation time."
+            },
+            "created": {
+              "type": "string",
+              "format": "date",
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?![\\s\\S])",
+              "minLength": 10,
+              "maxLength": 10,
+              "description": "Date the bytes were generated, as YYYY-MM-DD."
+            }
+          },
+          "required": ["type", "generator", "created"],
+          "additionalProperties": false
+        }
+      ]
+    }
+  }
+}

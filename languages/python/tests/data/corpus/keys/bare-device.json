@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-keys-v1.schema.json",
+  "role": "device",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "keys/bare-device.pem",
+    "captured": "2026-08-21"
+  },
+  "comment": "Key vector for the loader tests with fingerprint, public_key_x, public_key_y, and private_key absent. Its PEM is empty."
+}

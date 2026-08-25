@@ -1,0 +1,4 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "comment": "Circuit vector holding schema alone, which the circuits schema rejects at load."
+}

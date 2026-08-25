@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mdoc-circuits-v1.schema.json",
+  "title": "longfellow-vectors mdoc circuit vector, v1",
+  "description": "Sidecar for a compressed circuit blob under vectors/mdoc/circuits/.",
+  "type": "object",
+  "properties": {
+    "schema": { "const": "mdoc-circuits-v1.schema.json" },
+    "system": {
+      "enum": ["longfellow-libzk-v1"],
+      "description": "ZK system name and version the circuit belongs to."
+    },
+    "sha256": {
+      "$ref": "common-v1.schema.json#/$defs/sha256hex",
+      "description": "SHA-256 of the sibling .circuit file's bytes."
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647,
+      "description": "Circuit version the blob was exported at."
+    },
+    "num_attributes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647,
+      "description": "Number of attributes the circuit proves over."
+    },
+    "provenance": { "$ref": "common-v1.schema.json#/$defs/provenance" },
+    "comment": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Construction facts about the vector."
+    }
+  },
+  "required": [
+    "schema",
+    "system",
+    "sha256",
+    "version",
+    "num_attributes",
+    "provenance"
+  ],
+  "additionalProperties": false
+}

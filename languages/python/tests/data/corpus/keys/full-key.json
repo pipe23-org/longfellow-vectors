@@ -1,0 +1,15 @@
+{
+  "schema": "mdoc-keys-v1.schema.json",
+  "role": "iaca",
+  "sha256": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+  "fingerprint": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "public_key_x": "7777777777777777777777777777777777777777777777777777777777777777",
+  "public_key_y": "8888888888888888888888888888888888888888888888888888888888888888",
+  "private_key": "9999999999999999999999999999999999999999999999999999999999999999",
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-21"
+  },
+  "comment": "Key vector for the loader tests, carrying fingerprint, public_key_x, public_key_y, and private_key. The values are synthetic and do not derive from the PEM."
+}

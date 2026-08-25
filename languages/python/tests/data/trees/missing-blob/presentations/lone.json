@@ -1,0 +1,17 @@
+{
+  "schema": "mdoc-presentations-v1.schema.json",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "mdoc": "a2",
+  "device_namespaces": "a0",
+  "transcript": "83",
+  "issuer_public_key_x": "3333333333333333333333333333333333333333333333333333333333333333",
+  "issuer_public_key_y": "4444444444444444444444444444444444444444444444444444444444444444",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "inputs/lone.json",
+    "captured": "2026-08-21"
+  },
+  "comment": "Presentation vector in a tree that holds no blob files. Presentations carry none, so this vector loads."
+}

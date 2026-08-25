@@ -1,0 +1,15 @@
+{
+  "schema": "mdoc-presentations-v1.schema.json",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "mdoc": "a3",
+  "device_namespaces": "a0",
+  "transcript": "8181",
+  "issuer_public_key_x": "5555555555555555555555555555555555555555555555555555555555555555",
+  "issuer_public_key_y": "6666666666666666666666666666666666666666666666666666666666666666",
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-21"
+  },
+  "comment": "Presentation vector the subtree accepts. goodproof references it."
+}

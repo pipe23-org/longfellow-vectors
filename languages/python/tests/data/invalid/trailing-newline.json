@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\n",
+  "version": 6,
+  "num_attributes": 1,
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-25"
+  },
+  "comment": "Circuit vector whose sha256 carries a trailing newline."
+}

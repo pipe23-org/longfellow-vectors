@@ -1,0 +1,26 @@
+{
+  "schema": "mdoc-proofs-v1.schema.json",
+  "prover": "synthetic",
+  "circuit": "tiny",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "claims": [
+    {
+      "namespace": "org.iso.18013.5.1",
+      "id": "age_over_18",
+      "cbor_value": "f5"
+    }
+  ],
+  "transcript": "83",
+  "issuer_public_key_x": "1111111111111111111111111111111111111111111111111111111111111111",
+  "issuer_public_key_y": "2222222222222222222222222222222222222222222222222222222222222222",
+  "timestamp": "2024-10-01T09:00:00",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "proofs/placeholder.proof",
+    "captured": "2026-08-21"
+  },
+  "comment": "Proof vector whose timestamp carries no UTC offset."
+}

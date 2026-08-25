@@ -1,0 +1,28 @@
+{
+  "schema": "mdoc-proofs-v1.schema.json",
+  "prover": "synthetic",
+  "circuit": "good",
+  "sha256": "0005c2611f054c05b5dea8487ea5da314102f43296837073e3ac8b99aa1cfe8b",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "claims": [
+    {
+      "namespace": "org.iso.18013.5.1",
+      "id": "age_over_18",
+      "cbor_value": "f5"
+    }
+  ],
+  "transcript": "8181",
+  "issuer_public_key_x": "5555555555555555555555555555555555555555555555555555555555555555",
+  "issuer_public_key_y": "6666666666666666666666666666666666666666666666666666666666666666",
+  "timestamp": "2026-08-21T12:00:00Z",
+  "device_namespaces": "a0",
+  "presentation": "good",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "proofs/goodproof.proof",
+    "captured": "2026-08-21"
+  },
+  "comment": "Proof vector whose sidecar, blob, and references agree. The subtree's clean vector."
+}

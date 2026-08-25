@@ -1,0 +1,17 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+  "version": 6,
+  "num_attributes": 1,
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "circuits/tiny.circuit",
+    "captured": "2026-08-08",
+    "index": "circuits[0]",
+    "via": "an intermediate export"
+  },
+  "comment": "Circuit vector whose sha256 is uppercase hex."
+}

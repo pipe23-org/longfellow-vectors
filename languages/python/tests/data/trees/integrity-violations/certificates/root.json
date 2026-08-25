@@ -1,0 +1,11 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "iaca",
+  "sha256": "ff53cac60053d76a9fe3a553124bc1ad346f8d2d9d2c62b26bec908f7827e59e",
+  "provenance": {
+    "type": "constructed",
+    "generator": "fixture",
+    "created": "2026-08-08"
+  },
+  "comment": "Self-signed certificate vector that child names as its signer."
+}

@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "iaca",
+  "sha256": "9d03e8eb237bc5212dde611f2014956e2aefcd39c827431f18365cfdd41e8181",
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/example/fixtures",
+    "ref": "abababababababababababababababababababab",
+    "path": "certificates/root-ca.pem",
+    "captured": "2026-08-08"
+  },
+  "comment": "Self-signed IACA certificate for the loader tests. public_key_x, public_key_y, signed_by, and key are absent; its issuerAltName carries a URI outside the claimed profile (https://example.com/issues/1)."
+}
