@@ -6,9 +6,8 @@ from datetime import datetime
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import Encoding, NoEncryption, PrivateFormat
-from pylongfellow.mdoc import testing
 
-from . import staging
+from . import presentation, staging
 
 DESCRIPTION = """\
 Build a presentation under a fresh issuer key and a fresh device key, and
@@ -37,6 +36,7 @@ def _private_pem(key: ec.EllipticCurvePrivateKey) -> bytes:
 
 
 def create_presentation(
+    command: str,
     name: str,
     doctype: str,
     claims: list[list[str]],
@@ -49,7 +49,7 @@ def create_presentation(
     # so the issuer key is generated here and passed in to be staged as a PEM.
     issuer_key = ec.generate_private_key(ec.SECP256R1())
     device_key = ec.generate_private_key(ec.SECP256R1())
-    specimen = testing.create_presentation(
+    specimen = presentation.create_presentation(
         doctype,
         _namespaces(claims),
         bytes.fromhex(transcript),
@@ -61,7 +61,7 @@ def create_presentation(
     )
     directory = staging.stage(name)
     document = {"mdoc": specimen.mdoc.hex(), "transcript": transcript.lower()}
-    presentation = staging.write(
+    presentation_json = staging.write(
         directory / "presentation.json", (json.dumps(document, indent=2) + "\n").encode()
     )
     issuer_pem = staging.write(directory / "issuer-key.pem", _private_pem(issuer_key))
@@ -72,15 +72,23 @@ def create_presentation(
     )
     staging.print_commands(
         [
-            staging.admit("import-presentation", presentation, name),
+            staging.admit("import-presentation", presentation_json, name, command),
             staging.admit(
-                "import-key", issuer_pem, f"{name}-issuer-key", "--role", "document-signer"
+                "import-key",
+                issuer_pem,
+                f"{name}-issuer-key",
+                command,
+                "--role",
+                "document-signer",
             ),
-            staging.admit("import-key", device_pem, f"{name}-device-key", "--role", "device"),
+            staging.admit(
+                "import-key", device_pem, f"{name}-device-key", command, "--role", "device"
+            ),
             staging.admit(
                 "import-certificate",
                 certificate,
                 f"{name}-issuer-certificate",
+                command,
                 "--role",
                 "document-signer",
             ),

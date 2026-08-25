@@ -2,7 +2,6 @@
 
 import argparse
 import sys
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -62,6 +61,7 @@ def import_proof(
     proof_path: str,
     repo: str | None,
     generator: str | None,
+    ref: str | None,
     name: str,
     presentation_name: str | None,
     prover: str | None,
@@ -80,11 +80,7 @@ def import_proof(
     if repo is not None:
         provenance: dict[str, Any] = records.provenance(source, repo)
     else:
-        provenance = {
-            "type": "constructed",
-            "generator": generator,
-            "created": date.today().isoformat(),
-        }
+        provenance = records.constructed(generator, ref)
     sidecar: dict[str, Any] = {"schema": "mdoc-proofs-v1.schema.json"}
     if prover is not None:
         sidecar["prover"] = prover

@@ -48,6 +48,7 @@ def _spec(backend: str, circuit: Circuit) -> CircuitSpec:
 
 
 def prove(
+    command: str,
     name: str,
     presentation_name: str,
     circuit_name: str,
@@ -82,4 +83,4 @@ def prove(
     for attr_id in attr_ids:
         flags += ["--attr", attr_id]
     flags += ["--timestamp", staging.rfc3339(timestamp)]
-    staging.print_commands([staging.admit("import-proof", path, name, *flags)])
+    staging.print_commands([staging.admit("import-proof", path, name, command, *flags)])

@@ -44,7 +44,9 @@ def _statement_flags(source: Proof) -> list[str]:
     return flags
 
 
-def flip_bit(proof_name: str, name: str | None, byte_index: int | None, bit: int) -> None:
+def flip_bit(
+    command: str, proof_name: str, name: str | None, byte_index: int | None, bit: int
+) -> None:
     vectors = staging.collection()
     try:
         source = vectors.mdoc.proof(proof_name)
@@ -72,4 +74,4 @@ def flip_bit(proof_name: str, name: str | None, byte_index: int | None, bit: int
     if source.timestamp is not None:
         flags += ["--timestamp", staging.rfc3339(source.timestamp)]
     flags += ["--comment", f"{proof_name} with bit {bit} of byte {byte_index} flipped"]
-    staging.print_commands([staging.admit("import-proof", path, name, *flags)])
+    staging.print_commands([staging.admit("import-proof", path, name, command, *flags)])

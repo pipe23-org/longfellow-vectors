@@ -17,14 +17,18 @@ generate_vectors.py writes the bytes it constructs under
 tools/generation/staging/<name>/, which is not tracked, and prints the
 add_vector.py command that admits them, to be run from tools/admission.
 
-Admission reads the commit and the in-repo path from the staged file's own
-checkout, so a file staged from a tree with uncommitted changes is admitted
-against a commit its bytes do not come from.
+The printed command records constructed provenance: --generator holds this
+command line as run, and --ref the commit tools/generation runs from. --ref is
+omitted when tools/generation has uncommitted changes. The command line states
+what was run; create-presentation mints fresh keys and prove is randomised, so
+neither reproduces its bytes from the command line alone.
 
 docs/admission.md holds the rules the admission modes follow.
 """
 
 import argparse
+import shlex
+import sys
 
 from generation import create_presentation, flip_bit, prove, staging
 
@@ -76,14 +80,14 @@ def main() -> None:
     p_presentation.add_argument(
         "--valid-from",
         required=True,
-        type=staging.moment,
+        type=staging.iso_datetime,
         help="MSO signed and validFrom timestamp, and the certificate's window start, as an "
         "ISO 8601 date-time carrying a UTC offset",
     )
     p_presentation.add_argument(
         "--valid-until",
         required=True,
-        type=staging.moment,
+        type=staging.iso_datetime,
         help="MSO validUntil timestamp, and the certificate's window end, as an ISO 8601 "
         "date-time carrying a UTC offset",
     )
@@ -123,7 +127,7 @@ def main() -> None:
     p_prove.add_argument(
         "--timestamp",
         required=True,
-        type=staging.moment,
+        type=staging.iso_datetime,
         help="verification time to prove at, as an ISO 8601 date-time carrying a UTC offset",
     )
 
@@ -151,8 +155,10 @@ def main() -> None:
     )
 
     args = parser.parse_args()
+    command = shlex.join(["generate_vectors.py", *sys.argv[1:]])
     if args.command == "create-presentation":
         create_presentation.create_presentation(
+            command,
             args.name,
             args.doctype,
             args.claims or [["eu.europa.ec.av.1", "age_over_18", "true"]],
@@ -163,6 +169,7 @@ def main() -> None:
         )
     elif args.command == "prove":
         prove.prove(
+            command,
             args.name,
             args.presentation_name,
             args.circuit_name,
@@ -171,7 +178,7 @@ def main() -> None:
             args.timestamp,
         )
     elif args.command == "flip-bit":
-        flip_bit.flip_bit(args.proof_name, args.name, args.byte_index, args.bit)
+        flip_bit.flip_bit(command, args.proof_name, args.name, args.byte_index, args.bit)
 
 
 if __name__ == "__main__":

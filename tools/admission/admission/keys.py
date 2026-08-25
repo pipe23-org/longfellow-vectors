@@ -1,6 +1,5 @@
 """import-key: admit a PEM key and the material it encodes."""
 
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -28,6 +27,7 @@ def import_key(
     pem_path: str,
     repo: str | None,
     generator: str | None,
+    ref: str | None,
     name: str,
     role: str,
     comment: str | None,
@@ -70,11 +70,7 @@ def import_key(
     if repo is not None:
         sidecar["provenance"] = records.provenance(source, repo)
     else:
-        sidecar["provenance"] = {
-            "type": "constructed",
-            "generator": generator,
-            "created": date.today().isoformat(),
-        }
+        sidecar["provenance"] = records.constructed(generator, ref)
     if comment is not None:
         sidecar["comment"] = comment
     records.write_record(records.KEYS / f"{name}.pem", pem, sidecar)

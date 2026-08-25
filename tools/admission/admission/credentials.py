@@ -1,7 +1,6 @@
 """import-credential: admit a DeviceResponse and its verified key and certificate relations."""
 
 import sys
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -29,6 +28,7 @@ def import_credential(
     cbor_path: str,
     repo: str | None,
     generator: str | None,
+    ref: str | None,
     name: str,
     device_key_name: str | None,
     ds_certificate_name: str | None,
@@ -92,11 +92,7 @@ def import_credential(
     if repo is not None:
         sidecar["provenance"] = records.provenance(source, repo)
     else:
-        sidecar["provenance"] = {
-            "type": "constructed",
-            "generator": generator,
-            "created": date.today().isoformat(),
-        }
+        sidecar["provenance"] = records.constructed(generator, ref)
     if comment is not None:
         sidecar["comment"] = comment
     records.write_record(records.CREDENTIALS / f"{name}.cbor", blob, sidecar)

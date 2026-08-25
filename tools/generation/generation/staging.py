@@ -4,6 +4,7 @@ import argparse
 import os.path
 import re
 import shlex
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -15,7 +16,6 @@ ROOT = Path(__file__).resolve().parent.parent.parent.parent
 VECTORS = ROOT / "vectors" / "mdoc"
 STAGING = ROOT / "tools" / "generation" / "staging"
 ADMISSION = ROOT / "tools" / "admission"
-REPO = "github.com/pipe23-org/longfellow-vectors"
 VECTOR_NAME = re.compile(r"[a-z0-9][a-z0-9-]*")
 NAME_HELP = (
     "vector name, matching ^[a-z0-9][a-z0-9-]*$: lowercase words joined by hyphens, "
@@ -32,7 +32,7 @@ def vector_name(value: str) -> str:
     return value
 
 
-def moment(value: str) -> datetime:
+def iso_datetime(value: str) -> datetime:
     """Argparse type for a date-time flag: an ISO 8601 string carrying a UTC offset."""
     try:
         parsed = datetime.fromisoformat(value)
@@ -80,27 +80,46 @@ def write(path: Path, data: bytes) -> Path:
     return path
 
 
-def admit(mode: str, path: Path, name: str, *flags: str) -> list[str]:
+def generator_ref() -> str | None:
+    """The commit tools/generation runs from, or None when the directory has uncommitted changes."""
+    here = Path(__file__).resolve().parent.parent
+    status = subprocess.run(
+        ["git", "-C", str(here), "status", "--porcelain", "."], capture_output=True, text=True
+    )
+    if status.returncode != 0 or status.stdout.strip():
+        return None
+    head = subprocess.run(
+        ["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+    )
+    return head.stdout.strip()
+
+
+def admit(mode: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
     """The add_vector.py command that admits a staged file, as an argument list.
 
     Args:
         mode: add_vector.py mode, e.g. `import-proof`.
         path: Staged file to admit.
         name: Vector name to admit it under.
+        command: The generate_vectors.py command that produced the file, as run;
+            recorded as the vector's `generator`.
         flags: Further flags and values, appended in the order given.
 
     Returns:
         The command's words, with the staged path written relative to
-        tools/admission, the directory the command runs from.
+        tools/admission, the directory the command runs from, and `--ref`
+        present only when tools/generation is committed clean.
     """
+    ref = generator_ref()
     return [
         "uv",
         "run",
         "add_vector.py",
         mode,
         os.path.relpath(path, ADMISSION),
-        "--repo",
-        REPO,
+        "--generator",
+        command,
+        *(["--ref", ref] if ref is not None else []),
         "--name",
         name,
         *flags,
@@ -109,6 +128,8 @@ def admit(mode: str, path: Path, name: str, *flags: str) -> list[str]:
 
 def print_commands(commands: list[list[str]]) -> None:
     """Print the admission commands for a mode's staged files, one per line."""
+    if generator_ref() is None:
+        print("\ntools/generation has uncommitted changes; --ref is omitted")
     print("\nadmit from tools/admission:")
     for command in commands:
         print(" ".join(shlex.quote(word) for word in command))

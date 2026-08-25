@@ -19,7 +19,15 @@ TIMESTAMP = datetime(2026, 8, 2, tzinfo=UTC)
 
 
 def test_prove_stages_a_proof_that_verifies(collection: Path) -> None:
-    prove.prove(NAME, PRESENTATION_NAME, CIRCUIT_NAME, BACKEND, [ATTR_ID], TIMESTAMP)
+    prove.prove(
+        "generate_vectors.py prove",
+        NAME,
+        PRESENTATION_NAME,
+        CIRCUIT_NAME,
+        BACKEND,
+        [ATTR_ID],
+        TIMESTAMP,
+    )
 
     proof = (staging.STAGING / NAME / f"{NAME}.proof").read_bytes()
     vectors = staging.collection()

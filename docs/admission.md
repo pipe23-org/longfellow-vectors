@@ -34,9 +34,10 @@ in-repo path are read from the source file's own git checkout, so the file
 passed on the command line has to sit inside a checkout of the repository
 `--repo` names. `captured` holds the day of admission.
 
-`--generator` names what produced staged bytes that come from no repository.
-Provenance then records `type: "constructed"` with the generator string and
-`created` holding the day of admission.
+`--generator` holds the command that produced staged bytes, as run.
+Provenance then records `type: "constructed"` with the generator string,
+`ref` when `--ref` gives the generator's commit, and `created` holding the day
+of admission. `--ref` is accepted only with `--generator`.
 
 `import-circuit` and `import-certificate` take `--repo` only.
 `import-key`, `import-credential`, `import-presentation`, and `import-proof`

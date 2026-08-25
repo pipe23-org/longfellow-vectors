@@ -39,6 +39,10 @@ GENERATOR_HELP = (
     "constructed with it in place of the repository, commit, and path"
 )
 COMMENT_HELP = "free-text comment to record on the sidecar"
+REF_HELP = (
+    "full commit hash of the generator at generation time, recorded with --generator; "
+    "omitted when the generator ran from an uncommitted tree"
+)
 
 
 def record_name(value: str) -> str:
@@ -69,6 +73,15 @@ def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, A
     }
     if index is not None:
         record["index"] = index
+    return record
+
+
+def constructed(generator: str, ref: str | None) -> dict[str, Any]:
+    """Constructed provenance: the generating command, its commit when known, and today."""
+    record: dict[str, Any] = {"type": "constructed", "generator": generator}
+    if ref is not None:
+        record["ref"] = ref
+    record["created"] = date.today().isoformat()
     return record
 
 

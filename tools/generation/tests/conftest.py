@@ -5,8 +5,6 @@ import json
 from pathlib import Path
 
 import pytest
-from pylongfellow import Pylongfellow
-from pylongfellow.backends import google_cpp
 
 from generation import staging
 
@@ -29,13 +27,12 @@ PROVENANCE = {
 
 @pytest.fixture(scope="session")
 def circuit() -> bytes:
-    """The compiled-in v7 one-attribute circuit, generated once because a call takes about 15 s."""
-    spec = next(
-        spec
-        for spec in google_cpp.zk_specs()
-        if spec.version == CIRCUIT_VERSION and spec.num_attributes == CIRCUIT_ATTRIBUTES
-    )
-    return Pylongfellow(backend=PROVER).generate_circuit(spec)
+    """google/longfellow-zk's v7 one-attribute circuit export.
+
+    lib/circuits/mdoc/circuits/8d079211715200ff06c5109639245502bfe94aa869908d31176aae4016182121
+    at fe83ec6, copied from pylongfellow 36916aa tests/api/data/circuits/.
+    """
+    return (DATA / "v7-1attr.circuit").read_bytes()
 
 
 @pytest.fixture
