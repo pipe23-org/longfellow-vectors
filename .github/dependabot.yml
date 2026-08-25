@@ -8,6 +8,6 @@ updates:
       actions:
         patterns: ["*"]
   - package-ecosystem: "uv"
-    directory: "/"
+    directories: ["/languages/python", "/tools"]
     schedule:
       interval: "weekly"
