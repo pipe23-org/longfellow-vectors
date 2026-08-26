@@ -1,6 +1,7 @@
 """presentation: admit a presentation as a sidecar with no blob."""
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
@@ -15,6 +16,9 @@ The source is a JSON file with an mdoc field and a transcript field, each
 holding hex.
 The vector derives doctype, issuer_public_key_x, issuer_public_key_y, and
 device_namespaces from the mdoc bytes.
+--credential is verified against the credential vector's IssuerSigned: the
+presented issuerAuth has to equal the credential's, and every presented item
+has to be one of the credential's.
 docs/admission.md holds the rules that span the commands.
 """
 
@@ -55,6 +59,41 @@ def _presentation_sidecar(
     return sidecar
 
 
+def _verify_credential(mdoc_hex: str, credential_name: str) -> None:
+    """Check that the response presents the named credential, and exit when it does not.
+
+    Args:
+        mdoc_hex: The response's CBOR DeviceResponse bytes, as hex.
+        credential_name: Credential vector the response presents.
+    """
+    try:
+        credential = cbor2.loads((records.CREDENTIALS / f"{credential_name}.cbor").read_bytes())
+        issuer_signed = cbor2.loads(bytes.fromhex(mdoc_hex))["documents"][0]["issuerSigned"]
+        held = {
+            (namespace, item.value)
+            for namespace, items in credential["nameSpaces"].items()
+            for item in items
+        }
+        presented = {
+            (namespace, item.value)
+            for namespace, items in issuer_signed["nameSpaces"].items()
+            for item in items
+        }
+    except Exception:
+        sys.exit(
+            f"error: the response or credential {credential_name!r} does not parse; "
+            "cannot verify --credential"
+        )
+    if issuer_signed["issuerAuth"] != credential["issuerAuth"]:
+        sys.exit(f"error: the presented issuerAuth does not equal credential {credential_name!r}'s")
+    for namespace, item in sorted(presented - held):
+        identifier = cbor2.loads(item)["elementIdentifier"]
+        sys.exit(
+            f"error: presented item {identifier!r} in namespace {namespace!r} is not one of "
+            f"credential {credential_name!r}'s"
+        )
+
+
 def import_presentation(
     vector_path: str,
     repo: str | None,
@@ -73,6 +112,7 @@ def import_presentation(
     sidecar = _presentation_sidecar(vector["mdoc"], vector["transcript"], provenance)
     if credential_name is not None:
         records.require_credential(credential_name)
+        _verify_credential(vector["mdoc"], credential_name)
         sidecar["credential"] = credential_name
     if comment is not None:
         sidecar["comment"] = comment

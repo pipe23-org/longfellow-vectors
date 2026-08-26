@@ -26,7 +26,8 @@
         --name <name> [--device-key <vector-name>] \\
         [--ds-certificate <vector-name>]
 
-    uv run admit.py certificate <pem-path> --repo <host/owner/name> \\
+    uv run admit.py certificate <pem-path> \\
+        (--repo <host/owner/name> | --generator <string>) \\
         --name <name> --role <iaca|document-signer> [--signed-by <name>] \\
         [--key <vector-name>]
 
@@ -237,7 +238,10 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p_certificate.add_argument("pem_path", help="PEM certificate file to admit")
-    p_certificate.add_argument("--repo", required=True, help=records.REPO_HELP)
+    p_certificate_source = p_certificate.add_mutually_exclusive_group(required=True)
+    p_certificate_source.add_argument("--repo", help=records.REPO_HELP)
+    p_certificate_source.add_argument("--generator", help=records.GENERATOR_HELP)
+    p_certificate.add_argument("--ref", help=records.REF_HELP)
     p_certificate.add_argument(
         "--name",
         required=True,
@@ -334,6 +338,8 @@ def main() -> None:
         certificates.import_certificate(
             args.pem_path,
             args.repo,
+            args.generator,
+            args.ref,
             args.name,
             args.role,
             args.signed_by,

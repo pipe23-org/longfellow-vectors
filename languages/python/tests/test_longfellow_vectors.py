@@ -323,7 +323,7 @@ def test_credential_ds_certificate_naming_no_vector_fails_the_load(tmp_path: Pat
 
 
 def test_credential_claims_returns_the_issuer_signed_items() -> None:
-    """Credential.claims() returns one Claim per issuer-signed item, in document order."""
+    """Credential.claims() returns one Claim per issuer-signed item, in nameSpaces order."""
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("claims-cred")
     claims = credential.claims()
@@ -772,12 +772,18 @@ def test_certificate_der_raises_when_the_pem_holds_no_block() -> None:
 
 
 @pytest.mark.parametrize(("payload", "match"), MALFORMED_CLAIM_PAYLOADS)
-def test_parse_claims_raises_naming_the_structure_the_payload_lacks(
+def test_presentation_claims_raises_naming_the_structure_the_payload_lacks(
     payload: bytes, match: str
 ) -> None:
     """Parsing claims raises ValueError naming the DeviceResponse structure the payload lacks."""
     with pytest.raises(ValueError, match=match):
-        mdoc_module._parse_claims(payload)
+        mdoc_module._presentation_claims(payload)
+
+
+def test_credential_claims_raises_when_the_payload_is_not_a_map() -> None:
+    """Parsing credential claims raises ValueError when the payload is not a CBOR map."""
+    with pytest.raises(ValueError, match="payload is not a CBOR map"):
+        mdoc_module._credential_claims(cbor2.dumps(42))
 
 
 def test_lookup_by_name_returns_the_named_vector() -> None:

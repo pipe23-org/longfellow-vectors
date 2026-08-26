@@ -42,7 +42,7 @@ repository.
 | Field | Type | Required | Holds |
 | --- | --- | --- | --- |
 | `type` | `"constructed"` | yes | The shape this provenance takes. |
-| `generator` | string | yes | The generating command as run, e.g. `generate.py flip-bit --proof <name> --byte 3`. The command line states what was run; it reproduces the bytes only for a deterministic mode. |
+| `generator` | string | yes | The generating command with every value the command generated filled in, e.g. `generate.py flip-bit --proof <name> --byte 3`. Re-running it reproduces the bytes for every command except `proof`. |
 | `ref` | 40 lowercase hex digits | no | Full commit hash of the generator at generation time. |
 | `created` | `YYYY-MM-DD` | yes | Date the bytes were generated. |
 
@@ -68,13 +68,15 @@ present only alongside both coordinates.
 
 ## Credentials
 
-`mdoc-credentials-v1.schema.json`, sidecar for a CBOR credential under
-`vectors/mdoc/credentials/`.
+`mdoc-credentials-v1.schema.json`, sidecar for IssuerSigned CBOR under
+`vectors/mdoc/credentials/`. The blob holds `{nameSpaces, issuerAuth}`, the
+structure an issuer delivers. It is not a DeviceResponse and carries no device
+signature.
 
 | Field | Type | Required | Holds |
 | --- | --- | --- | --- |
 | `schema` | `"mdoc-credentials-v1.schema.json"` | yes | The schema this sidecar validates against. |
-| `doctype` | string | no | DocType read from the credential. |
+| `doctype` | string | no | DocType read from the MSO inside `issuerAuth`. |
 | `device_key` | vector name | no | The credential's device key. |
 | `ds_certificate` | vector name | no | The credential's document-signer certificate. |
 | `sha256` | `sha256hex` | yes | SHA-256 of the sibling `.cbor` file's bytes. |
@@ -180,7 +182,7 @@ cannot derive is omitted from the sidecar and the omission is printed.
 | Keys | `public_key_x`, `public_key_y` | The PEM, when it holds an EC P-256 key. |
 | Keys | `private_key` | The PEM, when it holds an EC P-256 private key. |
 | Credentials | `sha256` | The CBOR bytes. |
-| Credentials | `doctype` | The CBOR, when it parses as a DeviceResponse. |
+| Credentials | `doctype` | The MSO inside `issuerAuth`, when the CBOR parses as IssuerSigned and the MSO decodes. |
 | Presentations | `doctype` | The `mdoc` bytes, when they parse as a DeviceResponse. |
 | Presentations | `issuer_public_key_x`, `issuer_public_key_y` | The leaf certificate in the `mdoc` bytes' x5chain. |
 | Presentations | `device_namespaces` | The `deviceSigned` nameSpaces in the `mdoc` bytes. |
@@ -203,9 +205,9 @@ directory, and references are type-scoped.
 
 | Field | On | Names a | Held at admission |
 | --- | --- | --- | --- |
-| `device_key` | Credentials | key | The key vector's public half matched the credential's `deviceKeyInfo`. |
-| `ds_certificate` | Credentials | certificate | The certificate vector's DER bytes matched the credential's x5chain leaf. |
-| `credential` | Presentations | credential | The named credential vector was in the collection. |
+| `device_key` | Credentials | key | The key vector's public half matched the `deviceKeyInfo` of the MSO inside the top-level `issuerAuth`. |
+| `ds_certificate` | Credentials | certificate | The certificate vector's DER bytes matched the x5chain leaf of the top-level `issuerAuth`. |
+| `credential` | Presentations | credential | The presented `issuerAuth` equalled the credential's and every presented item was one of the credential's. |
 | `signed_by` | Certificates | certificate | The named certificate's key verified this certificate's signature. |
 | `key` | Certificates | key | The certificate's SubjectPublicKeyInfo fingerprint equalled the key vector's `fingerprint`. |
 | `circuit` | Proofs | circuit | The named circuit vector was in the collection. |

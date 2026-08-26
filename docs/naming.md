@@ -35,7 +35,7 @@ the number of attributes the circuit proves under.
 
 ## credentials/
 
-A credential (a CBOR DeviceResponse) is named for its doctype and
+A credential (CBOR IssuerSigned) is named for its doctype and
 what distinguishes its content: the test persona, or the semantic
 property that sets it apart. Attribute counts are not name material. A
 credential may reference its device-key vector (`device_key`) and its

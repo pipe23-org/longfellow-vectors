@@ -91,7 +91,7 @@
             "generator": {
               "type": "string",
               "minLength": 1,
-              "description": "The generating command as run, e.g. generate.py flip-bit --proof <name> --byte 3. The command line states what was run; it reproduces the bytes only for a deterministic mode."
+              "description": "The generating command with every value the command generated filled in, e.g. generate.py flip-bit --proof <name> --byte 3. Re-running it reproduces the bytes for every command except proof."
             },
             "ref": {
               "type": "string",

@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- **BACKWARDS INCOMPATIBLE:** Credential vectors now hold `IssuerSigned` CBOR, `{nameSpaces, issuerAuth}`; previously they held a `DeviceResponse`. `Credential.claims()` reads the top-level `nameSpaces` instead of `documents[0].issuerSigned.nameSpaces`, and `admit.py credential` refuses a `DeviceResponse`, naming `admit.py presentation`. (#8)
+- `generate.py` now has one construction command per vector type: `key`, `certificate`, `credential`, and `presentation`, each reading the vectors it builds on from the collection by name. `presentation` takes `--credential`, `--transcript`, `--device-namespace`, and `--disclose`; previously `create-presentation` minted an issuer key, a device key, a certificate, and the issuer-signed document on every run. (#8)
+- Re-running the command line a vector's `generator` records now reproduces its bytes for every `generate.py` command but `proof`. Signatures use the RFC 6979 nonce, key scalars and `IssuerSignedItem` salts derive from a seed, and a seed or certificate serial the command generated is filled into the recorded command line. (#8)
+- `admit.py presentation --credential` now verifies that the presented `issuerAuth` equals the credential's and that every presented item is one of the credential's; previously the field was recorded unverified. (#8)
+- `admit.py certificate` now takes `--generator` and `--ref` alongside `--repo`, so a constructed certificate is admitted with constructed provenance; previously `--repo` was required. (#8)
+
 ## 0.0.1 - 2026-08-25
 
 - Removed every vector from the collection ahead of the first public release; vectors are readmitted from their original sources as the consumers' tests come to need them. `check()` and the loaders ignore a dotfile anywhere in the collection.

@@ -34,7 +34,7 @@
     "credential": {
       "type": "string",
       "minLength": 1,
-      "description": "Vector name of the credential the DeviceResponse presents."
+      "description": "Vector name of the credential the DeviceResponse presents. Present only when the presented issuerAuth equalled the credential's and every presented item was one of the credential's at write time."
     },
     "provenance": { "$ref": "common-v1.schema.json#/$defs/provenance" },
     "comment": {

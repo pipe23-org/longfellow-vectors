@@ -38,7 +38,7 @@ Provenance then records `type: "constructed"` with the generator string,
 `ref` when `--ref` gives the generator's commit, and `created` holding the day
 of admission. `--ref` is accepted only with `--generator`.
 
-`circuit` and `certificate` take `--repo` only. `key`, `credential`,
+`circuit` takes `--repo` only. `key`, `certificate`, `credential`,
 `presentation`, and `proof` take exactly one of `--repo` and `--generator`.
 
 ## Derived fields
@@ -85,9 +85,9 @@ given. A field the operator chose to leave out has its reason in the comment.
 
 | Flag | Effect |
 | --- | --- |
-| `cbor_path` | CBOR file to admit, copied to `vectors/mdoc/credentials/<name>.cbor`. |
-| `--device-key` | Key vector whose public half must equal the credential's `deviceKeyInfo` coordinates. Refused on mismatch. |
-| `--ds-certificate` | Certificate vector whose DER bytes must equal the credential's x5chain leaf. Refused on mismatch. |
+| `cbor_path` | IssuerSigned CBOR file to admit, copied to `vectors/mdoc/credentials/<name>.cbor`. A DeviceResponse is refused, naming `admit.py presentation`. |
+| `--device-key` | Key vector whose public half must equal the `deviceKeyInfo` coordinates of the MSO inside the top-level `issuerAuth`. Refused on mismatch. |
+| `--ds-certificate` | Certificate vector whose DER bytes must equal the x5chain leaf of the top-level `issuerAuth`. Refused on mismatch. |
 | `--repo`, `--generator` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
@@ -97,7 +97,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 | Flag | Effect |
 | --- | --- |
 | `vector_path` | JSON file with an `mdoc` field and a `transcript` field, each holding hex. |
-| `--credential` | Credential vector the DeviceResponse presents. Refused when the collection holds no credential of that name. |
+| `--credential` | Credential vector the DeviceResponse presents. Refused when the collection holds no credential of that name, when the presented `issuerAuth` does not equal the credential's, or when a presented item is not one of the credential's. |
 | `--repo`, `--generator` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
@@ -124,7 +124,7 @@ value.
 | `--role` | `iaca` or `document-signer`, recorded as given. |
 | `--signed-by` | Certificate vector whose key must verify this certificate's signature. Refused when the signature does not verify. |
 | `--key` | Key vector whose `fingerprint` must equal the certificate's SubjectPublicKeyInfo fingerprint. Refused on mismatch, and refused when the key vector carries no `fingerprint`. |
-| `--repo` | Provenance, as above. |
+| `--repo`, `--generator` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 

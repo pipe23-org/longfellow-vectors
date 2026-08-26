@@ -19,6 +19,11 @@ its circuit's `num_attributes` are all unconstrained.
 
 A vector's `sha256` is the value its sidecar records, not a digest computed at
 load. `LongfellowVectors.check()` compares it against the blob's bytes.
+
+A credential vector's bytes are CBOR `IssuerSigned`, `{nameSpaces,
+issuerAuth}`, the structure an issuer delivers. A presentation vector's `mdoc`
+is a CBOR `DeviceResponse`, which carries an `IssuerSigned` per document
+alongside the device signature.
 """
 
 from __future__ import annotations
@@ -217,33 +222,20 @@ class Claim:
     cbor_value: bytes
 
 
-def _parse_claims(payload: builtins.bytes) -> tuple[Claim, ...]:
-    """Parse claims from a CBOR DeviceResponse payload.
+def _issuer_signed_claims(issuer_signed: dict[Any, Any]) -> tuple[Claim, ...]:
+    """Parse claims from a decoded IssuerSigned map.
 
     Args:
-        payload: CBOR bytes encoding a DeviceResponse.
+        issuer_signed: Decoded ``IssuerSigned``, holding ``nameSpaces``.
 
     Returns:
-        Claims in document order: ``documents[0].issuerSigned.nameSpaces``,
-        each tag-24-wrapped IssuerSignedItem yields one claim.
+        Claims in ``nameSpaces`` order, each tag-24-wrapped IssuerSignedItem
+        yielding one claim.
 
     Raises:
-        ValueError: The decoded CBOR does not have the expected
-            DeviceResponse structure.
-        cbor2.CBORDecodeError: The payload is not valid CBOR.
+        ValueError: ``nameSpaces`` is absent or an item does not have the
+            expected IssuerSignedItem structure.
     """
-    decoded = cbor2.loads(payload)
-    if not isinstance(decoded, dict):
-        raise ValueError("payload is not a CBOR map")
-    docs = decoded.get("documents")
-    if not isinstance(docs, list) or not docs:
-        raise ValueError("payload has no documents array")
-    doc = docs[0]
-    if not isinstance(doc, dict):
-        raise ValueError("document is not a CBOR map")
-    issuer_signed = doc.get("issuerSigned")
-    if not isinstance(issuer_signed, dict):
-        raise ValueError("document has no issuerSigned map")
     namespaces = issuer_signed.get("nameSpaces")
     if not isinstance(namespaces, dict):
         raise ValueError("issuerSigned has no nameSpaces map")
@@ -262,6 +254,56 @@ def _parse_claims(payload: builtins.bytes) -> tuple[Claim, ...]:
                 raise ValueError("missing or non-string elementIdentifier")
             result.append(Claim(ns, elem_id, cbor2.dumps(inner["elementValue"])))
     return tuple(result)
+
+
+def _credential_claims(payload: builtins.bytes) -> tuple[Claim, ...]:
+    """Parse claims from a CBOR IssuerSigned payload.
+
+    Args:
+        payload: CBOR bytes encoding an ``IssuerSigned``.
+
+    Returns:
+        Claims in ``nameSpaces`` order.
+
+    Raises:
+        ValueError: The decoded CBOR does not have the expected IssuerSigned
+            structure.
+        cbor2.CBORDecodeError: The payload is not valid CBOR.
+    """
+    decoded = cbor2.loads(payload)
+    if not isinstance(decoded, dict):
+        raise ValueError("payload is not a CBOR map")
+    return _issuer_signed_claims(decoded)
+
+
+def _presentation_claims(payload: builtins.bytes) -> tuple[Claim, ...]:
+    """Parse claims from a CBOR DeviceResponse payload.
+
+    Args:
+        payload: CBOR bytes encoding a DeviceResponse.
+
+    Returns:
+        Claims in document order, from
+        ``documents[0].issuerSigned.nameSpaces``.
+
+    Raises:
+        ValueError: The decoded CBOR does not have the expected
+            DeviceResponse structure.
+        cbor2.CBORDecodeError: The payload is not valid CBOR.
+    """
+    decoded = cbor2.loads(payload)
+    if not isinstance(decoded, dict):
+        raise ValueError("payload is not a CBOR map")
+    docs = decoded.get("documents")
+    if not isinstance(docs, list) or not docs:
+        raise ValueError("payload has no documents array")
+    doc = docs[0]
+    if not isinstance(doc, dict):
+        raise ValueError("document is not a CBOR map")
+    issuer_signed = doc.get("issuerSigned")
+    if not isinstance(issuer_signed, dict):
+        raise ValueError("document has no issuerSigned map")
+    return _issuer_signed_claims(issuer_signed)
 
 
 @dataclass(frozen=True)
@@ -307,22 +349,22 @@ class Key:
 
 @dataclass(frozen=True)
 class Credential:
-    """A credential vector: CBOR credential bytes and their derived facts.
+    """A credential vector: CBOR IssuerSigned bytes and their derived facts.
 
     Attributes:
         name: Vector name.
-        bytes: CBOR credential bytes, byte-true to the source.
+        bytes: CBOR ``IssuerSigned`` bytes, byte-true to the source.
         sha256: SHA-256 (hex) of the CBOR bytes as the sidecar records it;
             `LongfellowVectors.check()` compares it against the bytes.
         provenance: Where the credential bytes came from.
-        doctype: DocType read from the credential, when the CBOR parsed as
-            a DeviceResponse at write time.
+        doctype: DocType read from the MSO inside ``issuerAuth``, when the
+            CBOR parsed as IssuerSigned and the MSO decoded at write time.
         device_key: The key vector for the credential's device key, when the
-            key vector's public half matched the credential's deviceKeyInfo
-            at write time.
+            key vector's public half matched the deviceKeyInfo of the MSO
+            inside the top-level ``issuerAuth`` at write time.
         ds_certificate: The certificate vector for the credential's
             document-signer certificate, when the certificate's bytes matched
-            the credential's x5chain leaf at write time.
+            the x5chain leaf of the top-level ``issuerAuth`` at write time.
         comment: Free-text comment on the vector, when present.
     """
 
@@ -336,21 +378,20 @@ class Credential:
     comment: str | None = None
 
     def claims(self) -> tuple[Claim, ...]:
-        """Parse claims from this credential's CBOR DeviceResponse.
+        """Parse claims from this credential's CBOR IssuerSigned.
 
-        Derived by parsing ``self.bytes`` as a DeviceResponse on each call;
-        the result is not cached.
+        Derived by parsing ``self.bytes`` as an ``IssuerSigned`` on each
+        call; the result is not cached.
 
         Returns:
-            Claims in document order from
-            ``documents[0].issuerSigned.nameSpaces``.
+            Claims in the order of the top-level ``nameSpaces``.
 
         Raises:
-            ValueError: The payload does not contain a valid DeviceResponse
+            ValueError: The payload does not contain a valid IssuerSigned
                 with issuer-signed claims.
             cbor2.CBORDecodeError: The payload is not valid CBOR.
         """
-        return _parse_claims(self.bytes)
+        return _credential_claims(self.bytes)
 
 
 @dataclass(frozen=True)
@@ -398,7 +439,7 @@ class Presentation:
                 with issuer-signed claims.
             cbor2.CBORDecodeError: The payload is not valid CBOR.
         """
-        return _parse_claims(self.mdoc)
+        return _presentation_claims(self.mdoc)
 
 
 @dataclass(frozen=True)

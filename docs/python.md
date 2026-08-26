@@ -56,9 +56,10 @@ instance.
 
 ## Accessors
 
-`Credential.claims()` and `Presentation.claims()` parse the vector's
-DeviceResponse and return the issuer-signed claims in document order, as a
-tuple of `Claim`. Each call re-parses the bytes.
+`Credential.claims()` parses the vector's IssuerSigned and
+`Presentation.claims()` the vector's DeviceResponse; both return the
+issuer-signed claims in document order, as a tuple of `Claim`. Each call
+re-parses the bytes.
 
 `Proof.statement()` returns the `Statement` the vector's `doctype`,
 `transcript`, `issuer_public_key`, `claims`, `timestamp`, and
@@ -89,7 +90,7 @@ holding one line per file that breaks a rule. The rules it checks:
 | Exception | Raised by |
 | --- | --- |
 | `CorpusError` | `check()` for any finding. A loader for a root that is not a directory, for a reference naming no vector, and for a cycle in the certificate signing references. `Proof.statement()` for a vector that carries no statement. |
-| `ValueError` | A loader for a sidecar that is not JSON, one the schema rejects, one naming a schema that does not belong in its directory, and a circuit whose `version` or `num_attributes` is a JSON number carrying a fraction. `Key.der` and `Certificate.der` for a PEM that is not a single block. `claims()` for a payload that is not a DeviceResponse. |
+| `ValueError` | A loader for a sidecar that is not JSON, one the schema rejects, one naming a schema that does not belong in its directory, and a circuit whose `version` or `num_attributes` is a JSON number carrying a fraction. `Key.der` and `Certificate.der` for a PEM that is not a single block. `Credential.claims()` for a payload that is not IssuerSigned, and `Presentation.claims()` for one that is not a DeviceResponse. |
 | `KeyError` | A by-name accessor for a name no vector has. |
 | `FileNotFoundError` | A loader for a sidecar whose blob file is absent. |
 | `cbor2.CBORDecodeError` | `claims()` for a payload that is not valid CBOR. |

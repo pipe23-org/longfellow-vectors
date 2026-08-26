@@ -42,7 +42,9 @@ def _verify_certificate_signature(child: x509.Certificate, parent: x509.Certific
 
 def import_certificate(
     pem_path: str,
-    repo: str,
+    repo: str | None,
+    generator: str | None,
+    ref: str | None,
     name: str,
     role: str,
     signed_by: str | None,
@@ -71,7 +73,10 @@ def import_certificate(
             sidecar["public_key_y"] = f"{numbers.y:064x}"
         else:
             print("certificate key is not EC P-256; public_key_x and public_key_y are not recorded")
-    sidecar["provenance"] = records.provenance(source, repo)
+    if repo is not None:
+        sidecar["provenance"] = records.provenance(source, repo)
+    else:
+        sidecar["provenance"] = records.constructed(generator, ref)
     if certificate is None and (signed_by is not None or key_name is not None):
         sys.exit("error: PEM does not parse; --signed-by and --key cannot be verified")
     if signed_by is not None:
