@@ -12,7 +12,7 @@ uv run admit.py <command> --help
 
 One command admits each vector type: `key`, `credential`, `presentation`,
 `circuit`, `certificate`, and `proof`. New artifacts are constructed by
-standalone scripts outside this tool.
+`tools/generation/generate.py`. [Generation](generation.md) has its commands.
 
 ## Names
 
@@ -33,10 +33,10 @@ in-repo path are read from the source file's own git checkout, so the file
 passed on the command line has to sit inside a checkout of the repository
 `--repo` names. `captured` holds the day of admission.
 
-`--generator` holds the command that produced staged bytes, as run.
-Provenance then records `type: "constructed"` with the generator string,
-`ref` when `--ref` gives the generator's commit, and `created` holding the day
-of admission. `--ref` is accepted only with `--generator`.
+`--generator` holds the command line that produced staged bytes. Provenance
+then records `type: "constructed"` with the generator string, `ref` when
+`--ref` gives the generator's commit, and `created` holding the day of
+admission. `--ref` is accepted only with `--generator`.
 
 `circuit` takes `--repo` only. `key`, `certificate`, `credential`,
 `presentation`, and `proof` take exactly one of `--repo` and `--generator`.

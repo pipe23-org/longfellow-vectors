@@ -143,7 +143,7 @@ def main() -> None:
     p_credential.add_argument(
         "--doctype",
         default="eu.europa.ec.av.1",
-        help="doctype the MSO carries",
+        help="doctype the MSO carries; eu.europa.ec.av.1 when absent",
     )
     p_credential.add_argument(
         "--claim",

@@ -18,5 +18,6 @@ nav:
   - Home: index.md
   - Vectors: vectors.md
   - Admission: admission.md
+  - Generation: generation.md
   - Python package: python.md
   - Naming: naming.md

@@ -157,7 +157,8 @@ class Provenance:
         via: Intermediate artifact the bytes passed through.
         captured: Date the bytes were copied out of the source, as a
             YYYY-MM-DD string.
-        generator: Tool and mode that produced constructed bytes.
+        generator: The generating command with every value the command
+            generated filled in.
         created: Date constructed bytes were generated, as a YYYY-MM-DD
             string.
         license: SPDX identifier retained from the source.

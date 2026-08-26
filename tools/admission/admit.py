@@ -33,8 +33,8 @@
 
 admit.py admits externally produced bytes into the collection. Each command
 copies its source bytes byte-identically into vectors/mdoc/ and writes the JSON
-sidecar that governs them. New artifacts are constructed by standalone scripts
-outside this tool.
+sidecar that governs them. New artifacts are constructed by
+tools/generation/generate.py.
 
 docs/admission.md holds the rules every command follows and the procedure for
 readmitting a vector from its source.
