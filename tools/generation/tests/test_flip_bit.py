@@ -10,7 +10,7 @@ PROOF_NAME = "source"
 DERIVED_NAME = "source-bit-flipped"
 MIDDLE_BYTE = 32
 BIT = 0
-COMMAND = "generate_vectors.py flip-bit --proof source"
+COMMAND = "generate.py flip-bit --proof source"
 COMMAND_TAIL = (
     "--name source-bit-flipped "
     "--prover google-cpp --circuit v7-1attr --presentation smoke --attr age_over_18 "

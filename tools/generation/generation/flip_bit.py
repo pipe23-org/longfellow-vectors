@@ -16,7 +16,7 @@ circuit, statement, and timestamp, and a comment naming the derivation.
 
 
 def _statement_flags(source: Proof) -> list[str]:
-    """The import-proof flags carrying the statement of a proof made from no admitted presentation.
+    """The admission flags carrying the statement of a proof made from no admitted presentation.
 
     Args:
         source: The proof vector the derived proof comes from.
@@ -74,4 +74,4 @@ def flip_bit(
     if source.timestamp is not None:
         flags += ["--timestamp", staging.rfc3339(source.timestamp)]
     flags += ["--comment", f"{proof_name} with bit {bit} of byte {byte_index} flipped"]
-    staging.print_commands([staging.admit("import-proof", path, name, command, *flags)])
+    staging.print_commands([staging.admit("proof", path, name, command, *flags)])

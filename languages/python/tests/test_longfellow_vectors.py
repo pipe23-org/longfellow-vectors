@@ -371,7 +371,7 @@ def test_presentation_constructed_provenance_carries_generator_created_and_ref()
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("full")
     assert presentation.provenance.type == "constructed"
-    assert presentation.provenance.generator == "tools/add_vector.py create-presentation"
+    assert presentation.provenance.generator == "tools/generation/generate.py presentation"
     assert presentation.provenance.created == "2026-08-21"
     assert presentation.provenance.ref == "dd" * 20
     assert presentation.provenance.repo is None

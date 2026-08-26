@@ -1,4 +1,4 @@
-"""import-presentation: admit a presentation as a sidecar with no blob."""
+"""presentation: admit a presentation as a sidecar with no blob."""
 
 import json
 from pathlib import Path
@@ -15,7 +15,7 @@ The source is a JSON file with an mdoc field and a transcript field, each
 holding hex.
 The vector derives doctype, issuer_public_key_x, issuer_public_key_y, and
 device_namespaces from the mdoc bytes.
-docs/admission.md holds the rules that span the modes.
+docs/admission.md holds the rules that span the commands.
 """
 
 

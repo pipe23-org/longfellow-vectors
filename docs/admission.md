@@ -1,31 +1,30 @@
 # Admission
 
-`tools/admission/add_vector.py` writes vectors into the collection. It is a uv
+`tools/admission/admit.py` writes vectors into the collection. It is a uv
 project of its own under `tools/admission/` and is never published. Its paths
 resolve relative to the script, so it finds the collection wherever the
 repository sits.
 
 ```
 cd tools/admission
-uv run add_vector.py <mode> --help
+uv run admit.py <command> --help
 ```
 
-One mode admits each vector type: `import-key`, `import-credential`,
-`import-presentation`, `import-circuit`, `import-certificate`, and
-`import-proof`. New artifacts are constructed by standalone scripts outside
-this tool.
+One command admits each vector type: `key`, `credential`, `presentation`,
+`circuit`, `certificate`, and `proof`. New artifacts are constructed by
+standalone scripts outside this tool.
 
 ## Names
 
-Every mode takes `--name`, the vector's file stem. A name matches
+Every command takes `--name`, the vector's file stem. A name matches
 `^[a-z0-9][a-z0-9-]*$`. [Naming](naming.md) states what a name says about the
 bytes.
 
 ## Bytes
 
-Every mode copies its source bytes byte-identically into the vector's blob
-file, and derives `sha256` from them. `import-presentation` writes no blob
-file. It copies the source's `mdoc` and `transcript` hex into the sidecar.
+Every command copies its source bytes byte-identically into the vector's blob
+file, and derives `sha256` from them. `presentation` writes no blob file. It
+copies the source's `mdoc` and `transcript` hex into the sidecar.
 
 ## Provenance
 
@@ -39,28 +38,27 @@ Provenance then records `type: "constructed"` with the generator string,
 `ref` when `--ref` gives the generator's commit, and `created` holding the day
 of admission. `--ref` is accepted only with `--generator`.
 
-`import-circuit` and `import-certificate` take `--repo` only.
-`import-key`, `import-credential`, `import-presentation`, and `import-proof`
-take exactly one of `--repo` and `--generator`.
+`circuit` and `certificate` take `--repo` only. `key`, `credential`,
+`presentation`, and `proof` take exactly one of `--repo` and `--generator`.
 
 ## Derived fields
 
-Each mode derives the fields its vector type takes from the bytes.
+Each command derives the fields its vector type takes from the bytes.
 [Vectors](vectors.md#derived-fields) lists them per type. A field the bytes do
 not yield is omitted from the sidecar, and the omission is printed. Bytes that
 do not parse are admitted with those fields absent.
 
-A mode that cannot derive a field it needs for a verification exits without
-writing. `import-credential --device-key` on a credential whose CBOR does not
-parse is refused, as are `import-certificate --signed-by` and `--key` on a PEM
-that does not parse.
+A command that cannot derive a field it needs for a verification exits without
+writing. `credential --device-key` on a credential whose CBOR does not parse is
+refused, as are `certificate --signed-by` and `--key` on a PEM that does not
+parse.
 
 ## Reference fields
 
 A reference field is written only when its relation was verified, and a
 verification that fails exits without writing anything. The named vector has to
-be in the collection already. A mode given a name the collection does not hold
-exits and names the missing vector.
+be in the collection already. A command given a name the collection does not
+hold exits and names the missing vector.
 
 ## Schema validation
 
@@ -70,10 +68,10 @@ not admitted, and one line per schema error is printed.
 
 ## Comments
 
-Every mode takes `--comment`, written to the sidecar's `comment` field when
+Every command takes `--comment`, written to the sidecar's `comment` field when
 given. A field the operator chose to leave out has its reason in the comment.
 
-## import-key
+## key
 
 | Flag | Effect |
 | --- | --- |
@@ -83,7 +81,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
-## import-credential
+## credential
 
 | Flag | Effect |
 | --- | --- |
@@ -94,7 +92,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
-## import-presentation
+## presentation
 
 | Flag | Effect |
 | --- | --- |
@@ -104,7 +102,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
-## import-circuit
+## circuit
 
 | Flag | Effect |
 | --- | --- |
@@ -118,7 +116,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 `system` is written as `longfellow-libzk-v1` and the schema admits no other
 value.
 
-## import-certificate
+## certificate
 
 | Flag | Effect |
 | --- | --- |
@@ -133,7 +131,7 @@ value.
 A `--signed-by` certificate whose own key is not an EC key is refused, as is a
 certificate that carries no signature hash algorithm.
 
-## import-proof
+## proof
 
 | Flag | Effect |
 | --- | --- |
@@ -172,7 +170,7 @@ A vector whose provenance is `type: "repository"` carries what a re-run needs.
 
 1. Clone the repository `provenance.repo` names, and check out
    `provenance.ref`.
-2. Run the mode for the vector's type against the file at `provenance.path`
+2. Run the command for the vector's type against the file at `provenance.path`
    inside that checkout, passing the recorded `repo` as `--repo` and the
    vector's stem as `--name`.
 3. Pass again every value the sidecar holds that the tool does not derive:

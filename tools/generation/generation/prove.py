@@ -1,4 +1,4 @@
-"""prove: prove an admitted presentation with an admitted circuit and stage the proof."""
+"""proof: prove an admitted presentation with an admitted circuit and stage the proof."""
 
 import sys
 from datetime import datetime
@@ -83,4 +83,4 @@ def prove(
     for attr_id in attr_ids:
         flags += ["--attr", attr_id]
     flags += ["--timestamp", staging.rfc3339(timestamp)]
-    staging.print_commands([staging.admit("import-proof", path, name, command, *flags)])
+    staging.print_commands([staging.admit("proof", path, name, command, *flags)])

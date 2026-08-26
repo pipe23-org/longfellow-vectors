@@ -1,4 +1,4 @@
-"""create-presentation: build a presentation under fresh keys and stage it."""
+"""presentation: build a presentation under fresh keys and stage it."""
 
 import json
 import sys
@@ -72,20 +72,18 @@ def create_presentation(
     )
     staging.print_commands(
         [
-            staging.admit("import-presentation", presentation_json, name, command),
+            staging.admit("presentation", presentation_json, name, command),
             staging.admit(
-                "import-key",
+                "key",
                 issuer_pem,
                 f"{name}-issuer-key",
                 command,
                 "--role",
                 "document-signer",
             ),
+            staging.admit("key", device_pem, f"{name}-device-key", command, "--role", "device"),
             staging.admit(
-                "import-key", device_pem, f"{name}-device-key", command, "--role", "device"
-            ),
-            staging.admit(
-                "import-certificate",
+                "certificate",
                 certificate,
                 f"{name}-issuer-certificate",
                 command,

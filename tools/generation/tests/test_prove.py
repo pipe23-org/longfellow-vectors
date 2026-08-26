@@ -20,7 +20,7 @@ TIMESTAMP = datetime(2026, 8, 2, tzinfo=UTC)
 
 def test_prove_stages_a_proof_that_verifies(collection: Path) -> None:
     prove.prove(
-        "generate_vectors.py prove",
+        "generate.py proof",
         NAME,
         PRESENTATION_NAME,
         CIRCUIT_NAME,

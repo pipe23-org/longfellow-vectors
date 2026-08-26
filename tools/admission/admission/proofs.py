@@ -1,4 +1,4 @@
-"""import-proof: admit a proof blob and the statement it verifies against."""
+"""proof: admit a proof blob and the statement it verifies against."""
 
 import argparse
 import sys
@@ -13,14 +13,14 @@ The source is a proof file a prover emitted.
 The vector derives sha256 from the bytes.
 The statement fields come from --presentation or from the statement flags,
 and a vector given neither carries the bytes alone.
-docs/admission.md holds the rules that span the modes.
+docs/admission.md holds the rules that span the commands.
 """
 
 
 def statement_from_flags(
     parser: argparse.ArgumentParser, args: argparse.Namespace
 ) -> dict[str, Any] | None:
-    """The statement the import-proof statement flags supply, or None when none is given."""
+    """The statement the `proof` statement flags supply, or None when none is given."""
     required = {
         "doctype": args.doctype,
         "transcript": args.transcript,

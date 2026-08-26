@@ -1,29 +1,29 @@
 #!/usr/bin/env python3
 """Construct new vectors and stage them for admission.
 
-    uv run generate_vectors.py create-presentation --name <name> \\
+    uv run generate.py presentation --name <name> \\
         --transcript <hex> --valid-from <iso> --valid-until <iso> \\
         [--doctype <doctype>] [--claim <namespace> <id> <json>]... \\
         [--device-namespace <namespace> <id> <json>]...
 
-    uv run generate_vectors.py prove --name <name> \\
+    uv run generate.py proof --name <name> \\
         --presentation <vector-name> --circuit <vector-name> \\
         --backend <google-cpp|isrg-rust> --attr <id>... --timestamp <iso>
 
-    uv run generate_vectors.py flip-bit --proof <vector-name> \\
+    uv run generate.py flip-bit --proof <vector-name> \\
         [--name <name>] [--byte <index>] [--bit <0-7>]
 
-generate_vectors.py writes the bytes it constructs under
+generate.py writes the bytes it constructs under
 tools/generation/staging/<name>/, which is not tracked, and prints the
-add_vector.py command that admits them, to be run from tools/admission.
+admit.py command that admits them, to be run from tools/admission.
 
 The printed command records constructed provenance: --generator holds this
 command line as run, and --ref the commit tools/generation runs from. --ref is
 omitted when tools/generation has uncommitted changes. The command line states
-what was run; create-presentation mints fresh keys and prove is randomised, so
+what was run; presentation mints fresh keys and proof is randomised, so
 neither reproduces its bytes from the command line alone.
 
-docs/admission.md holds the rules the admission modes follow.
+docs/admission.md holds the rules the admission commands follow.
 """
 
 import argparse
@@ -40,7 +40,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_presentation = sub.add_parser(
-        "create-presentation",
+        "presentation",
         description=create_presentation.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -92,31 +92,31 @@ def main() -> None:
         "date-time carrying a UTC offset",
     )
 
-    p_prove = sub.add_parser(
-        "prove",
+    p_proof = sub.add_parser(
+        "proof",
         description=prove.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_prove.add_argument("--name", required=True, type=staging.vector_name, help=staging.NAME_HELP)
-    p_prove.add_argument(
+    p_proof.add_argument("--name", required=True, type=staging.vector_name, help=staging.NAME_HELP)
+    p_proof.add_argument(
         "--presentation",
         required=True,
         dest="presentation_name",
         help="admitted presentation vector to prove over",
     )
-    p_prove.add_argument(
+    p_proof.add_argument(
         "--circuit",
         required=True,
         dest="circuit_name",
         help="admitted circuit vector to prove with",
     )
-    p_prove.add_argument(
+    p_proof.add_argument(
         "--backend",
         required=True,
         choices=["google-cpp", "isrg-rust"],
         help="implementation that produces the proof bytes, by backend registry name",
     )
-    p_prove.add_argument(
+    p_proof.add_argument(
         "--attr",
         action="append",
         required=True,
@@ -124,7 +124,7 @@ def main() -> None:
         help="attribute id to disclose; its namespace and CBOR value come from the "
         "presentation, and the claims are proved in the order given; repeatable",
     )
-    p_prove.add_argument(
+    p_proof.add_argument(
         "--timestamp",
         required=True,
         type=staging.iso_datetime,
@@ -155,8 +155,8 @@ def main() -> None:
     )
 
     args = parser.parse_args()
-    command = shlex.join(["generate_vectors.py", *sys.argv[1:]])
-    if args.command == "create-presentation":
+    command = shlex.join(["generate.py", *sys.argv[1:]])
+    if args.command == "presentation":
         create_presentation.create_presentation(
             command,
             args.name,
@@ -167,7 +167,7 @@ def main() -> None:
             args.valid_from,
             args.valid_until,
         )
-    elif args.command == "prove":
+    elif args.command == "proof":
         prove.prove(
             command,
             args.name,

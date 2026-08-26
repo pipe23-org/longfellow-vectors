@@ -1,4 +1,4 @@
-"""Collection paths, the staging tree, and the admission commands the modes print."""
+"""Collection paths, the staging tree, and the admission commands generate.py prints."""
 
 import argparse
 import os.path
@@ -49,7 +49,7 @@ def rfc3339(value: datetime) -> str:
 
 
 def collection() -> LongfellowVectors:
-    """The collection in this checkout, which the modes read named vectors from."""
+    """The collection in this checkout, which the commands read named vectors from."""
     return LongfellowVectors(root=VECTORS)
 
 
@@ -59,7 +59,7 @@ def missing(vector_type: str, name: str) -> NoReturn:
 
 
 def stage(name: str) -> Path:
-    """Create and return the staging directory a mode writes its files into."""
+    """Create and return the staging directory a command writes its files into."""
     directory = STAGING / name
     directory.mkdir(parents=True, exist_ok=True)
     return directory
@@ -94,14 +94,14 @@ def generator_ref() -> str | None:
     return head.stdout.strip()
 
 
-def admit(mode: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
-    """The add_vector.py command that admits a staged file, as an argument list.
+def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
+    """The admit.py command that admits a staged file, as an argument list.
 
     Args:
-        mode: add_vector.py mode, e.g. `import-proof`.
+        vector_type: admit.py command, e.g. `proof`.
         path: Staged file to admit.
         name: Vector name to admit it under.
-        command: The generate_vectors.py command that produced the file, as run;
+        command: The generate.py command that produced the file, as run;
             recorded as the vector's `generator`.
         flags: Further flags and values, appended in the order given.
 
@@ -114,8 +114,8 @@ def admit(mode: str, path: Path, name: str, command: str, *flags: str) -> list[s
     return [
         "uv",
         "run",
-        "add_vector.py",
-        mode,
+        "admit.py",
+        vector_type,
         os.path.relpath(path, ADMISSION),
         "--generator",
         command,
@@ -127,7 +127,7 @@ def admit(mode: str, path: Path, name: str, command: str, *flags: str) -> list[s
 
 
 def print_commands(commands: list[list[str]]) -> None:
-    """Print the admission commands for a mode's staged files, one per line."""
+    """Print the admission commands for one command's staged files, one per line."""
     if generator_ref() is None:
         print("\ntools/generation has uncommitted changes; --ref is omitted")
     print("\nadmit from tools/admission:")

@@ -1,4 +1,4 @@
-"""Collection paths, provenance, and the validated write path every mode uses."""
+"""Collection paths, provenance, and the validated write path every command uses."""
 
 import argparse
 import hashlib
@@ -35,7 +35,7 @@ REPO_HELP = (
     "in-repo path read from the source file's own checkout"
 )
 GENERATOR_HELP = (
-    "what produced staged constructed bytes, as a tool and mode; provenance records type "
+    "what produced staged constructed bytes, as a tool and command; provenance records type "
     "constructed with it in place of the repository, commit, and path"
 )
 COMMENT_HELP = "free-text comment to record on the sidecar"

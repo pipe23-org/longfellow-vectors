@@ -1,4 +1,4 @@
-"""import-certificate: admit a PEM certificate and its verified signer and key relations."""
+"""certificate: admit a PEM certificate and its verified signer and key relations."""
 
 import json
 import sys
@@ -17,7 +17,7 @@ Admit a PEM certificate as a vector under vectors/mdoc/certificates/.
 The source is a PEM file holding one X.509 certificate.
 The vector derives sha256 from the bytes and, when the PEM parses as an X.509
 certificate with an EC P-256 key, public_key_x and public_key_y.
-docs/admission.md holds the rules that span the modes.
+docs/admission.md holds the rules that span the commands.
 """
 
 

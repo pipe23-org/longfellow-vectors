@@ -1,4 +1,4 @@
-"""The generated circuit and the temporary collection the mode tests read vectors from."""
+"""The generated circuit and the temporary collection the command tests read vectors from."""
 
 import hashlib
 import json
@@ -39,7 +39,7 @@ def circuit() -> bytes:
 def collection(tmp_path: Path, circuit: bytes, monkeypatch: pytest.MonkeyPatch) -> Path:
     """A collection holding the staged presentation, the v7 circuit, and a proof over both.
 
-    The modes read the collection and write the staging tree through
+    The commands read the collection and write the staging tree through
     `generation.staging`, so both are pointed at the temporary directory.
     """
     root = tmp_path / "mdoc"

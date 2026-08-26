@@ -1,4 +1,4 @@
-"""import-key: admit a PEM key and the material it encodes."""
+"""key: admit a PEM key and the material it encodes."""
 
 from pathlib import Path
 from typing import Any
@@ -19,7 +19,7 @@ Admit a PEM key as a vector under vectors/mdoc/keys/.
 The source is a PEM file holding one private or public key.
 The vector derives sha256, fingerprint, public_key_x, public_key_y, and
 private_key from the PEM.
-docs/admission.md holds the rules that span the modes.
+docs/admission.md holds the rules that span the commands.
 """
 
 

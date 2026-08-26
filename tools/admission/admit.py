@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Write captured artifacts into the vectors collection.
 
-    uv run add_vector.py import-circuit <blob-path> --repo <host/owner/name> \\
+    uv run admit.py circuit <blob-path> --repo <host/owner/name> \\
         --name <name> --version <n> --num-attributes <n>
 
-    uv run add_vector.py import-presentation <vector-json-path> \\
+    uv run admit.py presentation <vector-json-path> \\
         (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--credential <vector-name>]
 
-    uv run add_vector.py import-proof <proof-path> \\
+    uv run admit.py proof <proof-path> \\
         (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--prover <backend>] [--circuit <circuit-name>] \\
         [--timestamp <iso>] \\
@@ -17,25 +17,25 @@
           --issuer-public-key-x <hex> --issuer-public-key-y <hex> \\
           [--claim <namespace> <id> <cbor-hex>]... [--device-namespaces <hex>] )
 
-    uv run add_vector.py import-key <pem-path> \\
+    uv run admit.py key <pem-path> \\
         (--repo <host/owner/name> | --generator <string>) \\
         --name <name> --role <iaca|document-signer|device>
 
-    uv run add_vector.py import-credential <cbor-path> \\
+    uv run admit.py credential <cbor-path> \\
         (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--device-key <vector-name>] \\
         [--ds-certificate <vector-name>]
 
-    uv run add_vector.py import-certificate <pem-path> --repo <host/owner/name> \\
+    uv run admit.py certificate <pem-path> --repo <host/owner/name> \\
         --name <name> --role <iaca|document-signer> [--signed-by <name>] \\
         [--key <vector-name>]
 
-add_vector.py admits externally produced bytes into the collection. Each mode
+admit.py admits externally produced bytes into the collection. Each command
 copies its source bytes byte-identically into vectors/mdoc/ and writes the JSON
 sidecar that governs them. New artifacts are constructed by standalone scripts
 outside this tool.
 
-docs/admission.md holds the rules every mode follows and the procedure for
+docs/admission.md holds the rules every command follows and the procedure for
 readmitting a vector from its source.
 """
 
@@ -51,7 +51,7 @@ def main() -> None:
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_circuit = sub.add_parser(
-        "import-circuit",
+        "circuit",
         description=circuits.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -77,7 +77,7 @@ def main() -> None:
     )
 
     p_presentation = sub.add_parser(
-        "import-presentation",
+        "presentation",
         description=presentations.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -102,7 +102,7 @@ def main() -> None:
     )
 
     p_proof = sub.add_parser(
-        "import-proof",
+        "proof",
         description=proofs.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -180,7 +180,7 @@ def main() -> None:
     )
 
     p_key = sub.add_parser(
-        "import-key",
+        "key",
         description=keys.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -203,7 +203,7 @@ def main() -> None:
     )
 
     p_credential = sub.add_parser(
-        "import-credential",
+        "credential",
         description=credentials.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -232,7 +232,7 @@ def main() -> None:
     )
 
     p_certificate = sub.add_parser(
-        "import-certificate",
+        "certificate",
         description=certificates.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
@@ -275,7 +275,7 @@ def main() -> None:
     args = parser.parse_args()
     if getattr(args, "ref", None) is not None and args.generator is None:
         parser.error("--ref requires --generator")
-    if args.command == "import-circuit":
+    if args.command == "circuit":
         circuits.import_circuit(
             args.blob_path,
             args.repo,
@@ -284,7 +284,7 @@ def main() -> None:
             args.num_attributes,
             args.comment,
         )
-    elif args.command == "import-presentation":
+    elif args.command == "presentation":
         presentations.import_presentation(
             args.vector_path,
             args.repo,
@@ -294,7 +294,7 @@ def main() -> None:
             args.credential_name,
             args.comment,
         )
-    elif args.command == "import-proof":
+    elif args.command == "proof":
         proofs.import_proof(
             args.proof_path,
             args.repo,
@@ -309,7 +309,7 @@ def main() -> None:
             proofs.statement_from_flags(parser, args),
             args.comment,
         )
-    elif args.command == "import-key":
+    elif args.command == "key":
         keys.import_key(
             args.pem_path,
             args.repo,
@@ -319,7 +319,7 @@ def main() -> None:
             args.role,
             args.comment,
         )
-    elif args.command == "import-credential":
+    elif args.command == "credential":
         credentials.import_credential(
             args.cbor_path,
             args.repo,
@@ -330,7 +330,7 @@ def main() -> None:
             args.ds_certificate_name,
             args.comment,
         )
-    elif args.command == "import-certificate":
+    elif args.command == "certificate":
         certificates.import_certificate(
             args.pem_path,
             args.repo,

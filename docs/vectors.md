@@ -42,7 +42,7 @@ repository.
 | Field | Type | Required | Holds |
 | --- | --- | --- | --- |
 | `type` | `"constructed"` | yes | The shape this provenance takes. |
-| `generator` | string | yes | The generating command as run, e.g. `generate_vectors.py flip-bit --proof <name> --byte 3`. The command line states what was run; it reproduces the bytes only for a deterministic mode. |
+| `generator` | string | yes | The generating command as run, e.g. `generate.py flip-bit --proof <name> --byte 3`. The command line states what was run; it reproduces the bytes only for a deterministic mode. |
 | `ref` | 40 lowercase hex digits | no | Full commit hash of the generator at generation time. |
 | `created` | `YYYY-MM-DD` | yes | Date the bytes were generated. |
 

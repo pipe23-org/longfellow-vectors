@@ -1,4 +1,4 @@
-"""import-circuit: admit a circuit blob."""
+"""circuit: admit a circuit blob."""
 
 from pathlib import Path
 from typing import Any
@@ -9,7 +9,7 @@ DESCRIPTION = """\
 Admit a circuit blob as a vector under vectors/mdoc/circuits/.
 The source is a circuit file an implementation exported.
 The vector derives sha256 from the bytes and nothing else.
-docs/admission.md holds the rules that span the modes.
+docs/admission.md holds the rules that span the commands.
 """
 
 

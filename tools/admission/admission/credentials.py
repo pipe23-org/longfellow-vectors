@@ -1,4 +1,4 @@
-"""import-credential: admit a DeviceResponse and its verified key and certificate relations."""
+"""credential: admit a DeviceResponse and its verified key and certificate relations."""
 
 import sys
 from pathlib import Path
@@ -20,7 +20,7 @@ DESCRIPTION = """\
 Admit a CBOR credential as a vector under vectors/mdoc/credentials/.
 The source is a file holding DeviceResponse CBOR bytes.
 The vector derives sha256 and doctype from the bytes.
-docs/admission.md holds the rules that span the modes.
+docs/admission.md holds the rules that span the commands.
 """
 
 
