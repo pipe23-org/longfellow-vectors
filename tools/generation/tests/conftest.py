@@ -9,6 +9,8 @@ import pytest
 from generation import staging
 
 DATA = Path(__file__).parent / "data"
+CREDENTIAL_NAME = "av-credential"
+DOCTYPE = "eu.europa.ec.av.1"
 PRESENTATION_NAME = "smoke"
 CIRCUIT_NAME = "v7-1attr"
 PROOF_NAME = "source"
@@ -37,14 +39,86 @@ def circuit() -> bytes:
 
 @pytest.fixture
 def collection(tmp_path: Path, circuit: bytes, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A collection holding the staged presentation, the v7 circuit, and a proof over both.
+    """A collection holding a trust chain, a credential, a presentation, a circuit, and a proof.
+
+    The keys, certificates, and credential under tests/data were built with
+    `generation.mdoc` under fixed P-256 scalars: ca-key certifies itself,
+    ds-certificate certifies issuer-key under ca-key, and the credential is
+    issuer-signed under issuer-key over age_over_18 and age_over_21 in
+    eu.europa.ec.av.1, binding device-key. ds-certificate-no-key holds the same
+    PEM as ds-certificate with no `key` reference.
 
     The commands read the collection and write the staging tree through
     `generation.staging`, so both are pointed at the temporary directory.
     """
     root = tmp_path / "mdoc"
-    for subtree in ("presentations", "circuits", "proofs"):
+    for subtree in ("keys", "certificates", "credentials", "presentations", "circuits", "proofs"):
         (root / subtree).mkdir(parents=True)
+
+    for name, role in (
+        ("ca-key", "iaca"),
+        ("issuer-key", "document-signer"),
+        ("device-key", "device"),
+    ):
+        key_pem = (DATA / f"{name}.pem").read_bytes()
+        (root / "keys" / f"{name}.pem").write_bytes(key_pem)
+        (root / "keys" / f"{name}.json").write_text(
+            json.dumps(
+                {
+                    "schema": "mdoc-keys-v1.schema.json",
+                    "role": role,
+                    "sha256": hashlib.sha256(key_pem).hexdigest(),
+                    "provenance": PROVENANCE,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+
+    for name, source, references in (
+        ("ca-certificate", "ca-certificate", {"role": "iaca", "key": "ca-key"}),
+        (
+            "ds-certificate",
+            "ds-certificate",
+            {"role": "document-signer", "signed_by": "ca-certificate", "key": "issuer-key"},
+        ),
+        (
+            "ds-certificate-no-key",
+            "ds-certificate",
+            {"role": "document-signer", "signed_by": "ca-certificate"},
+        ),
+    ):
+        certificate_pem = (DATA / f"{source}.pem").read_bytes()
+        (root / "certificates" / f"{name}.pem").write_bytes(certificate_pem)
+        (root / "certificates" / f"{name}.json").write_text(
+            json.dumps(
+                {
+                    "schema": "mdoc-certificates-v1.schema.json",
+                    "sha256": hashlib.sha256(certificate_pem).hexdigest(),
+                    **references,
+                    "provenance": PROVENANCE,
+                },
+                indent=2,
+            )
+            + "\n"
+        )
+
+    credential = (DATA / "credential.cbor").read_bytes()
+    (root / "credentials" / f"{CREDENTIAL_NAME}.cbor").write_bytes(credential)
+    (root / "credentials" / f"{CREDENTIAL_NAME}.json").write_text(
+        json.dumps(
+            {
+                "schema": "mdoc-credentials-v1.schema.json",
+                "sha256": hashlib.sha256(credential).hexdigest(),
+                "doctype": DOCTYPE,
+                "device_key": "device-key",
+                "ds_certificate": "ds-certificate",
+                "provenance": PROVENANCE,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
 
     presentation = json.loads((DATA / "presentation.json").read_text())
     (root / "presentations" / f"{PRESENTATION_NAME}.json").write_text(

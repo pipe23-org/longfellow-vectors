@@ -116,5 +116,4 @@ jobs:
       - run: uv sync --locked
       - run: uv run --no-sync ruff check
       - run: uv run --no-sync ruff format --check
-      - if: matrix.directory == 'tools/generation'
-        run: uv run --no-sync pytest
+      - run: uv run --no-sync pytest
