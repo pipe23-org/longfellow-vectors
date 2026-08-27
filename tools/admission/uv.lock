@@ -323,7 +323,7 @@ wheels = [
 ]
 
 [[package]]
-name = "longfellow-vectors-tools"
+name = "longfellow-vectors-admission"
 version = "0.0.0"
 source = { virtual = "." }
 dependencies = [
