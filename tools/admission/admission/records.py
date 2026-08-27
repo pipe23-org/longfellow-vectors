@@ -24,11 +24,11 @@ SCHEMAS = ROOT / "vectors" / "schemas"
 SYSTEM = "longfellow-libzk-v1"
 GIT = shutil.which("git") or "git"
 RECORD_NAME = re.compile(r"[a-z0-9][a-z0-9-]*")
-NAME_HELP = "vector name, lowercase words joined by hyphens"
+NAME_HELP = "vector name"
 REPO_HELP = "source repository as host/owner/name"
-GENERATOR_HELP = "command line that produced the bytes"
-COMMENT_HELP = "comment for the sidecar"
-REF_HELP = "commit of the generator, 40 hex digits"
+GENERATOR_HELP = "generator command line"
+COMMENT_HELP = "comment on the vector"
+REF_HELP = "generator commit hash"
 
 
 def record_name(value: str) -> str:

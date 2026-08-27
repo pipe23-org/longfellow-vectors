@@ -3,7 +3,7 @@ from typing import Any
 
 from . import records
 
-DESCRIPTION = "Admit a circuit blob under vectors/mdoc/circuits/."
+DESCRIPTION = "Admit a circuit."
 
 
 def import_circuit(

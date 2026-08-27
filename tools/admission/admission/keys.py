@@ -12,7 +12,7 @@ from cryptography.hazmat.primitives.serialization import (
 
 from . import records
 
-DESCRIPTION = "Admit a PEM key under vectors/mdoc/keys/."
+DESCRIPTION = "Admit a key."
 
 
 def import_key(

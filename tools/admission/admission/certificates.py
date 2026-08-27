@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
 from . import records
 
-DESCRIPTION = "Admit a PEM certificate under vectors/mdoc/certificates/."
+DESCRIPTION = "Admit a certificate."
 
 
 def _verify_certificate_signature(child: x509.Certificate, parent: x509.Certificate) -> None:

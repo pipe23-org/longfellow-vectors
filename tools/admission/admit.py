@@ -48,7 +48,7 @@ def main() -> None:
         description=circuits.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_circuit.add_argument("blob_path", help="circuit blob to admit")
+    p_circuit.add_argument("path", help="circuit file")
     p_circuit.add_argument("--repo", required=True, help=records.REPO_HELP)
     p_circuit.add_argument(
         "--name",
@@ -74,9 +74,7 @@ def main() -> None:
         description=presentations.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_presentation.add_argument(
-        "vector_path", help="JSON file with mdoc and transcript fields, hex"
-    )
+    p_presentation.add_argument("path", help="JSON file with mdoc and transcript, hex")
     p_presentation_source = p_presentation.add_mutually_exclusive_group(required=True)
     p_presentation_source.add_argument("--repo", help=records.REPO_HELP)
     p_presentation_source.add_argument("--generator", help=records.GENERATOR_HELP)
@@ -98,7 +96,7 @@ def main() -> None:
         description=proofs.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_proof.add_argument("proof_path", help="proof blob to admit")
+    p_proof.add_argument("path", help="proof file")
     p_proof_source = p_proof.add_mutually_exclusive_group(required=True)
     p_proof_source.add_argument("--repo", help=records.REPO_HELP)
     p_proof_source.add_argument("--generator", help=records.GENERATOR_HELP)
@@ -168,7 +166,7 @@ def main() -> None:
         description=keys.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_key.add_argument("pem_path", help="PEM key file to admit")
+    p_key.add_argument("path", help="PEM file")
     p_key_source = p_key.add_mutually_exclusive_group(required=True)
     p_key_source.add_argument("--repo", help=records.REPO_HELP)
     p_key_source.add_argument("--generator", help=records.GENERATOR_HELP)
@@ -191,7 +189,7 @@ def main() -> None:
         description=credentials.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_credential.add_argument("cbor_path", help="IssuerSigned CBOR file to admit")
+    p_credential.add_argument("path", help="IssuerSigned CBOR file")
     p_cred_source = p_credential.add_mutually_exclusive_group(required=True)
     p_cred_source.add_argument("--repo", help=records.REPO_HELP)
     p_cred_source.add_argument("--generator", help=records.GENERATOR_HELP)
@@ -218,7 +216,7 @@ def main() -> None:
         description=certificates.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_certificate.add_argument("pem_path", help="PEM certificate file to admit")
+    p_certificate.add_argument("path", help="PEM file")
     p_certificate_source = p_certificate.add_mutually_exclusive_group(required=True)
     p_certificate_source.add_argument("--repo", help=records.REPO_HELP)
     p_certificate_source.add_argument("--generator", help=records.GENERATOR_HELP)
@@ -261,7 +259,7 @@ def main() -> None:
         parser.error("--generator requires --ref")
     if args.command == "circuit":
         circuits.import_circuit(
-            args.blob_path,
+            args.path,
             args.repo,
             args.name,
             args.version,
@@ -270,7 +268,7 @@ def main() -> None:
         )
     elif args.command == "presentation":
         presentations.import_presentation(
-            args.vector_path,
+            args.path,
             args.repo,
             args.generator,
             args.ref,
@@ -280,7 +278,7 @@ def main() -> None:
         )
     elif args.command == "proof":
         proofs.import_proof(
-            args.proof_path,
+            args.path,
             args.repo,
             args.generator,
             args.ref,
@@ -295,7 +293,7 @@ def main() -> None:
         )
     elif args.command == "key":
         keys.import_key(
-            args.pem_path,
+            args.path,
             args.repo,
             args.generator,
             args.ref,
@@ -305,7 +303,7 @@ def main() -> None:
         )
     elif args.command == "credential":
         credentials.import_credential(
-            args.cbor_path,
+            args.path,
             args.repo,
             args.generator,
             args.ref,
@@ -316,7 +314,7 @@ def main() -> None:
         )
     elif args.command == "certificate":
         certificates.import_certificate(
-            args.pem_path,
+            args.path,
             args.repo,
             args.generator,
             args.ref,

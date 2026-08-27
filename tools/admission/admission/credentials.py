@@ -15,7 +15,7 @@ from cryptography.hazmat.primitives.serialization import (
 from . import records
 from .mdoc import X5CHAIN
 
-DESCRIPTION = "Admit IssuerSigned CBOR under vectors/mdoc/credentials/."
+DESCRIPTION = "Admit a credential."
 
 
 def _issuer_auth(blob: bytes) -> Any:

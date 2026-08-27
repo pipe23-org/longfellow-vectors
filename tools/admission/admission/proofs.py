@@ -5,7 +5,7 @@ from typing import Any
 
 from . import mdoc, records
 
-DESCRIPTION = "Admit a proof under vectors/mdoc/proofs/."
+DESCRIPTION = "Admit a proof."
 
 
 def statement_from_flags(

@@ -7,7 +7,7 @@ import cbor2
 
 from . import mdoc, records
 
-DESCRIPTION = "Admit a presentation under vectors/mdoc/presentations/."
+DESCRIPTION = "Admit a presentation."
 
 
 def _presentation_sidecar(
