@@ -12,7 +12,7 @@ TRANSCRIPT = (
 )
 
 
-def test_response_carries_the_credentials_issuer_auth(collection: Path) -> None:
+def test_issuer_auth_carried(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name presented",
         "presented",
@@ -28,7 +28,7 @@ def test_response_carries_the_credentials_issuer_auth(collection: Path) -> None:
     assert response["documents"][0]["issuerSigned"]["issuerAuth"] == credential["issuerAuth"]
 
 
-def test_disclose_carries_only_the_named_items(collection: Path) -> None:
+def test_disclose_subset(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name presented",
         "presented",
@@ -44,7 +44,7 @@ def test_disclose_carries_only_the_named_items(collection: Path) -> None:
     assert [cbor2.loads(item.value)["elementIdentifier"] for item in items] == ["age_over_18"]
 
 
-def test_disclose_leaves_the_mso_untouched(collection: Path) -> None:
+def test_disclose_keeps_mso(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name presented",
         "presented",
@@ -60,7 +60,7 @@ def test_disclose_leaves_the_mso_untouched(collection: Path) -> None:
     assert response["documents"][0]["issuerSigned"]["issuerAuth"][2] == credential["issuerAuth"][2]
 
 
-def test_absent_device_namespace_signs_the_empty_map(collection: Path) -> None:
+def test_empty_device_namespaces(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name presented",
         "presented",
@@ -75,7 +75,7 @@ def test_absent_device_namespace_signs_the_empty_map(collection: Path) -> None:
     assert cbor2.loads(response["documents"][0]["deviceSigned"]["nameSpaces"].value) == {}
 
 
-def test_device_namespace_appears_in_device_signed(collection: Path) -> None:
+def test_device_namespace_signed(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name presented",
         "presented",
@@ -92,7 +92,7 @@ def test_device_namespace_appears_in_device_signed(collection: Path) -> None:
     }
 
 
-def test_device_signature_verifies_against_the_transcript(collection: Path) -> None:
+def test_device_signature(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name presented",
         "presented",
@@ -108,7 +108,7 @@ def test_device_signature_verifies_against_the_transcript(collection: Path) -> N
     )
 
 
-def test_same_inputs_give_one_response(collection: Path) -> None:
+def test_presentation_reproducible(collection: Path) -> None:
     presentation.presentation(
         "generate.py presentation --name first",
         "first",

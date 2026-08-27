@@ -17,7 +17,7 @@ NAME = "proved"
 TIMESTAMP = datetime(2026, 8, 2, tzinfo=UTC)
 
 
-def test_prove_stages_a_proof_that_verifies(collection: Path) -> None:
+def test_proof_verifies(collection: Path) -> None:
     prove.prove(
         "generate.py proof",
         NAME,
@@ -51,7 +51,7 @@ def test_prove_stages_a_proof_that_verifies(collection: Path) -> None:
     )
 
 
-def test_attribute_count_other_than_the_circuits_is_refused(collection: Path) -> None:
+def test_wrong_attribute_count_rejected(collection: Path) -> None:
     with pytest.raises(SystemExit) as refused:
         prove.prove(
             "generate.py proof",

@@ -24,7 +24,7 @@ VALID_UNTIL = datetime(2027, 1, 1, tzinfo=UTC)
 SERIAL = 4919
 
 
-def test_self_signed_certificate_verifies_under_its_subject_key(collection: Path) -> None:
+def test_self_signed_certificate(collection: Path) -> None:
     certificate.certificate(
         "generate.py certificate --name self-signed",
         "self-signed",
@@ -47,7 +47,7 @@ def test_self_signed_certificate_verifies_under_its_subject_key(collection: Path
     )
 
 
-def test_signed_certificate_verifies_under_the_signers_key_reference(collection: Path) -> None:
+def test_signed_certificate(collection: Path) -> None:
     certificate.certificate(
         "generate.py certificate --name leaf",
         "leaf",
@@ -70,7 +70,7 @@ def test_signed_certificate_verifies_under_the_signers_key_reference(collection:
     )
 
 
-def test_one_serial_gives_one_certificate(collection: Path) -> None:
+def test_certificate_reproducible(collection: Path) -> None:
     certificate.certificate(
         "generate.py certificate --name first",
         "first",
@@ -103,7 +103,7 @@ def test_one_serial_gives_one_certificate(collection: Path) -> None:
     assert first.public_bytes(Encoding.DER) == second.public_bytes(Encoding.DER)
 
 
-def test_command_carries_the_serial_it_generated(
+def test_generated_serial_recorded(
     collection: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     certificate.certificate(
@@ -143,7 +143,7 @@ def test_command_carries_the_serial_it_generated(
     assert repeated.public_bytes(Encoding.DER) == generated.public_bytes(Encoding.DER)
 
 
-def test_signer_without_a_key_reference_is_refused(collection: Path) -> None:
+def test_signer_without_key_rejected(collection: Path) -> None:
     with pytest.raises(SystemExit) as refused:
         certificate.certificate(
             "generate.py certificate --name leaf",
@@ -161,7 +161,7 @@ def test_signer_without_a_key_reference_is_refused(collection: Path) -> None:
     assert "records no key vector" in str(refused.value)
 
 
-def test_public_key_only_key_vector_is_certified_under_the_signer(collection: Path) -> None:
+def test_public_key_only_subject(collection: Path) -> None:
     private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
     public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
     (collection / "keys" / "public-only.pem").write_bytes(public_pem)
@@ -208,7 +208,7 @@ def test_public_key_only_key_vector_is_certified_under_the_signer(collection: Pa
     )
 
 
-def test_self_signing_a_public_key_only_key_vector_is_refused(collection: Path) -> None:
+def test_self_signing_public_key_only_rejected(collection: Path) -> None:
     private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
     public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
     (collection / "keys" / "public-only.pem").write_bytes(public_pem)

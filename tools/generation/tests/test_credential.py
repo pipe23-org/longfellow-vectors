@@ -19,7 +19,7 @@ VALID_UNTIL = datetime(2027, 1, 1, tzinfo=UTC)
 SEED = "00" * 31 + "07"
 
 
-def test_staged_bytes_are_issuer_signed(collection: Path) -> None:
+def test_credential_is_issuer_signed(collection: Path) -> None:
     credential.credential(
         "generate.py credential --name staged",
         "staged",
@@ -36,7 +36,7 @@ def test_staged_bytes_are_issuer_signed(collection: Path) -> None:
     assert set(staged) == {"nameSpaces", "issuerAuth"}
 
 
-def test_one_seed_gives_one_credential(collection: Path) -> None:
+def test_credential_reproducible(collection: Path) -> None:
     credential.credential(
         "generate.py credential --name first",
         "first",
@@ -65,7 +65,7 @@ def test_one_seed_gives_one_credential(collection: Path) -> None:
     assert first == second
 
 
-def test_salts_differ_across_identifiers(collection: Path) -> None:
+def test_salts_differ_per_identifier(collection: Path) -> None:
     credential.credential(
         "generate.py credential --name staged",
         "staged",
@@ -84,7 +84,7 @@ def test_salts_differ_across_identifiers(collection: Path) -> None:
     assert items[0]["random"] != items[1]["random"]
 
 
-def test_device_key_info_holds_the_device_key(collection: Path) -> None:
+def test_device_key_bound(collection: Path) -> None:
     credential.credential(
         "generate.py credential --name staged",
         "staged",
@@ -108,7 +108,7 @@ def test_device_key_info_holds_the_device_key(collection: Path) -> None:
     assert cose_key[-3] == numbers.y.to_bytes(32, "big")
 
 
-def test_x5chain_leaf_is_the_ds_certificate(collection: Path) -> None:
+def test_x5chain_leaf(collection: Path) -> None:
     credential.credential(
         "generate.py credential --name staged",
         "staged",

@@ -13,7 +13,7 @@ GENERATOR = "generate.py certificate --name signer --serial 2"
 REF = "0" * 40
 
 
-def test_generator_is_recorded_as_constructed_provenance(
+def test_generator_provenance(
     collection: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(
@@ -45,7 +45,7 @@ def test_generator_is_recorded_as_constructed_provenance(
     }
 
 
-def test_ref_without_a_generator_is_refused(
+def test_ref_without_generator_rejected(
     collection: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(
@@ -73,7 +73,7 @@ def test_ref_without_a_generator_is_refused(
     assert "--ref requires --generator" in capsys.readouterr().err
 
 
-def test_generator_without_a_ref_is_refused(
+def test_generator_without_ref_rejected(
     collection: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     monkeypatch.setattr(

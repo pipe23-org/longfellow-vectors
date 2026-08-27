@@ -10,7 +10,7 @@ SEED = "00" * 31 + "01"
 OTHER_SEED = "00" * 31 + "02"
 
 
-def test_one_seed_gives_one_key(collection: Path) -> None:
+def test_key_reproducible(collection: Path) -> None:
     key.key("generate.py key --name first --role device --seed " + SEED, "first", ROLE, SEED)
     key.key("generate.py key --name second --role device --seed " + SEED, "second", ROLE, SEED)
 
@@ -19,7 +19,7 @@ def test_one_seed_gives_one_key(collection: Path) -> None:
     assert first == second
 
 
-def test_different_seeds_give_different_keys(collection: Path) -> None:
+def test_seeds_differ(collection: Path) -> None:
     key.key("generate.py key --name first --role device --seed " + SEED, "first", ROLE, SEED)
     key.key(
         "generate.py key --name other --role device --seed " + OTHER_SEED,
@@ -33,7 +33,7 @@ def test_different_seeds_give_different_keys(collection: Path) -> None:
     assert first != other
 
 
-def test_command_carries_the_seed_it_generated(
+def test_generated_seed_recorded(
     collection: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
     key.key("generate.py key --name generated --role device", "generated", ROLE, None)

@@ -13,7 +13,7 @@ DATA = Path(__file__).parent / "data"
 GENERATOR = "generate.py credential --name staged"
 
 
-def test_issuer_signed_is_admitted_with_its_references(
+def test_credential_admitted_with_references(
     collection: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(
@@ -54,7 +54,7 @@ def test_issuer_signed_is_admitted_with_its_references(
     }
 
 
-def test_device_key_the_credential_does_not_bind_is_refused(
+def test_wrong_device_key_rejected(
     collection: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(

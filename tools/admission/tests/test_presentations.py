@@ -13,7 +13,7 @@ CREDENTIAL_NAME = "av-credential"
 GENERATOR = "generate.py presentation --name presented"
 
 
-def test_response_presenting_the_credential_is_admitted(
+def test_presentation_admitted_with_credential(
     collection: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(
@@ -40,7 +40,7 @@ def test_response_presenting_the_credential_is_admitted(
     assert sidecar["credential"] == CREDENTIAL_NAME
 
 
-def test_response_under_another_issuer_auth_is_refused(
+def test_other_issuer_auth_rejected(
     collection: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(
@@ -67,7 +67,7 @@ def test_response_under_another_issuer_auth_is_refused(
     assert "presented issuerAuth does not equal" in str(refused.value)
 
 
-def test_item_the_credential_does_not_hold_is_refused(
+def test_foreign_item_rejected(
     collection: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     monkeypatch.setattr(
@@ -94,7 +94,7 @@ def test_item_the_credential_does_not_hold_is_refused(
     assert "is not one of credential" in str(refused.value)
 
 
-def test_response_disclosing_no_item_is_admitted_with_the_reference(
+def test_no_items_admitted(
     collection: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     document = json.loads((DATA / "presentation.json").read_text())
