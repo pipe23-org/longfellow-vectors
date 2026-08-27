@@ -13,9 +13,7 @@ GENERATOR = "generate.py certificate --name signer --serial 2"
 REF = "0" * 40
 
 
-def test_generator_provenance(
-    collection: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_generator_provenance(collection: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         sys,
         "argv",

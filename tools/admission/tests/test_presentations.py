@@ -40,9 +40,7 @@ def test_presentation_admitted_with_credential(
     assert sidecar["credential"] == CREDENTIAL_NAME
 
 
-def test_other_issuer_auth_rejected(
-    collection: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_other_issuer_auth_rejected(collection: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         sys,
         "argv",
@@ -67,9 +65,7 @@ def test_other_issuer_auth_rejected(
     assert "presented issuerAuth does not equal" in str(refused.value)
 
 
-def test_foreign_item_rejected(
-    collection: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_foreign_item_rejected(collection: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         sys,
         "argv",

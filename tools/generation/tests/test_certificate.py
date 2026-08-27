@@ -103,9 +103,7 @@ def test_certificate_reproducible(collection: Path) -> None:
     assert first.public_bytes(Encoding.DER) == second.public_bytes(Encoding.DER)
 
 
-def test_generated_serial_recorded(
-    collection: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_generated_serial_recorded(collection: Path, capsys: pytest.CaptureFixture[str]) -> None:
     certificate.certificate(
         "generate.py certificate --name generated",
         "generated",

@@ -54,9 +54,7 @@ def test_credential_admitted_with_references(
     }
 
 
-def test_wrong_device_key_rejected(
-    collection: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_wrong_device_key_rejected(collection: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         sys,
         "argv",

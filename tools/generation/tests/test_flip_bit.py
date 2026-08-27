@@ -27,9 +27,7 @@ def test_flip_bit_changes_one_bit(collection: Path) -> None:
     assert differing == 1
 
 
-def test_flip_bit_command_recorded(
-    collection: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_flip_bit_command_recorded(collection: Path, capsys: pytest.CaptureFixture[str]) -> None:
     flip_bit.flip_bit(COMMAND, PROOF_NAME, None, None, BIT)
 
     printed = capsys.readouterr().out.rstrip("\n")

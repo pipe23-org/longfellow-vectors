@@ -577,9 +577,7 @@ def test_proof_statement() -> None:
 
 
 @pytest.mark.parametrize(("changes", "message"), MISSING_STATEMENT_FIELDS)
-def test_proof_statement_incomplete_rejected(
-    changes: dict[str, Any], message: str
-) -> None:
+def test_proof_statement_incomplete_rejected(changes: dict[str, Any], message: str) -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = dataclasses.replace(vectors.mdoc.proof("synthetic-v1"), **changes)
     with pytest.raises(CorpusError, match=message):
@@ -710,9 +708,7 @@ def test_certificate_der_rejects_malformed_pem() -> None:
 
 
 @pytest.mark.parametrize(("payload", "match"), MALFORMED_CLAIM_PAYLOADS)
-def test_presentation_claims_rejects_malformed_payload(
-    payload: bytes, match: str
-) -> None:
+def test_presentation_claims_rejects_malformed_payload(payload: bytes, match: str) -> None:
     with pytest.raises(ValueError, match=match):
         mdoc_module._presentation_claims(payload)
 

@@ -33,9 +33,7 @@ def test_seeds_differ(collection: Path) -> None:
     assert first != other
 
 
-def test_generated_seed_recorded(
-    collection: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
+def test_generated_seed_recorded(collection: Path, capsys: pytest.CaptureFixture[str]) -> None:
     key.key("generate.py key --name generated --role device", "generated", ROLE, None)
 
     printed = capsys.readouterr().out
