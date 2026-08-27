@@ -228,7 +228,7 @@ class Credential:
     comment: str | None = None
 
     def claims(self) -> tuple[Claim, ...]:
-        """Parse the issuer-signed claims."""
+        """Return the issuer-signed claims."""
         return _credential_claims(self.bytes)
 
 
@@ -247,7 +247,7 @@ class Presentation:
     comment: str | None = None
 
     def claims(self) -> tuple[Claim, ...]:
-        """Parse the issuer-signed claims."""
+        """Return the issuer-signed claims."""
         return _presentation_claims(self.mdoc)
 
 
@@ -267,7 +267,7 @@ class Circuit:
 
 @dataclass(frozen=True)
 class Statement:
-    """The public statement a proof verifies against."""
+    """A proof's public inputs: doctype, transcript, issuer key, claims, and timestamp."""
 
     doctype: str
     transcript: builtins.bytes
@@ -279,7 +279,7 @@ class Statement:
 
 @dataclass(frozen=True)
 class Proof:
-    """A proof vector: proof bytes and their statement."""
+    """A proof vector: proof bytes and their public inputs."""
 
     name: str
     bytes: builtins.bytes
@@ -297,7 +297,7 @@ class Proof:
     comment: str | None = None
 
     def statement(self) -> Statement:
-        """Return the statement this proof verifies against."""
+        """Return the proof's public inputs."""
         if self.doctype is None:
             raise CorpusError(f"proof {self.name}: statement field doctype not recorded")
         if self.transcript is None:
@@ -340,7 +340,7 @@ class Certificate:
 
 class _MdocCollection:
     def __init__(self, root: Traversable) -> None:
-        """Build a view rooted at the given collection directory."""
+        """Initialize the mdoc view of the collection at root."""
         self.root = root
         self._keys: tuple[Key, ...] | None = None
         self._credentials: tuple[Credential, ...] | None = None
@@ -350,78 +350,78 @@ class _MdocCollection:
         self._certificates: tuple[Certificate, ...] | None = None
 
     def keys(self) -> tuple[Key, ...]:
-        """All key vectors, by name."""
+        """All key vectors, sorted by name."""
         if self._keys is None:
             self._keys = self._load_keys()
         return self._keys
 
     def credentials(self) -> tuple[Credential, ...]:
-        """All credential vectors, by name."""
+        """All credential vectors, sorted by name."""
         if self._credentials is None:
             self._credentials = self._load_credentials()
         return self._credentials
 
     def presentations(self) -> tuple[Presentation, ...]:
-        """All presentation vectors, by name."""
+        """All presentation vectors, sorted by name."""
         if self._presentations is None:
             self._presentations = self._load_presentations()
         return self._presentations
 
     def proofs(self) -> tuple[Proof, ...]:
-        """All proof vectors, by name."""
+        """All proof vectors, sorted by name."""
         if self._proofs is None:
             self._proofs = self._load_proofs()
         return self._proofs
 
     def circuits(self) -> tuple[Circuit, ...]:
-        """All circuit vectors, by name."""
+        """All circuit vectors, sorted by name."""
         if self._circuits is None:
             self._circuits = self._load_circuits()
         return self._circuits
 
     def certificates(self) -> tuple[Certificate, ...]:
-        """All certificate vectors, by name."""
+        """All certificate vectors, sorted by name."""
         if self._certificates is None:
             self._certificates = self._load_certificates()
         return self._certificates
 
     def key(self, name: str) -> Key:
-        """Return the key vector named name."""
+        """Return the key vector named `name`."""
         for record in self.keys():
             if record.name == name:
                 return record
         raise KeyError(f"no key vector named {name!r}")
 
     def credential(self, name: str) -> Credential:
-        """Return the credential vector named name."""
+        """Return the credential vector named `name`."""
         for record in self.credentials():
             if record.name == name:
                 return record
         raise KeyError(f"no credential vector named {name!r}")
 
     def presentation(self, name: str) -> Presentation:
-        """Return the presentation vector named name."""
+        """Return the presentation vector named `name`."""
         for record in self.presentations():
             if record.name == name:
                 return record
         raise KeyError(f"no presentation vector named {name!r}")
 
     def proof(self, name: str) -> Proof:
-        """Return the proof vector named name."""
+        """Return the proof vector named `name`."""
         for record in self.proofs():
             if record.name == name:
                 return record
         raise KeyError(f"no proof vector named {name!r}")
 
     def circuit(self, name: str) -> Circuit:
-        """Return the circuit vector named name."""
+        """Return the circuit vector named `name`."""
         for record in self.circuits():
             if record.name == name:
                 return record
         raise KeyError(f"no circuit vector named {name!r}")
 
     def certificate(self, name: str) -> Certificate:
-        """Return the certificate vector named name."""
+        """Return the certificate vector named `name`."""
         for record in self.certificates():
             if record.name == name:
                 return record
@@ -857,7 +857,7 @@ class LongfellowVectors:
     """Loader and integrity checker for a collection."""
 
     def __init__(self, root: Traversable | None = None) -> None:
-        """Load the collection at root, or the packaged one when None."""
+        """Initialize the collection at root, or the packaged collection when None."""
         self._root = root if root is not None else _DATA
         self.mdoc = _MdocCollection(self._root)
 
