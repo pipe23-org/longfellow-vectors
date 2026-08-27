@@ -49,8 +49,7 @@ names the schema it validates against in its own `schema` field.
 
 [Vectors](vectors.md) has the fields of every vector type.
 [Admission](admission.md) has the tool that writes them.
-[Generation](generation.md) has the tool that constructs them. [Naming](naming.md)
-has what a name says about the bytes.
+[Generation](generation.md) has the tool that constructs them.
 
 ## Guarantees
 

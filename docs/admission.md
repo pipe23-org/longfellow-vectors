@@ -16,8 +16,7 @@ One command admits each vector type: `key`, `credential`, `presentation`,
 ## Names
 
 Every command takes `--name`, the vector's file stem. A name matches
-`^[a-z0-9][a-z0-9-]*$`. [Naming](naming.md) states what a name says about the
-bytes.
+`^[a-z0-9][a-z0-9-]*$`.
 
 ## Bytes
 
