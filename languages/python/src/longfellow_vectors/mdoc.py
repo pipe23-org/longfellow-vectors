@@ -386,42 +386,42 @@ class _MdocCollection:
         return self._certificates
 
     def key(self, name: str) -> Key:
-        """Return the key vector named `name`."""
+        """Look up a key vector by name."""
         for record in self.keys():
             if record.name == name:
                 return record
         raise KeyError(f"no key vector named {name!r}")
 
     def credential(self, name: str) -> Credential:
-        """Return the credential vector named `name`."""
+        """Look up a credential vector by name."""
         for record in self.credentials():
             if record.name == name:
                 return record
         raise KeyError(f"no credential vector named {name!r}")
 
     def presentation(self, name: str) -> Presentation:
-        """Return the presentation vector named `name`."""
+        """Look up a presentation vector by name."""
         for record in self.presentations():
             if record.name == name:
                 return record
         raise KeyError(f"no presentation vector named {name!r}")
 
     def proof(self, name: str) -> Proof:
-        """Return the proof vector named `name`."""
+        """Look up a proof vector by name."""
         for record in self.proofs():
             if record.name == name:
                 return record
         raise KeyError(f"no proof vector named {name!r}")
 
     def circuit(self, name: str) -> Circuit:
-        """Return the circuit vector named `name`."""
+        """Look up a circuit vector by name."""
         for record in self.circuits():
             if record.name == name:
                 return record
         raise KeyError(f"no circuit vector named {name!r}")
 
     def certificate(self, name: str) -> Certificate:
-        """Return the certificate vector named `name`."""
+        """Look up a certificate vector by name."""
         for record in self.certificates():
             if record.name == name:
                 return record
