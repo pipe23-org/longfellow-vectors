@@ -1,8 +1,8 @@
 # Generation
 
 `tools/generation/generate.py` constructs new vectors and stages them for
-admission. It is a uv project of its own under `tools/generation/` and is never
-published. It depends on a released `pylongfellow`. Each command writes the
+admission. It is a uv project of its own under `tools/generation/`. It depends
+on a released `pylongfellow`. Each command writes the
 bytes it constructs under `tools/generation/staging/<name>/`, a directory
 `.gitignore` lists. The command prints the `admit.py` command that admits them.
 

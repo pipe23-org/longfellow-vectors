@@ -1,9 +1,8 @@
 # generation
 
 `generate.py` constructs vectors for the longfellow-vectors collection and stages them for
-admission by `tools/admission/admit.py`. This directory exists to generate the vectors
-pylongfellow and zk-age-verifier need. It is untested beyond that. It is experimental and
-unstable.
+admission by `tools/admission/admit.py`. It generates the vectors pylongfellow and
+zk-age-verifier need. It is untested beyond that. It is experimental and unstable.
 
 ## Usage
 
@@ -26,12 +25,11 @@ uv run admit.py key ../generation/staging/device-vectors-01/device-vectors-01.pe
 ```
 
 Re-running the command line a vector's `generator` records reproduces its bytes for every
-command but `proof`.
+command but `proof`. The Generation page of the documentation lists every command's flags.
 
 ## Documentation
 
-Full documentation: https://longfellow-vectors.readthedocs.io/. The Generation page lists every
-command's flags.
+Full documentation: https://longfellow-vectors.readthedocs.io/
 
 ## Development
 
@@ -55,20 +53,19 @@ You should not rely on this code.
   namespace, 16-byte salts derived from `--seed`, `signed` equal to `--valid-from`,
   `digestAlgorithm` SHA-256, and no `status` or `keyAuthorizations`.
 - `presentation` writes a `DeviceResponse` holding one document, with `status` 0.
-  `--transcript` is opaque hex; nothing builds a SessionTranscript or a DC-API handover.
+  `--transcript` is opaque hex. Nothing builds a SessionTranscript or a DC-API handover.
 - `certificate` names subject and issuer by common name only and emits keyUsage and, with
   `--ca`, basicConstraints. No subject key identifier, authority key identifier, subject
   alternative name, CRL distribution point, or other ISO 18013-5 Annex B extension is emitted.
-  `--key` has to name a key vector holding a private key; a public-key-only key vector cannot
-  be certified.
+  `--key` has to name a key vector holding a private key.
 - `key` derives P-256 keys only. Every signature is ES256.
 - `proof` bytes are not reproducible from the recorded command line. The attribute count has
   to equal the circuit's `num_attributes`. google-cpp neither proves nor verifies over a
-  non-empty device namespace map (the prover fails with
-  `MDOC_PROVER_DEVICE_SIGNATURE_FAILURE`); isrg-rust does both.
+  non-empty device namespace map, and the prover fails with
+  `MDOC_PROVER_DEVICE_SIGNATURE_FAILURE`. isrg-rust does both.
 - No command constructs or derives a circuit, and `admit.py circuit` takes `--repo` only.
 - Circuit versions 6 and 7 only. The pin is pylongfellow 0.5.2. `proof` loads circuits through
-  `CircuitSpec` and `google_cpp.find_zk_spec`; pylongfellow 0.6 removes both, and the pin bump
+  `CircuitSpec` and `google_cpp.find_zk_spec`, which pylongfellow 0.6 removes. The pin bump
   rewrites `generation/prove.py` and `tests/test_prove.py`.
 - The fixtures under `tests/data` do not record the seeds they were built from.
 

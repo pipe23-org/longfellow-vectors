@@ -1,9 +1,8 @@
 # Admission
 
 `tools/admission/admit.py` writes vectors into the collection. It is a uv
-project of its own under `tools/admission/` and is never published. Its paths
-resolve relative to the script, so it finds the collection wherever the
-repository sits.
+project of its own under `tools/admission/`. Its paths resolve relative to the
+script, so it finds the collection wherever the repository sits.
 
 ```
 cd tools/admission

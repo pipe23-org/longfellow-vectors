@@ -1,7 +1,7 @@
 [project]
 name = "longfellow-vectors-admission"
 version = "0.0.0"
-description = "Admission tooling for the longfellow-vectors collection. Producer-side; never published."
+description = "Admission tooling for the longfellow-vectors collection."
 requires-python = ">=3.11"
 dependencies = [
     "cbor2>=5",

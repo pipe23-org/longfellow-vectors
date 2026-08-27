@@ -1,7 +1,7 @@
 [project]
 name = "longfellow-vectors-generation"
 version = "0.0.0"
-description = "Generation tooling for the longfellow-vectors collection. Producer-side; never published."
+description = "Generation tooling for the longfellow-vectors collection."
 requires-python = ">=3.11"
 dependencies = [
     "cbor2>=5",
