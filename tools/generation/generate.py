@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Construct vectors and stage them for admission.
+"""Generate vectors and stage them for admission.
 
     uv run generate.py key --name <name> \\
         --role <iaca|document-signer|device> [--seed <hex>]
@@ -57,7 +57,7 @@ def main() -> None:
     p_key.add_argument(
         "--seed",
         type=staging.hex_string,
-        help="seed for the private scalar, hex (random when absent)",
+        help="seed, hex (random when absent)",
     )
 
     p_certificate = sub.add_parser(
@@ -72,33 +72,33 @@ def main() -> None:
         "--key",
         required=True,
         dest="key_name",
-        help="key vector the certificate certifies",
+        help="subject key vector",
     )
     p_certificate.add_argument(
         "--signed-by",
-        help="certificate vector whose key signs this one (self-signed when absent)",
+        help="issuer certificate vector (self-signed when absent)",
     )
     p_certificate.add_argument("--subject", required=True, help="subject common name")
     p_certificate.add_argument(
         "--issuer",
-        help="issuer common name (the signer's subject when absent)",
+        help="issuer common name (subject of --signed-by when absent)",
     )
     p_certificate.add_argument(
         "--ca",
         action="store_true",
-        help="CA certificate (a leaf when absent)",
+        help="CA certificate (leaf when absent)",
     )
     p_certificate.add_argument(
         "--valid-from",
         required=True,
         type=staging.iso_datetime,
-        help="start of validity, ISO 8601 with a UTC offset",
+        help="validity start, ISO 8601 with UTC offset",
     )
     p_certificate.add_argument(
         "--valid-until",
         required=True,
         type=staging.iso_datetime,
-        help="end of validity, ISO 8601 with a UTC offset",
+        help="validity end, ISO 8601 with UTC offset",
     )
     p_certificate.add_argument(
         "--serial",
@@ -118,13 +118,13 @@ def main() -> None:
         "--ds-certificate",
         required=True,
         dest="ds_certificate_name",
-        help="document-signer certificate vector",
+        help="certificate vector",
     )
     p_credential.add_argument(
         "--device-key",
         required=True,
         dest="device_key_name",
-        help="device key vector the MSO binds",
+        help="device key vector",
     )
     p_credential.add_argument(
         "--doctype",
@@ -138,24 +138,24 @@ def main() -> None:
         dest="claims",
         nargs=3,
         metavar=("NAMESPACE", "ID", "VALUE"),
-        help="claim as namespace, id, and JSON value (repeatable)",
+        help="claim: namespace, id, JSON value (repeatable)",
     )
     p_credential.add_argument(
         "--valid-from",
         required=True,
         type=staging.iso_datetime,
-        help="MSO validFrom, ISO 8601 with a UTC offset",
+        help="MSO validFrom, ISO 8601 with UTC offset",
     )
     p_credential.add_argument(
         "--valid-until",
         required=True,
         type=staging.iso_datetime,
-        help="MSO validUntil, ISO 8601 with a UTC offset",
+        help="MSO validUntil, ISO 8601 with UTC offset",
     )
     p_credential.add_argument(
         "--seed",
         type=staging.hex_string,
-        help="seed for the item salts, hex (random when absent)",
+        help="seed, hex (random when absent)",
     )
 
     p_presentation = sub.add_parser(
@@ -170,7 +170,7 @@ def main() -> None:
         "--credential",
         required=True,
         dest="credential_name",
-        help="credential vector to present",
+        help="credential vector",
     )
     p_presentation.add_argument(
         "--transcript",
@@ -185,7 +185,7 @@ def main() -> None:
         dest="device_namespaces",
         nargs=3,
         metavar=("NAMESPACE", "ID", "VALUE"),
-        help="device-signed item as namespace, id, and JSON value (repeatable)",
+        help="device-signed item: namespace, id, JSON value (repeatable)",
     )
     p_presentation.add_argument(
         "--disclose",
@@ -193,7 +193,7 @@ def main() -> None:
         default=[],
         nargs=2,
         metavar=("NAMESPACE", "ID"),
-        help="item to disclose as namespace and id (repeatable, all when absent)",
+        help="disclosed item: namespace, id (repeatable, all when absent)",
     )
 
     p_proof = sub.add_parser(
@@ -206,32 +206,32 @@ def main() -> None:
         "--presentation",
         required=True,
         dest="presentation_name",
-        help="presentation vector to prove over",
+        help="presentation vector",
     )
     p_proof.add_argument(
         "--circuit",
         required=True,
         dest="circuit_name",
-        help="circuit vector to prove with",
+        help="circuit vector",
     )
     p_proof.add_argument(
         "--backend",
         required=True,
         choices=["google-cpp", "isrg-rust"],
-        help="backend that makes the proof",
+        help="prover backend",
     )
     p_proof.add_argument(
         "--attr",
         action="append",
         required=True,
         dest="attr_ids",
-        help="attribute id to disclose (repeatable, in order)",
+        help="disclosed attribute id (repeatable, in order)",
     )
     p_proof.add_argument(
         "--timestamp",
         required=True,
         type=staging.iso_datetime,
-        help="verification time, ISO 8601 with a UTC offset",
+        help="verification time, ISO 8601 with UTC offset",
     )
 
     p_flip = sub.add_parser(
@@ -239,21 +239,19 @@ def main() -> None:
         description=flip_bit.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_flip.add_argument(
-        "--proof", required=True, dest="proof_name", help="proof vector to derive from"
-    )
+    p_flip.add_argument("--proof", required=True, dest="proof_name", help="source proof vector")
     p_flip.add_argument(
         "--name",
         type=staging.vector_name,
-        help="vector name (the source name plus -bit-flipped when absent)",
+        help="vector name (source name plus -bit-flipped when absent)",
     )
     p_flip.add_argument(
         "--byte",
         type=int,
         dest="byte_index",
-        help="byte index (the middle byte when absent)",
+        help="byte index (middle byte when absent)",
     )
-    p_flip.add_argument("--bit", type=int, default=0, choices=range(8), help="bit to flip, 0 to 7")
+    p_flip.add_argument("--bit", type=int, default=0, choices=range(8), help="bit index, 0 to 7")
 
     args = parser.parse_args()
     staging.committed_ref()

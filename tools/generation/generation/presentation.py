@@ -6,7 +6,7 @@ import cbor2
 
 from . import mdoc, staging
 
-DESCRIPTION = "Present a credential over a transcript and stage presentation.json."
+DESCRIPTION = "Generate a presentation of a credential."
 
 
 def _issuer_signed(credential_name: str, blob: bytes) -> dict[Any, Any]:

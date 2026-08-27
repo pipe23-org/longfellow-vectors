@@ -6,7 +6,7 @@ from cryptography import x509
 
 from . import mdoc, staging
 
-DESCRIPTION = "Issuer-sign claims into IssuerSigned CBOR and stage <name>.cbor."
+DESCRIPTION = "Generate a credential."
 
 
 def credential(

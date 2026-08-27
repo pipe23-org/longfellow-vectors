@@ -66,7 +66,7 @@ def main() -> None:
         "--num-attributes",
         type=int,
         required=True,
-        help="number of attributes the circuit proves over",
+        help="attribute count",
     )
 
     p_presentation = sub.add_parser(
@@ -88,7 +88,7 @@ def main() -> None:
     p_presentation.add_argument(
         "--credential",
         dest="credential_name",
-        help="credential vector the response presents",
+        help="presented credential vector",
     )
 
     p_proof = sub.add_parser(
@@ -110,30 +110,30 @@ def main() -> None:
     p_proof.add_argument(
         "--presentation",
         dest="presentation_name",
-        help="presentation vector the proof was made from",
+        help="source presentation vector",
     )
     p_proof.add_argument(
         "--prover",
-        help="backend that made the proof, e.g. google-cpp",
+        help="prover backend, e.g. google-cpp",
     )
     p_proof.add_argument(
         "--circuit",
-        help="circuit vector the proof was made with",
+        help="circuit vector",
     )
     p_proof.add_argument(
         "--timestamp",
-        help="verification time, RFC 3339 with a UTC offset",
+        help="verification time, RFC 3339 with UTC offset",
     )
     p_proof.add_argument(
         "--attr",
         action="append",
         default=[],
         dest="attr_ids",
-        help="attribute id the proof discloses (repeatable)",
+        help="disclosed attribute id (repeatable)",
     )
     p_proof.add_argument(
         "--doctype",
-        help="doctype of the statement",
+        help="doctype",
     )
     p_proof.add_argument(
         "--transcript",
@@ -154,7 +154,7 @@ def main() -> None:
         dest="claims",
         nargs=3,
         metavar=("NAMESPACE", "ID", "CBOR_HEX"),
-        help="claim as namespace, id, and CBOR value hex (repeatable)",
+        help="claim: namespace, id, CBOR value hex (repeatable)",
     )
     p_proof.add_argument(
         "--device-namespaces",
@@ -203,12 +203,12 @@ def main() -> None:
     p_credential.add_argument(
         "--device-key",
         dest="device_key_name",
-        help="key vector the MSO binds",
+        help="device key vector",
     )
     p_credential.add_argument(
         "--ds-certificate",
         dest="ds_certificate_name",
-        help="certificate vector in the x5chain",
+        help="certificate vector",
     )
 
     p_certificate = sub.add_parser(
@@ -235,12 +235,12 @@ def main() -> None:
     )
     p_certificate.add_argument(
         "--signed-by",
-        help="certificate vector whose key signed this one",
+        help="issuer certificate vector",
     )
     p_certificate.add_argument(
         "--key",
         dest="key_name",
-        help="key vector the certificate certifies",
+        help="subject key vector",
     )
     for p_sidecar in (
         p_circuit,

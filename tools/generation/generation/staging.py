@@ -24,7 +24,7 @@ STAGING = ROOT / "tools" / "generation" / "staging"
 ADMISSION = ROOT / "tools" / "admission"
 VECTOR_NAME = re.compile(r"[a-z0-9][a-z0-9-]*")
 HEX = re.compile(r"([0-9a-fA-F]{2})+")
-NAME_HELP = "vector name, lowercase words joined by hyphens"
+NAME_HELP = "vector name"
 
 
 def vector_name(value: str) -> str:

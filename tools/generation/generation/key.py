@@ -6,7 +6,7 @@ from cryptography.hazmat.primitives.serialization import Encoding, NoEncryption,
 
 from . import staging
 
-DESCRIPTION = "Derive a P-256 key from a seed and stage <name>.pem."
+DESCRIPTION = "Generate a P-256 key."
 
 _P256_ORDER = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
 

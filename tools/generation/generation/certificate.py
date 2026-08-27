@@ -7,7 +7,7 @@ from cryptography.x509.oid import NameOID
 
 from . import mdoc, staging
 
-DESCRIPTION = "Certify a key vector and stage <name>.pem."
+DESCRIPTION = "Generate a certificate for a key vector."
 
 
 def _common_name(certificate: x509.Certificate, name: str) -> str:

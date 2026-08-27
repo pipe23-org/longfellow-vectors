@@ -73,7 +73,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 
 | Flag | Effect |
 | --- | --- |
-| `pem_path` | PEM file to admit, copied to `vectors/mdoc/keys/<name>.pem`. |
+| `path` | PEM file to admit, copied to `vectors/mdoc/keys/<name>.pem`. |
 | `--role` | `iaca`, `document-signer`, or `device`, recorded as given. |
 | `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
@@ -83,7 +83,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 
 | Flag | Effect |
 | --- | --- |
-| `cbor_path` | IssuerSigned CBOR file to admit, copied to `vectors/mdoc/credentials/<name>.cbor`. |
+| `path` | IssuerSigned CBOR file to admit, copied to `vectors/mdoc/credentials/<name>.cbor`. |
 | `--device-key` | Key vector whose public half must equal the `deviceKeyInfo` coordinates of the MSO inside the top-level `issuerAuth`. Refused on mismatch. |
 | `--ds-certificate` | Certificate vector whose DER bytes must equal the x5chain leaf of the top-level `issuerAuth`. Refused on mismatch. |
 | `--repo`, `--generator`, `--ref` | Provenance, as above. |
@@ -94,7 +94,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 
 | Flag | Effect |
 | --- | --- |
-| `vector_path` | JSON file with an `mdoc` field and a `transcript` field, each holding hex. |
+| `path` | JSON file with an `mdoc` field and a `transcript` field, each holding hex. |
 | `--credential` | Credential vector the DeviceResponse presents. Refused when the collection holds no credential of that name, when the presented `issuerAuth` does not equal the credential's, or when a presented item is not one of the credential's. |
 | `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
@@ -107,7 +107,7 @@ presented `issuerAuth` still has to equal the credential's.
 
 | Flag | Effect |
 | --- | --- |
-| `blob_path` | Circuit blob to admit, copied to `vectors/mdoc/circuits/<name>.circuit`. |
+| `path` | Circuit blob to admit, copied to `vectors/mdoc/circuits/<name>.circuit`. |
 | `--version` | Circuit version, recorded as given. The blob is not parsed. |
 | `--num-attributes` | Attribute count, recorded as given. The blob is not parsed. |
 | `--repo` | Provenance, as above. |
@@ -121,7 +121,7 @@ value.
 
 | Flag | Effect |
 | --- | --- |
-| `pem_path` | PEM file to admit, copied to `vectors/mdoc/certificates/<name>.pem`. |
+| `path` | PEM file to admit, copied to `vectors/mdoc/certificates/<name>.pem`. |
 | `--role` | `iaca` or `document-signer`, recorded as given. |
 | `--signed-by` | Certificate vector whose key must verify this certificate's signature. Refused when the signature does not verify. |
 | `--key` | Key vector whose `fingerprint` must equal the certificate's SubjectPublicKeyInfo fingerprint. Refused on mismatch, and refused when the key vector carries no `fingerprint`. |
@@ -136,7 +136,7 @@ certificate that carries no signature hash algorithm.
 
 | Flag | Effect |
 | --- | --- |
-| `proof_path` | Proof blob to admit, copied to `vectors/mdoc/proofs/<name>.proof`. |
+| `path` | Proof blob to admit, copied to `vectors/mdoc/proofs/<name>.proof`. |
 | `--prover` | Backend registry name, recorded as given. |
 | `--circuit` | Circuit vector the proof was made with. Refused when the collection holds no circuit of that name. |
 | `--timestamp` | Verification time, recorded as given. The schema rejects anything other than an RFC 3339 date-time with a UTC offset. |

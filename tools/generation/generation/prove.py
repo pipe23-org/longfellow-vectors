@@ -8,7 +8,7 @@ from pylongfellow.mdoc import CircuitSpec, Error, PublicKey, RequestedAttribute
 
 from . import staging
 
-DESCRIPTION = "Prove a presentation with a circuit and stage <name>.proof."
+DESCRIPTION = "Generate a proof."
 
 
 def _claims(presentation: Presentation, attr_ids: list[str]) -> list[RequestedAttribute]:

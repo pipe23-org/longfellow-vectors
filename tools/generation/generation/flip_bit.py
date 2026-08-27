@@ -4,7 +4,7 @@ from longfellow_vectors.mdoc import Proof
 
 from . import staging
 
-DESCRIPTION = "Flip one bit of a proof and stage <name>.proof."
+DESCRIPTION = "Flip one bit of a proof."
 
 
 def _statement_flags(source: Proof) -> list[str]:
