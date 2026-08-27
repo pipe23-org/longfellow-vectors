@@ -1,0 +1,244 @@
+import hashlib
+import json
+import re
+from datetime import UTC, datetime
+from pathlib import Path
+
+import pytest
+from cryptography import x509
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    PublicFormat,
+    load_pem_private_key,
+)
+
+from generation import certificate, staging
+
+SUBJECT = "pipe23 staged signer"
+KEY_NAME = "issuer-key"
+CA_NAME = "ca-certificate"
+VALID_FROM = datetime(2026, 1, 1, tzinfo=UTC)
+VALID_UNTIL = datetime(2027, 1, 1, tzinfo=UTC)
+SERIAL = 4919
+
+
+def test_self_signed_certificate(collection: Path) -> None:
+    certificate.certificate(
+        "generate.py certificate --name self-signed",
+        "self-signed",
+        KEY_NAME,
+        None,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        SERIAL,
+    )
+
+    staged = x509.load_pem_x509_certificate(
+        (staging.STAGING / "self-signed" / "self-signed.pem").read_bytes()
+    )
+    subject_key = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
+    subject_key.public_key().verify(
+        staged.signature, staged.tbs_certificate_bytes, ec.ECDSA(hashes.SHA256())
+    )
+
+
+def test_signed_certificate(collection: Path) -> None:
+    certificate.certificate(
+        "generate.py certificate --name leaf",
+        "leaf",
+        KEY_NAME,
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        SERIAL,
+    )
+
+    staged = x509.load_pem_x509_certificate((staging.STAGING / "leaf" / "leaf.pem").read_bytes())
+    signer = staging.collection().mdoc.certificate(CA_NAME)
+    assert signer.key is not None, f"certificate {CA_NAME} records no key vector"
+    signing_key = load_pem_private_key(signer.key.pem, password=None)
+    signing_key.public_key().verify(
+        staged.signature, staged.tbs_certificate_bytes, ec.ECDSA(hashes.SHA256())
+    )
+
+
+def test_certificate_reproducible(collection: Path) -> None:
+    certificate.certificate(
+        "generate.py certificate --name first",
+        "first",
+        KEY_NAME,
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        SERIAL,
+    )
+    certificate.certificate(
+        "generate.py certificate --name second",
+        "second",
+        KEY_NAME,
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        SERIAL,
+    )
+
+    first = x509.load_pem_x509_certificate((staging.STAGING / "first" / "first.pem").read_bytes())
+    second = x509.load_pem_x509_certificate(
+        (staging.STAGING / "second" / "second.pem").read_bytes()
+    )
+    assert first.public_bytes(Encoding.DER) == second.public_bytes(Encoding.DER)
+
+
+def test_generated_serial_recorded(collection: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    certificate.certificate(
+        "generate.py certificate --name generated",
+        "generated",
+        KEY_NAME,
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        None,
+    )
+
+    printed = capsys.readouterr().out
+    generated = x509.load_pem_x509_certificate(
+        (staging.STAGING / "generated" / "generated.pem").read_bytes()
+    )
+    recorded = re.search(r"--serial ([0-9]+)", printed)
+    assert recorded is not None, "the printed command carries no --serial"
+    certificate.certificate(
+        "generate.py certificate --name repeated",
+        "repeated",
+        KEY_NAME,
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        int(recorded.group(1)),
+    )
+    repeated = x509.load_pem_x509_certificate(
+        (staging.STAGING / "repeated" / "repeated.pem").read_bytes()
+    )
+    assert repeated.public_bytes(Encoding.DER) == generated.public_bytes(Encoding.DER)
+
+
+def test_signer_without_key_rejected(collection: Path) -> None:
+    with pytest.raises(SystemExit) as refused:
+        certificate.certificate(
+            "generate.py certificate --name leaf",
+            "leaf",
+            KEY_NAME,
+            "ds-certificate-no-key",
+            SUBJECT,
+            None,
+            False,
+            VALID_FROM,
+            VALID_UNTIL,
+            SERIAL,
+        )
+
+    assert "records no key vector" in str(refused.value)
+
+
+def test_public_key_only_subject(collection: Path) -> None:
+    private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
+    public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+    (collection / "keys" / "public-only.pem").write_bytes(public_pem)
+    (collection / "keys" / "public-only.json").write_text(
+        json.dumps(
+            {
+                "schema": "mdoc-keys-v1.schema.json",
+                "role": "document-signer",
+                "sha256": hashlib.sha256(public_pem).hexdigest(),
+                "provenance": {
+                    "type": "constructed",
+                    "generator": "tests/test_certificate.py",
+                    "created": "2026-08-27",
+                },
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+
+    certificate.certificate(
+        "generate.py certificate --name leaf",
+        "leaf",
+        "public-only",
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        SERIAL,
+    )
+
+    staged = x509.load_pem_x509_certificate((staging.STAGING / "leaf" / "leaf.pem").read_bytes())
+    assert (
+        staged.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+        == public_pem
+    )
+    signer = staging.collection().mdoc.certificate(CA_NAME)
+    assert signer.key is not None, f"certificate {CA_NAME} records no key vector"
+    signing_key = load_pem_private_key(signer.key.pem, password=None)
+    signing_key.public_key().verify(
+        staged.signature, staged.tbs_certificate_bytes, ec.ECDSA(hashes.SHA256())
+    )
+
+
+def test_self_signing_public_key_only_rejected(collection: Path) -> None:
+    private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
+    public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+    (collection / "keys" / "public-only.pem").write_bytes(public_pem)
+    (collection / "keys" / "public-only.json").write_text(
+        json.dumps(
+            {
+                "schema": "mdoc-keys-v1.schema.json",
+                "role": "document-signer",
+                "sha256": hashlib.sha256(public_pem).hexdigest(),
+                "provenance": {
+                    "type": "constructed",
+                    "generator": "tests/test_certificate.py",
+                    "created": "2026-08-27",
+                },
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+
+    with pytest.raises(SystemExit) as refused:
+        certificate.certificate(
+            "generate.py certificate --name self-signed",
+            "self-signed",
+            "public-only",
+            None,
+            SUBJECT,
+            None,
+            False,
+            VALID_FROM,
+            VALID_UNTIL,
+            SERIAL,
+        )
+
+    assert "does not hold a private key" in str(refused.value)

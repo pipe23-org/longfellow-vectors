@@ -15,11 +15,6 @@ VALID_COLLECTION = DATA / "corpus"
 BROKEN_TREES = DATA / "trees"
 REJECTED_SIDECARS = DATA / "invalid"
 
-# Each fixture sidecar's own `comment` field says what that fixture is for. Four fixtures
-# are not JSON objects and so carry no comment: invalid/not-an-object.json,
-# trees/integrity-violations/circuits/bad-json.json,
-# trees/integrity-violations/presentations/bad-presentation.json, and
-# trees/malformed/circuits/broken.json.
 
 EMPTY_SHA256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
@@ -168,22 +163,19 @@ MALFORMED_CLAIM_PAYLOADS = [
 
 
 def corpus_copy(tmp_path: Path) -> Path:
-    """Copy the valid collection into tmp_path so a test can edit its sidecars."""
     copy = tmp_path / "corpus"
     shutil.copytree(VALID_COLLECTION, copy)
     return copy
 
 
 def edit_sidecar(root: Path, rel: str, **changes: object) -> None:
-    """Rewrite one sidecar under root with the given fields set."""
     path = root / rel
     doc = json.loads(path.read_text())
     doc.update(changes)
     path.write_text(json.dumps(doc))
 
 
-def test_keys_returns_vectors_sorted_by_name() -> None:
-    """keys() returns vectors sorted by name."""
+def test_keys_sorted_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert [record.name for record in vectors.mdoc.keys()] == [
         "bare-device",
@@ -192,8 +184,7 @@ def test_keys_returns_vectors_sorted_by_name() -> None:
     ]
 
 
-def test_key_carries_the_fields_its_sidecar_records() -> None:
-    """A key vector holds the PEM bytes, role, sha256, fingerprint, and provenance recorded."""
+def test_key_fields() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     key = vectors.mdoc.key("full-key")
     assert key.pem == FULL_KEY_PEM
@@ -206,8 +197,7 @@ def test_key_carries_the_fields_its_sidecar_records() -> None:
     assert key.provenance.created == "2026-08-21"
 
 
-def test_key_omits_the_fields_its_sidecar_lacks() -> None:
-    """A key vector whose sidecar omits fingerprint holds None for it."""
+def test_key_optional_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     key = vectors.mdoc.key("bare-device")
     assert key.pem == b""
@@ -218,24 +208,21 @@ def test_key_omits_the_fields_its_sidecar_lacks() -> None:
     assert key.provenance.repo == "github.com/example/fixtures"
 
 
-def test_key_public_key_and_private_key_hold_the_recorded_values() -> None:
-    """Key.public_key is a PublicKey and Key.private_key an int over the sidecar's hex."""
+def test_key_material() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     key = vectors.mdoc.key("full-key")
     assert key.public_key == PublicKey(x=int("77" * 32, 16), y=int("88" * 32, 16))
     assert key.private_key == int("99" * 32, 16)
 
 
-def test_key_public_key_and_private_key_are_none_when_the_sidecar_omits_them() -> None:
-    """Key.public_key and Key.private_key are None when the sidecar records no key material."""
+def test_key_material_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     key = vectors.mdoc.key("bare-device")
     assert key.public_key is None
     assert key.private_key is None
 
 
-def test_key_der_returns_the_bytes_the_pem_encodes() -> None:
-    """Key.der returns the DER body of a single-block PEM."""
+def test_key_der() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     key = vectors.mdoc.key("p256-device")
     der = key.der
@@ -243,16 +230,14 @@ def test_key_der_returns_the_bytes_the_pem_encodes() -> None:
     assert der[:16] == bytes.fromhex("308187020100301306072a8648ce3d02")
 
 
-def test_key_der_raises_when_the_pem_holds_no_block() -> None:
-    """Key.der raises ValueError naming the vector when the PEM is not a single block."""
+def test_key_der_rejects_malformed_pem() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     key = vectors.mdoc.key("bare-device")
     with pytest.raises(ValueError, match="bare-device: not a single PEM block"):
         _ = key.der
 
 
-def test_credentials_returns_vectors_sorted_by_name() -> None:
-    """credentials() returns vectors sorted by name."""
+def test_credentials_sorted_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert [record.name for record in vectors.mdoc.credentials()] == [
         "bare-cred",
@@ -262,8 +247,7 @@ def test_credentials_returns_vectors_sorted_by_name() -> None:
     ]
 
 
-def test_credential_carries_the_fields_its_sidecar_records() -> None:
-    """A credential vector holds the CBOR bytes, sha256, doctype, and provenance recorded for it."""
+def test_credential_fields() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("full-cred")
     assert credential.bytes == FULL_CRED_CBOR
@@ -272,8 +256,7 @@ def test_credential_carries_the_fields_its_sidecar_records() -> None:
     assert credential.provenance.type == "constructed"
 
 
-def test_credential_omits_the_fields_its_sidecar_lacks() -> None:
-    """A credential vector whose sidecar omits doctype and both references holds None for them."""
+def test_credential_optional_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("bare-cred")
     assert credential.bytes == b""
@@ -284,8 +267,7 @@ def test_credential_omits_the_fields_its_sidecar_lacks() -> None:
     assert credential.provenance.type == "repository"
 
 
-def test_credential_device_key_resolves_to_the_key_vector() -> None:
-    """Credential.device_key holds the key vector its sidecar names."""
+def test_credential_device_key_resolves() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("full-cred")
     assert credential.device_key is not None
@@ -293,8 +275,7 @@ def test_credential_device_key_resolves_to_the_key_vector() -> None:
     assert credential.ds_certificate is None
 
 
-def test_credential_ds_certificate_resolves_to_the_certificate_vector() -> None:
-    """Credential.ds_certificate holds the certificate vector its sidecar names."""
+def test_credential_ds_certificate_resolves() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("ds-cred")
     assert credential.ds_certificate is not None
@@ -302,8 +283,7 @@ def test_credential_ds_certificate_resolves_to_the_certificate_vector() -> None:
     assert credential.device_key is None
 
 
-def test_credential_device_key_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading credentials raises CorpusError when device_key names no key vector."""
+def test_credential_unknown_device_key_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "credentials/full-cred.json", device_key="no-such-key")
     vectors = LongfellowVectors(root)
@@ -311,8 +291,7 @@ def test_credential_device_key_naming_no_vector_fails_the_load(tmp_path: Path) -
         vectors.mdoc.credentials()
 
 
-def test_credential_ds_certificate_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading credentials raises CorpusError when ds_certificate names no certificate vector."""
+def test_credential_unknown_ds_certificate_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "credentials/ds-cred.json", ds_certificate="no-such-cert")
     vectors = LongfellowVectors(root)
@@ -322,8 +301,7 @@ def test_credential_ds_certificate_naming_no_vector_fails_the_load(tmp_path: Pat
         vectors.mdoc.credentials()
 
 
-def test_credential_claims_returns_the_issuer_signed_items() -> None:
-    """Credential.claims() returns one Claim per issuer-signed item, in document order."""
+def test_credential_claims() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("claims-cred")
     claims = credential.claims()
@@ -336,16 +314,14 @@ def test_credential_claims_returns_the_issuer_signed_items() -> None:
     assert claims[1].cbor_value == b"\x6a2026-01-01"
 
 
-def test_credential_claims_raises_when_the_bytes_are_not_cbor() -> None:
-    """Credential.claims() raises CBORDecodeError when the credential bytes are not CBOR."""
+def test_credential_claims_rejects_non_cbor() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     credential = vectors.mdoc.credential("bare-cred")
     with pytest.raises(cbor2.CBORDecodeError):
         credential.claims()
 
 
-def test_presentations_returns_vectors_sorted_by_name() -> None:
-    """presentations() returns vectors sorted by name."""
+def test_presentations_sorted_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert [record.name for record in vectors.mdoc.presentations()] == [
         "bare",
@@ -355,8 +331,7 @@ def test_presentations_returns_vectors_sorted_by_name() -> None:
     ]
 
 
-def test_presentation_carries_the_fields_its_sidecar_records() -> None:
-    """A presentation vector holds the doctype, mdoc, device_namespaces, and transcript recorded."""
+def test_presentation_fields() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("full")
     assert presentation.doctype == "org.iso.18013.5.1.mDL"
@@ -366,12 +341,11 @@ def test_presentation_carries_the_fields_its_sidecar_records() -> None:
     assert presentation.comment is not None
 
 
-def test_presentation_constructed_provenance_carries_generator_created_and_ref() -> None:
-    """Constructed provenance holds generator, created, and ref, and no repository fields."""
+def test_presentation_constructed_provenance() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("full")
     assert presentation.provenance.type == "constructed"
-    assert presentation.provenance.generator == "tools/add_vector.py create-presentation"
+    assert presentation.provenance.generator == "tools/generation/generate.py presentation"
     assert presentation.provenance.created == "2026-08-21"
     assert presentation.provenance.ref == "dd" * 20
     assert presentation.provenance.repo is None
@@ -379,8 +353,7 @@ def test_presentation_constructed_provenance_carries_generator_created_and_ref()
     assert presentation.provenance.captured is None
 
 
-def test_presentation_repository_provenance_carries_repo_ref_path_and_captured() -> None:
-    """Repository provenance holds repo, ref, path, and captured, and no constructed fields."""
+def test_presentation_repository_provenance() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("bare")
     assert presentation.provenance.type == "repository"
@@ -394,8 +367,7 @@ def test_presentation_repository_provenance_carries_repo_ref_path_and_captured()
     assert presentation.provenance.created is None
 
 
-def test_presentation_omits_the_content_fields_its_sidecar_lacks() -> None:
-    """A presentation vector holds None for every content field its sidecar omits."""
+def test_presentation_optional_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("minimal")
     assert presentation.mdoc == b"\xa0"
@@ -408,30 +380,26 @@ def test_presentation_omits_the_content_fields_its_sidecar_lacks() -> None:
     assert presentation.provenance.created == "2026-08-24"
 
 
-def test_presentation_issuer_public_key_holds_the_recorded_coordinates() -> None:
-    """Presentation.issuer_public_key is a PublicKey over the sidecar's coordinate hex."""
+def test_presentation_issuer_public_key() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("full")
     assert presentation.issuer_public_key == PublicKey(x=int("11" * 32, 16), y=int("22" * 32, 16))
 
 
-def test_presentation_issuer_public_key_is_none_when_the_sidecar_omits_it() -> None:
-    """Presentation.issuer_public_key is None when the sidecar records no coordinates."""
+def test_presentation_issuer_public_key_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("minimal")
     assert presentation.issuer_public_key is None
 
 
-def test_presentation_credential_resolves_to_the_credential_vector() -> None:
-    """Presentation.credential holds the credential vector its sidecar names."""
+def test_presentation_credential_resolves() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("full")
     assert presentation.credential is not None
     assert presentation.credential.name == "full-cred"
 
 
-def test_presentation_credential_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading presentations raises CorpusError when credential names no credential vector."""
+def test_presentation_unknown_credential_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "presentations/full.json", credential="no-such-cred")
     vectors = LongfellowVectors(root)
@@ -439,8 +407,7 @@ def test_presentation_credential_naming_no_vector_fails_the_load(tmp_path: Path)
         vectors.mdoc.presentations()
 
 
-def test_presentation_claims_returns_the_issuer_signed_items() -> None:
-    """Presentation.claims() returns one Claim per issuer-signed item, in document order."""
+def test_presentation_claims() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("claims")
     claims = presentation.claims()
@@ -452,22 +419,19 @@ def test_presentation_claims_returns_the_issuer_signed_items() -> None:
     assert claims[1].id == "issue_date"
 
 
-def test_presentation_claims_raises_when_the_mdoc_holds_no_documents() -> None:
-    """Presentation.claims() raises ValueError when the mdoc decodes to a map with no documents."""
+def test_presentation_claims_rejects_empty_documents() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     presentation = vectors.mdoc.presentation("minimal")
     with pytest.raises(ValueError, match="payload has no documents array"):
         presentation.claims()
 
 
-def test_circuits_returns_vectors_sorted_by_name() -> None:
-    """circuits() returns vectors sorted by name."""
+def test_circuits_sorted_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert [record.name for record in vectors.mdoc.circuits()] == ["other", "tiny"]
 
 
-def test_circuit_carries_the_fields_its_sidecar_records() -> None:
-    """A circuit vector holds the compressed bytes, system, sha256, version, and attribute count."""
+def test_circuit_fields() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     circuit = vectors.mdoc.circuit("tiny")
     assert circuit.bytes == b""
@@ -479,8 +443,7 @@ def test_circuit_carries_the_fields_its_sidecar_records() -> None:
     assert circuit.provenance.via == "an intermediate export"
 
 
-def test_circuit_provenance_omits_index_and_via_when_the_sidecar_lacks_them() -> None:
-    """Provenance holds None for index and via when the sidecar records neither."""
+def test_circuit_provenance_optional_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     circuit = vectors.mdoc.circuit("other")
     assert circuit.sha256 == "8349d0fe15cb2c176df2f7007df8f7e8651bfdca6836bcfcd7029398c28a1797"
@@ -490,8 +453,7 @@ def test_circuit_provenance_omits_index_and_via_when_the_sidecar_lacks_them() ->
     assert circuit.provenance.via is None
 
 
-def test_circuit_fractional_version_fails_the_load(tmp_path: Path) -> None:
-    """Loading circuits raises ValueError when version is a JSON number carrying a fraction."""
+def test_circuit_fractional_version_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "circuits/tiny.json", version=6.0)
     vectors = LongfellowVectors(root)
@@ -499,8 +461,7 @@ def test_circuit_fractional_version_fails_the_load(tmp_path: Path) -> None:
         vectors.mdoc.circuits()
 
 
-def test_circuit_fractional_num_attributes_fails_the_load(tmp_path: Path) -> None:
-    """Loading circuits raises ValueError when num_attributes carries a fraction."""
+def test_circuit_fractional_num_attributes_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "circuits/tiny.json", num_attributes=1.0)
     vectors = LongfellowVectors(root)
@@ -510,8 +471,7 @@ def test_circuit_fractional_num_attributes_fails_the_load(tmp_path: Path) -> Non
         vectors.mdoc.circuits()
 
 
-def test_proofs_returns_vectors_sorted_by_name() -> None:
-    """proofs() returns vectors sorted by name."""
+def test_proofs_sorted_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert [record.name for record in vectors.mdoc.proofs()] == [
         "bare",
@@ -520,8 +480,7 @@ def test_proofs_returns_vectors_sorted_by_name() -> None:
     ]
 
 
-def test_proof_carries_the_fields_its_sidecar_records() -> None:
-    """A proof vector holds the proof bytes, sha256, prover, statement fields, and provenance."""
+def test_proof_fields() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = vectors.mdoc.proof("synthetic-v1")
     assert proof.bytes == b""
@@ -542,16 +501,14 @@ def test_proof_carries_the_fields_its_sidecar_records() -> None:
     assert proof.provenance.path == "proofs/synthetic-v1.proof"
 
 
-def test_proof_omits_device_namespaces_and_presentation_when_the_sidecar_lacks_them() -> None:
-    """A proof vector holds None for the device_namespaces and presentation its sidecar omits."""
+def test_proof_optional_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = vectors.mdoc.proof("synthetic-v2")
     assert proof.device_namespaces is None
     assert proof.presentation is None
 
 
-def test_proof_omits_the_statement_fields_its_sidecar_lacks() -> None:
-    """A proof vector holding sha256 and provenance alone holds None for every statement field."""
+def test_proof_statement_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = vectors.mdoc.proof("bare")
     assert proof.bytes == b""
@@ -569,22 +526,19 @@ def test_proof_omits_the_statement_fields_its_sidecar_lacks() -> None:
     assert proof.provenance.created == "2026-08-24"
 
 
-def test_proof_issuer_public_key_holds_the_recorded_coordinates() -> None:
-    """Proof.issuer_public_key is a PublicKey over the sidecar's coordinate hex."""
+def test_proof_issuer_public_key() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = vectors.mdoc.proof("synthetic-v1")
     assert proof.issuer_public_key == PublicKey(x=int("11" * 32, 16), y=int("22" * 32, 16))
 
 
-def test_proof_issuer_public_key_is_none_when_the_sidecar_omits_it() -> None:
-    """Proof.issuer_public_key is None when the sidecar records no coordinates."""
+def test_proof_issuer_public_key_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = vectors.mdoc.proof("bare")
     assert proof.issuer_public_key is None
 
 
-def test_proof_circuit_and_presentation_resolve_to_their_vectors() -> None:
-    """Proof.circuit and Proof.presentation hold the vectors the sidecar names."""
+def test_proof_references_resolve() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = vectors.mdoc.proof("synthetic-v1")
     assert proof.circuit is not None
@@ -593,8 +547,7 @@ def test_proof_circuit_and_presentation_resolve_to_their_vectors() -> None:
     assert proof.presentation.name == "full"
 
 
-def test_proof_circuit_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading proofs raises CorpusError when circuit names no circuit vector."""
+def test_proof_unknown_circuit_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "proofs/synthetic-v1.json", circuit="no-such-circuit")
     vectors = LongfellowVectors(root)
@@ -602,8 +555,7 @@ def test_proof_circuit_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
         vectors.mdoc.proofs()
 
 
-def test_proof_presentation_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading proofs raises CorpusError when presentation names no presentation vector."""
+def test_proof_unknown_presentation_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "proofs/synthetic-v1.json", presentation="no-such-presentation")
     vectors = LongfellowVectors(root)
@@ -613,8 +565,7 @@ def test_proof_presentation_naming_no_vector_fails_the_load(tmp_path: Path) -> N
         vectors.mdoc.proofs()
 
 
-def test_proof_statement_returns_every_statement_field() -> None:
-    """Proof.statement() returns a Statement holding every statement field the vector carries."""
+def test_proof_statement() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     statement = vectors.mdoc.proof("synthetic-v1").statement()
     assert statement.doctype == "org.iso.18013.5.1.mDL"
@@ -626,18 +577,14 @@ def test_proof_statement_returns_every_statement_field() -> None:
 
 
 @pytest.mark.parametrize(("changes", "message"), MISSING_STATEMENT_FIELDS)
-def test_proof_statement_raises_naming_the_field_the_vector_does_not_carry(
-    changes: dict[str, Any], message: str
-) -> None:
-    """Proof.statement() raises CorpusError naming the statement field the vector does not carry."""
+def test_proof_statement_incomplete_rejected(changes: dict[str, Any], message: str) -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     proof = dataclasses.replace(vectors.mdoc.proof("synthetic-v1"), **changes)
     with pytest.raises(CorpusError, match=message):
         proof.statement()
 
 
-def test_certificates_returns_vectors_sorted_by_name() -> None:
-    """certificates() returns vectors sorted by name."""
+def test_certificates_sorted_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert [record.name for record in vectors.mdoc.certificates()] == [
         "keyed",
@@ -646,8 +593,7 @@ def test_certificates_returns_vectors_sorted_by_name() -> None:
     ]
 
 
-def test_certificate_carries_the_fields_its_sidecar_records() -> None:
-    """A certificate vector holds the PEM bytes, role, sha256, and provenance recorded for it."""
+def test_certificate_fields() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = vectors.mdoc.certificate("signer")
     assert certificate.pem == SIGNER_PEM
@@ -657,8 +603,7 @@ def test_certificate_carries_the_fields_its_sidecar_records() -> None:
     assert certificate.provenance.path == "certificates/signer.pem"
 
 
-def test_certificate_omits_the_fields_its_sidecar_lacks() -> None:
-    """A certificate vector whose sidecar names no signer or key holds None for both."""
+def test_certificate_optional_fields_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = vectors.mdoc.certificate("root-ca")
     assert certificate.pem == ROOT_CA_PEM
@@ -668,8 +613,7 @@ def test_certificate_omits_the_fields_its_sidecar_lacks() -> None:
     assert certificate.key is None
 
 
-def test_certificate_public_key_holds_the_recorded_coordinates() -> None:
-    """Certificate.public_key is a PublicKey over the sidecar's coordinate hex."""
+def test_certificate_public_key() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = vectors.mdoc.certificate("keyed")
     assert certificate.public_key == PublicKey(
@@ -678,15 +622,13 @@ def test_certificate_public_key_holds_the_recorded_coordinates() -> None:
     )
 
 
-def test_certificate_public_key_is_none_when_the_sidecar_omits_it() -> None:
-    """Certificate.public_key is None when the sidecar records no coordinates."""
+def test_certificate_public_key_absent() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = vectors.mdoc.certificate("root-ca")
     assert certificate.public_key is None
 
 
-def test_certificate_signed_by_and_key_resolve_to_their_vectors() -> None:
-    """Certificate.signed_by and Certificate.key hold the vectors the sidecar names."""
+def test_certificate_references_resolve() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = vectors.mdoc.certificate("keyed")
     assert certificate.signed_by is not None
@@ -695,8 +637,7 @@ def test_certificate_signed_by_and_key_resolve_to_their_vectors() -> None:
     assert certificate.key.name == "full-key"
 
 
-def test_certificate_signer_is_built_before_the_vector_that_names_it(tmp_path: Path) -> None:
-    """A certificate resolves its signer even when the signer sorts after it by name."""
+def test_certificate_signer_loaded_first(tmp_path: Path) -> None:
     certificates = tmp_path / "certificates"
     certificates.mkdir()
     for name, role, reference in (
@@ -725,8 +666,7 @@ def test_certificate_signer_is_built_before_the_vector_that_names_it(tmp_path: P
     assert certificate.signed_by.name == "zz-root"
 
 
-def test_certificate_signed_by_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading certificates raises CorpusError when signed_by names no certificate vector."""
+def test_certificate_unknown_signer_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "certificates/signer.json", signed_by="no-such-cert")
     vectors = LongfellowVectors(root)
@@ -734,8 +674,7 @@ def test_certificate_signed_by_naming_no_vector_fails_the_load(tmp_path: Path) -
         vectors.mdoc.certificates()
 
 
-def test_certificate_key_naming_no_vector_fails_the_load(tmp_path: Path) -> None:
-    """Loading certificates raises CorpusError when key names no key vector."""
+def test_certificate_unknown_key_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "certificates/keyed.json", key="no-such-key")
     vectors = LongfellowVectors(root)
@@ -743,8 +682,7 @@ def test_certificate_key_naming_no_vector_fails_the_load(tmp_path: Path) -> None
         vectors.mdoc.certificates()
 
 
-def test_certificate_signing_cycle_fails_the_load(tmp_path: Path) -> None:
-    """Loading certificates raises CorpusError naming every vector a signing cycle runs through."""
+def test_certificate_signing_cycle_rejected(tmp_path: Path) -> None:
     root = corpus_copy(tmp_path)
     edit_sidecar(root, "certificates/root-ca.json", signed_by="signer")
     vectors = LongfellowVectors(root)
@@ -754,8 +692,7 @@ def test_certificate_signing_cycle_fails_the_load(tmp_path: Path) -> None:
         vectors.mdoc.certificates()
 
 
-def test_certificate_der_returns_the_bytes_the_pem_encodes() -> None:
-    """Certificate.der returns the DER body of a single-block PEM."""
+def test_certificate_der() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = vectors.mdoc.certificate("keyed")
     der = certificate.der
@@ -763,8 +700,7 @@ def test_certificate_der_returns_the_bytes_the_pem_encodes() -> None:
     assert der[:16] == bytes.fromhex("308201343081dba00302010202010130")
 
 
-def test_certificate_der_raises_when_the_pem_holds_no_block() -> None:
-    """Certificate.der raises ValueError naming the vector when the PEM is not a single block."""
+def test_certificate_der_rejects_malformed_pem() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     certificate = dataclasses.replace(vectors.mdoc.certificate("root-ca"), pem=b"")
     with pytest.raises(ValueError, match="root-ca: not a single PEM block"):
@@ -772,16 +708,17 @@ def test_certificate_der_raises_when_the_pem_holds_no_block() -> None:
 
 
 @pytest.mark.parametrize(("payload", "match"), MALFORMED_CLAIM_PAYLOADS)
-def test_parse_claims_raises_naming_the_structure_the_payload_lacks(
-    payload: bytes, match: str
-) -> None:
-    """Parsing claims raises ValueError naming the DeviceResponse structure the payload lacks."""
+def test_presentation_claims_rejects_malformed_payload(payload: bytes, match: str) -> None:
     with pytest.raises(ValueError, match=match):
-        mdoc_module._parse_claims(payload)
+        mdoc_module._presentation_claims(payload)
 
 
-def test_lookup_by_name_returns_the_named_vector() -> None:
-    """Each by-name lookup returns the vector carrying that name."""
+def test_credential_claims_rejects_non_map() -> None:
+    with pytest.raises(ValueError, match="payload is not a CBOR map"):
+        mdoc_module._credential_claims(cbor2.dumps(42))
+
+
+def test_lookup_by_name() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     assert vectors.mdoc.key("full-key").name == "full-key"
     assert vectors.mdoc.credential("full-cred").name == "full-cred"
@@ -791,8 +728,7 @@ def test_lookup_by_name_returns_the_named_vector() -> None:
     assert vectors.mdoc.certificate("signer").name == "signer"
 
 
-def test_lookup_by_unknown_name_raises_key_error() -> None:
-    """Each by-name lookup raises KeyError when no vector carries that name."""
+def test_lookup_unknown_name_rejected() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     with pytest.raises(KeyError, match="no key vector"):
         vectors.mdoc.key("nope")
@@ -808,8 +744,7 @@ def test_lookup_by_unknown_name_raises_key_error() -> None:
         vectors.mdoc.certificate("nope")
 
 
-def test_vectors_are_loaded_once_per_instance() -> None:
-    """Each accessor returns the same tuple on every call, and a fresh loader loads its own."""
+def test_vectors_loaded_once() -> None:
     vectors = LongfellowVectors(VALID_COLLECTION)
     keys = vectors.mdoc.keys()
     credentials = vectors.mdoc.credentials()
@@ -833,19 +768,16 @@ def test_vectors_are_loaded_once_per_instance() -> None:
     assert other.mdoc.certificates() is not certificates
 
 
-def test_packaged_collection_passes_the_integrity_check() -> None:
-    """check() reports no findings against the collection shipped with the package."""
+def test_packaged_collection_checks() -> None:
     LongfellowVectors().check()
 
 
-def test_check_ignores_a_dotfile_at_the_root(tmp_path: Path) -> None:
-    """A dotfile at the collection root is not a finding."""
+def test_check_ignores_root_dotfile(tmp_path: Path) -> None:
     (tmp_path / ".gitkeep").write_bytes(b"")
     LongfellowVectors(tmp_path).check()
 
 
-def test_check_ignores_a_dotfile_in_a_vector_directory(tmp_path: Path) -> None:
-    """A dotfile in a blob-carrying or sidecar-only vector directory is not a finding."""
+def test_check_ignores_subtree_dotfile(tmp_path: Path) -> None:
     (tmp_path / "circuits").mkdir()
     (tmp_path / "circuits" / ".gitkeep").write_bytes(b"")
     (tmp_path / "presentations").mkdir()
@@ -853,15 +785,13 @@ def test_check_ignores_a_dotfile_in_a_vector_directory(tmp_path: Path) -> None:
     LongfellowVectors(tmp_path).check()
 
 
-def test_load_ignores_a_dotfile_in_a_vector_directory(tmp_path: Path) -> None:
-    """A vector directory holding only a dotfile loads as an empty tuple."""
+def test_load_ignores_subtree_dotfile(tmp_path: Path) -> None:
     (tmp_path / "keys").mkdir()
     (tmp_path / "keys" / ".gitkeep").write_bytes(b"")
     assert LongfellowVectors(tmp_path).mdoc.keys() == ()
 
 
-def test_missing_subtrees_load_as_empty_tuples(tmp_path: Path) -> None:
-    """Every vector type loads empty from a root holding none of the six subtrees."""
+def test_missing_subtree_loads_empty(tmp_path: Path) -> None:
     vectors = LongfellowVectors(tmp_path)
     assert vectors.mdoc.keys() == ()
     assert vectors.mdoc.credentials() == ()
@@ -871,15 +801,13 @@ def test_missing_subtrees_load_as_empty_tuples(tmp_path: Path) -> None:
     assert vectors.mdoc.certificates() == ()
 
 
-def test_load_raises_when_the_root_does_not_exist(tmp_path: Path) -> None:
-    """Loading a vector type raises CorpusError when the collection root does not exist."""
+def test_load_missing_root_rejected(tmp_path: Path) -> None:
     vectors = LongfellowVectors(tmp_path / "no-such-collection")
     with pytest.raises(CorpusError, match="no-such-collection: collection root is not a directory"):
         vectors.mdoc.circuits()
 
 
-def test_load_raises_when_the_root_is_a_file(tmp_path: Path) -> None:
-    """Loading a vector type raises CorpusError when the collection root is a file."""
+def test_load_file_root_rejected(tmp_path: Path) -> None:
     root = tmp_path / "collection"
     root.write_text("a file, not a directory")
     vectors = LongfellowVectors(root)
@@ -887,35 +815,30 @@ def test_load_raises_when_the_root_is_a_file(tmp_path: Path) -> None:
         vectors.mdoc.keys()
 
 
-def test_load_raises_when_a_blob_is_absent() -> None:
-    """Loading proofs raises FileNotFoundError when a sidecar's blob file is absent."""
+def test_load_missing_blob_rejected() -> None:
     vectors = LongfellowVectors(BROKEN_TREES / "missing-blob")
     with pytest.raises(FileNotFoundError):
         vectors.mdoc.proofs()
 
 
-def test_load_skips_files_that_are_not_sidecars() -> None:
-    """Loading a subtree reads its .json files and passes over every other file."""
+def test_load_skips_non_sidecars() -> None:
     vectors = LongfellowVectors(BROKEN_TREES / "missing-blob")
     assert [record.name for record in vectors.mdoc.presentations()] == ["lone"]
 
 
-def test_load_raises_on_a_sidecar_that_is_not_json() -> None:
-    """Loading a subtree raises ValueError naming the sidecar that does not parse as JSON."""
+def test_load_non_json_sidecar_rejected() -> None:
     vectors = LongfellowVectors(BROKEN_TREES / "malformed")
     with pytest.raises(ValueError, match=r"^circuits/broken\.json: Expecting value"):
         vectors.mdoc.circuits()
 
 
-def test_load_raises_on_a_sidecar_the_schema_rejects() -> None:
-    """Loading a subtree raises ValueError when a sidecar breaks the schema it names."""
+def test_load_invalid_sidecar_rejected() -> None:
     vectors = LongfellowVectors(BROKEN_TREES / "rejected")
     with pytest.raises(ValueError, match=r"circuits/bad\.json: rejected by schema"):
         vectors.mdoc.circuits()
 
 
-def test_load_raises_on_a_sidecar_naming_another_subtrees_schema() -> None:
-    """Loading a subtree raises ValueError when a sidecar names a schema from another subtree."""
+def test_load_wrong_schema_rejected() -> None:
     vectors = LongfellowVectors(BROKEN_TREES / "integrity-violations")
     with pytest.raises(
         ValueError,
@@ -926,32 +849,27 @@ def test_load_raises_on_a_sidecar_naming_another_subtrees_schema() -> None:
 
 
 @pytest.mark.parametrize(("filename", "match"), REJECTED_SIDECAR_MESSAGES)
-def test_sidecar_the_schema_rejects_raises_naming_the_violation(filename: str, match: str) -> None:
-    """Reading a sidecar raises ValueError naming the schema rule the sidecar breaks."""
+def test_invalid_sidecar_error_names_violation(filename: str, match: str) -> None:
     text = (REJECTED_SIDECARS / filename).read_text()
     with pytest.raises(ValueError, match=match):
         mdoc_module._load_sidecar(text, filename)
 
 
-def test_check_accepts_a_clean_collection() -> None:
-    """check() reports no findings against a tree whose vectors and references all hold."""
+def test_check_clean_collection() -> None:
     LongfellowVectors(VALID_COLLECTION).check()
 
 
-def test_check_accepts_an_empty_root(tmp_path: Path) -> None:
-    """check() reports no findings against a root holding no entries."""
+def test_check_empty_root(tmp_path: Path) -> None:
     LongfellowVectors(tmp_path).check()
 
 
-def test_check_raises_when_the_root_does_not_exist(tmp_path: Path) -> None:
-    """check() raises CorpusError when the collection root does not exist."""
+def test_check_missing_root_rejected(tmp_path: Path) -> None:
     vectors = LongfellowVectors(tmp_path / "no-such-collection")
     with pytest.raises(CorpusError, match="no-such-collection: collection root is not a directory"):
         vectors.check()
 
 
-def test_check_raises_when_the_root_is_a_file(tmp_path: Path) -> None:
-    """check() raises CorpusError when the collection root is a file."""
+def test_check_file_root_rejected(tmp_path: Path) -> None:
     root = tmp_path / "collection"
     root.write_text("a file, not a directory")
     vectors = LongfellowVectors(root)
@@ -960,7 +878,6 @@ def test_check_raises_when_the_root_is_a_file(tmp_path: Path) -> None:
 
 
 def test_check_reports_every_finding() -> None:
-    """check() raises CorpusError holding one line per file that breaks a rule."""
     vectors = LongfellowVectors(BROKEN_TREES / "integrity-violations")
     with pytest.raises(CorpusError) as excinfo:
         vectors.check()

@@ -91,7 +91,7 @@
             "generator": {
               "type": "string",
               "minLength": 1,
-              "description": "Tool and mode that produced the bytes, e.g. tools/add_vector.py create-presentation."
+              "description": "The generating command with every value the command generated filled in, e.g. generate.py flip-bit --proof <name> --byte 3. Re-running it reproduces the bytes for every command except proof."
             },
             "ref": {
               "type": "string",

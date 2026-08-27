@@ -1,27 +1,16 @@
-"""import-proof: admit a proof blob and the statement it verifies against."""
-
 import argparse
 import sys
-from datetime import date
 from pathlib import Path
 from typing import Any
 
 from . import mdoc, records
 
-DESCRIPTION = """\
-Admit a proof blob as a vector under vectors/mdoc/proofs/.
-The source is a proof file a prover emitted.
-The vector derives sha256 from the bytes.
-The statement fields come from --presentation or from the statement flags,
-and a vector given neither carries the bytes alone.
-docs/admission.md holds the rules that span the modes.
-"""
+DESCRIPTION = "Admit a proof."
 
 
 def statement_from_flags(
     parser: argparse.ArgumentParser, args: argparse.Namespace
 ) -> dict[str, Any] | None:
-    """The statement the import-proof statement flags supply, or None when none is given."""
     required = {
         "doctype": args.doctype,
         "transcript": args.transcript,
@@ -62,6 +51,7 @@ def import_proof(
     proof_path: str,
     repo: str | None,
     generator: str | None,
+    ref: str | None,
     name: str,
     presentation_name: str | None,
     prover: str | None,
@@ -80,11 +70,7 @@ def import_proof(
     if repo is not None:
         provenance: dict[str, Any] = records.provenance(source, repo)
     else:
-        provenance = {
-            "type": "constructed",
-            "generator": generator,
-            "created": date.today().isoformat(),
-        }
+        provenance = records.constructed(generator, ref)
     sidecar: dict[str, Any] = {"schema": "mdoc-proofs-v1.schema.json"}
     if prover is not None:
         sidecar["prover"] = prover

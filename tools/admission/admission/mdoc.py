@@ -1,14 +1,13 @@
-"""Readers for the DeviceResponse CBOR a presentation or credential carries."""
-
 import sys
 from typing import Any
 
 import cbor2
 from cryptography import x509
 
+X5CHAIN = 33
+
 
 def _issuer_signed_elements(mdoc_bytes: bytes) -> dict[str, tuple[str, bytes]]:
-    """Map attribute id to (namespace, elementValue CBOR) from the mdoc's issuerSigned."""
     response = cbor2.loads(mdoc_bytes)
     elements: dict[str, tuple[str, bytes]] = {}
     for namespace, items in response["documents"][0]["issuerSigned"]["nameSpaces"].items():
@@ -22,7 +21,6 @@ def _issuer_signed_elements(mdoc_bytes: bytes) -> dict[str, tuple[str, bytes]]:
 
 
 def claims_from_ids(ids: list[str], mdoc_bytes: bytes) -> list[dict[str, Any]]:
-    """Build claims for the given ids; namespace and value come from the credential."""
     elements = _issuer_signed_elements(mdoc_bytes)
     claims = []
     for claim_id in ids:
@@ -34,11 +32,9 @@ def claims_from_ids(ids: list[str], mdoc_bytes: bytes) -> list[dict[str, Any]]:
 
 
 def issuer_public_key(mdoc_bytes: bytes) -> tuple[str, str]:
-    """Extract the issuer public key from the mdoc's IssuerAuth x5chain."""
     response = cbor2.loads(mdoc_bytes)
     issuer_auth = response["documents"][0]["issuerSigned"]["issuerAuth"]
-    # COSE_Sign1: [protected, unprotected, payload, signature]; x5chain is header 33.
-    chain = issuer_auth[1][33]
+    chain = issuer_auth[1][X5CHAIN]
     cert_der = chain[0] if isinstance(chain, list) else chain
     nums = x509.load_der_x509_certificate(cert_der).public_key().public_numbers()
     return f"{nums.x:064x}", f"{nums.y:064x}"

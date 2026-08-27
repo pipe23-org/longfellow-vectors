@@ -1,7 +1,4 @@
-"""import-credential: admit a DeviceResponse and its verified key and certificate relations."""
-
 import sys
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -16,19 +13,31 @@ from cryptography.hazmat.primitives.serialization import (
 )
 
 from . import records
+from .mdoc import X5CHAIN
 
-DESCRIPTION = """\
-Admit a CBOR credential as a vector under vectors/mdoc/credentials/.
-The source is a file holding DeviceResponse CBOR bytes.
-The vector derives sha256 and doctype from the bytes.
-docs/admission.md holds the rules that span the modes.
-"""
+DESCRIPTION = "Admit a credential."
+
+
+def _issuer_auth(blob: bytes) -> Any:
+    try:
+        issuer_signed = cbor2.loads(blob)
+        return issuer_signed["issuerAuth"]
+    except Exception:
+        return None
+
+
+def _mso(issuer_auth: Any) -> Any:
+    try:
+        return cbor2.loads(cbor2.loads(issuer_auth[2]).value)
+    except Exception:
+        return None
 
 
 def import_credential(
     cbor_path: str,
     repo: str | None,
     generator: str | None,
+    ref: str | None,
     name: str,
     device_key_name: str | None,
     ds_certificate_name: str | None,
@@ -40,17 +49,15 @@ def import_credential(
         "schema": "mdoc-credentials-v1.schema.json",
         "sha256": records.sha256(blob),
     }
+    issuer_auth = _issuer_auth(blob)
+    mso = _mso(issuer_auth)
     try:
-        response = cbor2.loads(blob)
-        sidecar["doctype"] = response["documents"][0]["docType"]
+        sidecar["doctype"] = mso["docType"]
     except Exception:
-        print("CBOR does not parse as a DeviceResponse; doctype is not recorded")
+        print("CBOR does not parse as IssuerSigned with a decodable MSO; doctype is not recorded")
     if device_key_name is not None:
         records.require_key(device_key_name)
         try:
-            response_dk = cbor2.loads(blob)
-            issuer_auth = response_dk["documents"][0]["issuerSigned"]["issuerAuth"]
-            mso = cbor2.loads(cbor2.loads(issuer_auth[2]).value)
             cose_key = mso["deviceKeyInfo"]["deviceKey"]
             cose_x: bytes = cose_key[-2]
             cose_y: bytes = cose_key[-3]
@@ -77,9 +84,7 @@ def import_credential(
     if ds_certificate_name is not None:
         records.require_certificate(ds_certificate_name)
         try:
-            response_ds = cbor2.loads(blob)
-            issuer_auth_ds = response_ds["documents"][0]["issuerSigned"]["issuerAuth"]
-            chain = issuer_auth_ds[1][33]
+            chain = issuer_auth[1][X5CHAIN]
             leaf_der: bytes = chain[0] if isinstance(chain, list) else chain
         except Exception:
             sys.exit("error: credential does not parse; cannot verify --ds-certificate")
@@ -92,11 +97,7 @@ def import_credential(
     if repo is not None:
         sidecar["provenance"] = records.provenance(source, repo)
     else:
-        sidecar["provenance"] = {
-            "type": "constructed",
-            "generator": generator,
-            "created": date.today().isoformat(),
-        }
+        sidecar["provenance"] = records.constructed(generator, ref)
     if comment is not None:
         sidecar["comment"] = comment
     records.write_record(records.CREDENTIALS / f"{name}.cbor", blob, sidecar)

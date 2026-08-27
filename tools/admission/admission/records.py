@@ -1,5 +1,3 @@
-"""Collection paths, provenance, and the validated write path every mode uses."""
-
 import argparse
 import hashlib
 import json
@@ -15,7 +13,7 @@ from jsonschema import Draft202012Validator
 from referencing import Registry, Resource
 from referencing.jsonschema import DRAFT202012
 
-ROOT = Path(__file__).resolve().parent.parent.parent
+ROOT = Path(__file__).resolve().parent.parent.parent.parent
 CIRCUITS = ROOT / "vectors" / "mdoc" / "circuits"
 PRESENTATIONS = ROOT / "vectors" / "mdoc" / "presentations"
 PROOFS = ROOT / "vectors" / "mdoc" / "proofs"
@@ -26,23 +24,14 @@ SCHEMAS = ROOT / "vectors" / "schemas"
 SYSTEM = "longfellow-libzk-v1"
 GIT = shutil.which("git") or "git"
 RECORD_NAME = re.compile(r"[a-z0-9][a-z0-9-]*")
-NAME_HELP = (
-    "vector name, matching ^[a-z0-9][a-z0-9-]*$: lowercase words joined by hyphens, "
-    "per docs/naming.md"
-)
-REPO_HELP = (
-    "source repository as host/owner/name; provenance records it with the commit and the "
-    "in-repo path read from the source file's own checkout"
-)
-GENERATOR_HELP = (
-    "what produced staged constructed bytes, as a tool and mode; provenance records type "
-    "constructed with it in place of the repository, commit, and path"
-)
-COMMENT_HELP = "free-text comment to record on the sidecar"
+NAME_HELP = "vector name"
+REPO_HELP = "source repository as host/owner/name"
+GENERATOR_HELP = "generator command line"
+COMMENT_HELP = "comment on the vector"
+REF_HELP = "generator commit hash"
 
 
 def record_name(value: str) -> str:
-    """Argparse type for --name: the vector naming convention's lowercase-hyphen form."""
     if not RECORD_NAME.fullmatch(value):
         raise argparse.ArgumentTypeError(
             f"{value!r} is not a vector name; names match ^[a-z0-9][a-z0-9-]*$"
@@ -58,7 +47,6 @@ def _git(source_dir: Path, *args: str) -> str:
 
 
 def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, Any]:
-    """Repository provenance for a source file inside a git checkout."""
     toplevel = Path(_git(source.parent, "rev-parse", "--show-toplevel"))
     record: dict[str, Any] = {
         "type": "repository",
@@ -70,6 +58,15 @@ def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, A
     if index is not None:
         record["index"] = index
     return record
+
+
+def constructed(generator: str, ref: str) -> dict[str, Any]:
+    return {
+        "type": "constructed",
+        "generator": generator,
+        "ref": ref,
+        "created": date.today().isoformat(),
+    }
 
 
 def sha256(data: bytes) -> str:
