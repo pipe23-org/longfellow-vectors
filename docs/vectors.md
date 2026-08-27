@@ -70,8 +70,7 @@ present only alongside both coordinates.
 
 `mdoc-credentials-v1.schema.json`, sidecar for IssuerSigned CBOR under
 `vectors/mdoc/credentials/`. The blob holds `{nameSpaces, issuerAuth}`, the
-structure an issuer delivers. It is not a DeviceResponse and carries no device
-signature.
+structure an issuer delivers.
 
 | Field | Type | Required | Holds |
 | --- | --- | --- | --- |

@@ -10,8 +10,8 @@ import cbor2
 from . import mdoc, records
 
 DESCRIPTION = """\
-Admit a presentation as a vector under vectors/mdoc/presentations/, which
-carries no blob file.
+Admit a presentation as a vector under vectors/mdoc/presentations/, the
+sidecar alone.
 The source is a JSON file with an mdoc field and a transcript field, each
 holding hex.
 The vector derives doctype, issuer_public_key_x, issuer_public_key_y, and
