@@ -101,6 +101,9 @@ given. A field the operator chose to leave out has its reason in the comment.
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
+A response that carries no issuer-signed item is admitted with `--credential`. The
+presented `issuerAuth` still has to equal the credential's.
+
 ## circuit
 
 | Flag | Effect |

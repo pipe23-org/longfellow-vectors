@@ -4,6 +4,7 @@ import json
 import sys
 from pathlib import Path
 
+import cbor2
 import pytest
 
 import admit
@@ -87,3 +88,34 @@ def test_item_the_credential_does_not_hold_is_refused(
         admit.main()
 
     assert "is not one of credential" in str(refused.value)
+
+
+def test_response_disclosing_no_item_is_admitted_with_the_reference(
+    collection: Path, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    document = json.loads((DATA / "presentation.json").read_text())
+    response = cbor2.loads(bytes.fromhex(document["mdoc"]))
+    response["documents"][0]["issuerSigned"]["nameSpaces"] = {}
+    document["mdoc"] = cbor2.dumps(response).hex()
+    source = tmp_path / "presentation-no-items.json"
+    source.write_text(json.dumps(document))
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "admit.py",
+            "presentation",
+            str(source),
+            "--generator",
+            GENERATOR,
+            "--name",
+            "presented",
+            "--credential",
+            CREDENTIAL_NAME,
+        ],
+    )
+
+    admit.main()
+
+    sidecar = json.loads((records.PRESENTATIONS / "presented.json").read_text())
+    assert sidecar["credential"] == CREDENTIAL_NAME
