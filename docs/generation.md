@@ -28,8 +28,8 @@ runs from `tools/admission`. The staged path it carries is written relative to
 that directory. Its reference flags are filled in from the generating
 command's inputs. `--generator` holds the `generate.py` command line with every
 value the command generated filled in. `--ref` holds the commit
-`tools/generation` runs from, and is omitted when `tools/generation` has
-uncommitted changes. [Admission](admission.md) has the rules the printed
+`tools/generation` runs from. A command refuses to run from an uncommitted
+tree. [Admission](admission.md) has the rules the printed
 commands follow.
 
 ## Reproduction

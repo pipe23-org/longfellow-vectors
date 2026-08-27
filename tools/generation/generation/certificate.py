@@ -1,5 +1,3 @@
-"""certificate: certify an admitted key, self-signed or under an admitted certificate."""
-
 import sys
 from datetime import datetime
 
@@ -9,32 +7,11 @@ from cryptography.x509.oid import NameOID
 
 from . import mdoc, staging
 
-DESCRIPTION = """\
-Certify an admitted key vector and stage <name>.pem under
-tools/generation/staging/<name>/.
---signed-by names the certificate whose key signs this one, and its `key`
-reference resolves the signing key; without it the certificate is self-signed
-under the subject key.
---ca builds a CA certificate, admitted with role iaca; a leaf is admitted with
-role document-signer.
-The key vector can hold a public key alone; a self-signed certificate needs
-its private key.
-The printed command admits the certificate with its role, its signer, and the
-key it certifies, and carries the serial number whether it was given or
-generated.
-"""
+DESCRIPTION = "Certify a key vector and stage <name>.pem."
 
 
 def _common_name(certificate: x509.Certificate, name: str) -> str:
-    """The common name a certificate's subject carries.
-
-    Args:
-        certificate: Certificate to read.
-        name: Vector name the certificate came from, for the error message.
-
-    Returns:
-        The subject common name.
-    """
+    """The common name a certificate's subject carries."""
     attributes = certificate.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
     if not attributes:
         sys.exit(f"error: certificate {name!r} has no subject common name; pass --issuer")

@@ -1,5 +1,3 @@
-"""admit.py presentation --credential verifies the response against the credential it names."""
-
 import json
 import sys
 from pathlib import Path
@@ -27,6 +25,8 @@ def test_response_presenting_the_credential_is_admitted(
             str(DATA / "presentation.json"),
             "--generator",
             GENERATOR,
+            "--ref",
+            "0" * 40,
             "--name",
             "presented",
             "--credential",
@@ -52,6 +52,8 @@ def test_response_under_another_issuer_auth_is_refused(
             str(DATA / "presentation-other-credential.json"),
             "--generator",
             GENERATOR,
+            "--ref",
+            "0" * 40,
             "--name",
             "presented",
             "--credential",
@@ -77,6 +79,8 @@ def test_item_the_credential_does_not_hold_is_refused(
             str(DATA / "presentation-foreign-item.json"),
             "--generator",
             GENERATOR,
+            "--ref",
+            "0" * 40,
             "--name",
             "presented",
             "--credential",
@@ -108,6 +112,8 @@ def test_response_disclosing_no_item_is_admitted_with_the_reference(
             str(source),
             "--generator",
             GENERATOR,
+            "--ref",
+            "0" * 40,
             "--name",
             "presented",
             "--credential",

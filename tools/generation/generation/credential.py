@@ -1,5 +1,3 @@
-"""credential: issuer-sign claims under an admitted certificate and stage the IssuerSigned."""
-
 import secrets
 import sys
 from datetime import datetime
@@ -8,15 +6,7 @@ from cryptography import x509
 
 from . import mdoc, staging
 
-DESCRIPTION = """\
-Issuer-sign the claims into IssuerSigned CBOR, {nameSpaces, issuerAuth}, and
-stage <name>.cbor under tools/generation/staging/<name>/.
---ds-certificate names the document-signer certificate the issuerAuth x5chain
-carries, and its `key` reference resolves the signing key; --device-key names
-the key the MSO binds, the only key that can present the credential.
-The printed command admits the credential with both references, and carries
-the salt seed whether it was given or generated.
-"""
+DESCRIPTION = "Issuer-sign claims into IssuerSigned CBOR and stage <name>.cbor."
 
 
 def credential(

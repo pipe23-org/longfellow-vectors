@@ -1,5 +1,3 @@
-"""proof: admit a proof blob and the statement it verifies against."""
-
 import argparse
 import sys
 from pathlib import Path
@@ -7,14 +5,7 @@ from typing import Any
 
 from . import mdoc, records
 
-DESCRIPTION = """\
-Admit a proof blob as a vector under vectors/mdoc/proofs/.
-The source is a proof file a prover emitted.
-The vector derives sha256 from the bytes.
-The statement fields come from --presentation or from the statement flags,
-and a vector given neither carries the bytes alone.
-docs/admission.md holds the rules that span the commands.
-"""
+DESCRIPTION = "Admit a proof under vectors/mdoc/proofs/."
 
 
 def statement_from_flags(

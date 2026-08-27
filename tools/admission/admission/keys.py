@@ -1,5 +1,3 @@
-"""key: admit a PEM key and the material it encodes."""
-
 from pathlib import Path
 from typing import Any
 
@@ -14,13 +12,7 @@ from cryptography.hazmat.primitives.serialization import (
 
 from . import records
 
-DESCRIPTION = """\
-Admit a PEM key as a vector under vectors/mdoc/keys/.
-The source is a PEM file holding one private or public key.
-The vector derives sha256, fingerprint, public_key_x, public_key_y, and
-private_key from the PEM.
-docs/admission.md holds the rules that span the commands.
-"""
+DESCRIPTION = "Admit a PEM key under vectors/mdoc/keys/."
 
 
 def import_key(

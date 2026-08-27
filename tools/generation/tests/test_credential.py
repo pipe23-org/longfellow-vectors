@@ -1,5 +1,3 @@
-"""credential stages IssuerSigned bound to the certificate and device key it names."""
-
 import sys
 from datetime import UTC, datetime
 from pathlib import Path

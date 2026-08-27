@@ -1,5 +1,3 @@
-"""The generated circuit and the temporary collection the command tests read vectors from."""
-
 import hashlib
 import json
 from pathlib import Path
@@ -29,28 +27,13 @@ PROVENANCE = {
 
 @pytest.fixture(scope="session")
 def circuit() -> bytes:
-    """google/longfellow-zk's v7 one-attribute circuit export.
-
-    lib/circuits/mdoc/circuits/8d079211715200ff06c5109639245502bfe94aa869908d31176aae4016182121
-    at fe83ec6, copied from pylongfellow 36916aa tests/api/data/circuits/.
-    """
+    """google/longfellow-zk v7 one-attribute circuit export at fe83ec6."""
     return (DATA / "v7-1attr.circuit").read_bytes()
 
 
 @pytest.fixture
 def collection(tmp_path: Path, circuit: bytes, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A collection holding a trust chain, a credential, a presentation, a circuit, and a proof.
-
-    The keys, certificates, and credential under tests/data were built with
-    `generation.mdoc` under fixed P-256 scalars: ca-key certifies itself,
-    ds-certificate certifies issuer-key under ca-key, and the credential is
-    issuer-signed under issuer-key over age_over_18 and age_over_21 in
-    eu.europa.ec.av.1, binding device-key. ds-certificate-no-key holds the same
-    PEM as ds-certificate with no `key` reference.
-
-    The commands read the collection and write the staging tree through
-    `generation.staging`, so both are pointed at the temporary directory.
-    """
+    """A collection holding a trust chain, a credential, a presentation, a circuit, and a proof."""
     root = tmp_path / "mdoc"
     for subtree in ("keys", "certificates", "credentials", "presentations", "circuits", "proofs"):
         (root / subtree).mkdir(parents=True)
@@ -166,4 +149,5 @@ def collection(tmp_path: Path, circuit: bytes, monkeypatch: pytest.MonkeyPatch) 
 
     monkeypatch.setattr(staging, "VECTORS", root)
     monkeypatch.setattr(staging, "STAGING", tmp_path / "staging")
+    monkeypatch.setattr(staging, "generator_ref", lambda: "0" * 40)
     return root

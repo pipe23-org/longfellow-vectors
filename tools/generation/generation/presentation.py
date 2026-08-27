@@ -1,5 +1,3 @@
-"""presentation: device-sign an admitted credential over a transcript and stage the response."""
-
 import json
 import sys
 from typing import Any
@@ -8,31 +6,11 @@ import cbor2
 
 from . import mdoc, staging
 
-DESCRIPTION = """\
-Present an admitted credential over a session transcript and stage
-presentation.json, the DeviceResponse and the transcript as hex, under
-tools/generation/staging/<name>/.
-The device key resolves through the credential's `device_key` reference. The
-issuerAuth and the MSO are carried through unchanged; --disclose selects which
-issuer-signed items the response carries, and all of them are carried when it
-is absent.
---device-namespace adds a device-signed item; the empty map is signed when
-none is given.
-The printed command admits the presentation against the credential it
-presents.
-"""
+DESCRIPTION = "Present a credential over a transcript and stage presentation.json."
 
 
 def _issuer_signed(credential_name: str, blob: bytes) -> dict[Any, Any]:
-    """The decoded IssuerSigned a credential vector's bytes hold.
-
-    Args:
-        credential_name: Vector name, for the error message.
-        blob: The credential vector's CBOR bytes.
-
-    Returns:
-        The `{nameSpaces, issuerAuth}` map.
-    """
+    """The decoded IssuerSigned a credential vector's bytes hold."""
     try:
         issuer_signed = cbor2.loads(blob)
     except Exception:
@@ -49,18 +27,7 @@ def _issuer_signed(credential_name: str, blob: bytes) -> dict[Any, Any]:
 def _disclosed(
     namespaces: dict[Any, Any], disclose: list[list[str]], credential_name: str
 ) -> dict[Any, Any]:
-    """The issuer-signed items the response carries, keyed by namespace.
-
-    Args:
-        namespaces: The credential's `nameSpaces` map.
-        disclose: Repeated `--disclose` namespace and id pairs; empty carries
-            every item the credential holds.
-        credential_name: Vector name, for the error message.
-
-    Returns:
-        The credential's items, in credential order, restricted to the
-        requested pairs. A namespace left with no item is dropped.
-    """
+    """The issuer-signed items the response carries, keyed by namespace."""
     if not disclose:
         return namespaces
     requested = {(namespace, identifier) for namespace, identifier in disclose}

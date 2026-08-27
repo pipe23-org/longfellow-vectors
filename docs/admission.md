@@ -32,10 +32,9 @@ in-repo path are read from the source file's own git checkout, so the file
 passed on the command line has to sit inside a checkout of the repository
 `--repo` names. `captured` holds the day of admission.
 
-`--generator` holds the command line that produced staged bytes. Provenance
-then records `type: "constructed"` with the generator string, `ref` when
-`--ref` gives the generator's commit, and `created` holding the day of
-admission. `--ref` is accepted only with `--generator`.
+`--generator` holds the command line that produced staged bytes and `--ref` the
+generator's commit; the two are required together. Provenance then records
+`type: "constructed"` with both and `created` holding the day of admission.
 
 `circuit` takes `--repo` only. `key`, `certificate`, `credential`,
 `presentation`, and `proof` take exactly one of `--repo` and `--generator`.
@@ -76,7 +75,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 | --- | --- |
 | `pem_path` | PEM file to admit, copied to `vectors/mdoc/keys/<name>.pem`. |
 | `--role` | `iaca`, `document-signer`, or `device`, recorded as given. |
-| `--repo`, `--generator` | Provenance, as above. |
+| `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
@@ -84,10 +83,10 @@ given. A field the operator chose to leave out has its reason in the comment.
 
 | Flag | Effect |
 | --- | --- |
-| `cbor_path` | IssuerSigned CBOR file to admit, copied to `vectors/mdoc/credentials/<name>.cbor`. A DeviceResponse is refused, naming `admit.py presentation`. |
+| `cbor_path` | IssuerSigned CBOR file to admit, copied to `vectors/mdoc/credentials/<name>.cbor`. |
 | `--device-key` | Key vector whose public half must equal the `deviceKeyInfo` coordinates of the MSO inside the top-level `issuerAuth`. Refused on mismatch. |
 | `--ds-certificate` | Certificate vector whose DER bytes must equal the x5chain leaf of the top-level `issuerAuth`. Refused on mismatch. |
-| `--repo`, `--generator` | Provenance, as above. |
+| `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
@@ -97,7 +96,7 @@ given. A field the operator chose to leave out has its reason in the comment.
 | --- | --- |
 | `vector_path` | JSON file with an `mdoc` field and a `transcript` field, each holding hex. |
 | `--credential` | Credential vector the DeviceResponse presents. Refused when the collection holds no credential of that name, when the presented `issuerAuth` does not equal the credential's, or when a presented item is not one of the credential's. |
-| `--repo`, `--generator` | Provenance, as above. |
+| `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
@@ -126,7 +125,7 @@ value.
 | `--role` | `iaca` or `document-signer`, recorded as given. |
 | `--signed-by` | Certificate vector whose key must verify this certificate's signature. Refused when the signature does not verify. |
 | `--key` | Key vector whose `fingerprint` must equal the certificate's SubjectPublicKeyInfo fingerprint. Refused on mismatch, and refused when the key vector carries no `fingerprint`. |
-| `--repo`, `--generator` | Provenance, as above. |
+| `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 
@@ -144,7 +143,7 @@ certificate that carries no signature hash algorithm.
 | `--presentation` | Presentation vector the statement is copied from. |
 | `--attr` | Attribute id the proof discloses. Repeatable, and requires `--presentation`. |
 | `--doctype`, `--transcript`, `--issuer-public-key-x`, `--issuer-public-key-y`, `--claim`, `--device-namespaces` | The statement, supplied on the command line. |
-| `--repo`, `--generator` | Provenance, as above. |
+| `--repo`, `--generator`, `--ref` | Provenance, as above. |
 | `--name` | Vector name. |
 | `--comment` | Sidecar comment. |
 

@@ -1,5 +1,3 @@
-"""Argparse types, collection lookups, the staging tree, and the admission commands."""
-
 import argparse
 import json
 import os.path
@@ -26,10 +24,7 @@ STAGING = ROOT / "tools" / "generation" / "staging"
 ADMISSION = ROOT / "tools" / "admission"
 VECTOR_NAME = re.compile(r"[a-z0-9][a-z0-9-]*")
 HEX = re.compile(r"([0-9a-fA-F]{2})+")
-NAME_HELP = (
-    "vector name, matching ^[a-z0-9][a-z0-9-]*$: lowercase words joined by hyphens, "
-    "per docs/naming.md; also the name of the staging directory"
-)
+NAME_HELP = "vector name, lowercase words joined by hyphens"
 
 
 def vector_name(value: str) -> str:
@@ -70,14 +65,7 @@ def collection() -> LongfellowVectors:
 
 
 def namespaces(triples: list[list[str]]) -> dict[str, dict[str, object]]:
-    """Group namespace, id, and JSON value triples into the nested map the builder takes.
-
-    Args:
-        triples: Repeated `--claim` or `--device-namespace` values.
-
-    Returns:
-        Namespace to element identifier to decoded value, in the order given.
-    """
+    """Group namespace, id, and JSON value triples into the nested map the builder takes."""
     grouped: dict[str, dict[str, object]] = {}
     for namespace, identifier, value in triples:
         try:
@@ -88,14 +76,7 @@ def namespaces(triples: list[list[str]]) -> dict[str, dict[str, object]]:
 
 
 def private_key(vector: Key) -> ec.EllipticCurvePrivateKey:
-    """The EC private key a key vector's PEM holds.
-
-    Args:
-        vector: Key vector to read.
-
-    Returns:
-        The private key the PEM encodes.
-    """
+    """The EC private key a key vector's PEM holds."""
     try:
         loaded = load_pem_private_key(vector.pem, password=None)
     except (ValueError, TypeError, UnsupportedAlgorithm):
@@ -106,15 +87,7 @@ def private_key(vector: Key) -> ec.EllipticCurvePrivateKey:
 
 
 def public_key(vector: Key) -> ec.EllipticCurvePublicKey:
-    """The EC public key a key vector's PEM holds, from a private or a public key.
-
-    Args:
-        vector: Key vector to read.
-
-    Returns:
-        The public key the PEM encodes, or the public half of the private key
-        it encodes.
-    """
+    """The EC public key a key vector's PEM holds, from a private or a public key."""
     try:
         loaded: object = load_pem_private_key(vector.pem, password=None).public_key()
     except (ValueError, TypeError, UnsupportedAlgorithm):
@@ -140,15 +113,7 @@ def stage(name: str) -> Path:
 
 
 def write(path: Path, data: bytes) -> Path:
-    """Write a staged file and print where it went.
-
-    Args:
-        path: Staged file to write.
-        data: Bytes to write.
-
-    Returns:
-        The path written.
-    """
+    """Write a staged file and print where it went."""
     path.write_bytes(data)
     print(f"wrote {os.path.relpath(path)}")
     return path
@@ -168,23 +133,16 @@ def generator_ref() -> str | None:
     return head.stdout.strip()
 
 
-def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
-    """The admit.py command that admits a staged file, as an argument list.
-
-    Args:
-        vector_type: admit.py command, e.g. `proof`.
-        path: Staged file to admit.
-        name: Vector name to admit it under.
-        command: The generate.py command that produced the file, as run;
-            recorded as the vector's `generator`.
-        flags: Further flags and values, appended in the order given.
-
-    Returns:
-        The command's words, with the staged path written relative to
-        tools/admission, the directory the command runs from, and `--ref`
-        present only when tools/generation is committed clean.
-    """
+def committed_ref() -> str:
+    """The commit tools/generation runs from; exits when the tree has uncommitted changes."""
     ref = generator_ref()
+    if ref is None:
+        sys.exit("error: tools/generation has uncommitted changes; commit them first")
+    return ref
+
+
+def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
+    """The admit.py command that admits a staged file, as an argument list."""
     return [
         "uv",
         "run",
@@ -193,7 +151,8 @@ def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) ->
         os.path.relpath(path, ADMISSION),
         "--generator",
         command,
-        *(["--ref", ref] if ref is not None else []),
+        "--ref",
+        committed_ref(),
         "--name",
         name,
         *flags,
@@ -201,23 +160,12 @@ def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) ->
 
 
 def command_with(command: str, *flags: str) -> str:
-    """The generate.py command line with values it generated appended as flags.
-
-    Args:
-        command: The command line as run.
-        flags: Flag and value words to append, in the order given.
-
-    Returns:
-        The effective command line, which `--generator` records so a re-run
-        reproduces the bytes.
-    """
+    """The generate.py command line with values it generated appended as flags."""
     return shlex.join([*shlex.split(command), *flags])
 
 
 def print_commands(commands: list[list[str]]) -> None:
     """Print the admission commands for one command's staged files, one per line."""
-    if generator_ref() is None:
-        print("\ntools/generation has uncommitted changes; --ref is omitted")
     print("\nadmit from tools/admission:")
     for command in commands:
         print(" ".join(shlex.quote(word) for word in command))

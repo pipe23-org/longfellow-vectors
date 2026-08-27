@@ -1,5 +1,3 @@
-"""The temporary collection the command tests admit into."""
-
 import hashlib
 import json
 from pathlib import Path
@@ -20,21 +18,7 @@ PROVENANCE = {
 
 @pytest.fixture
 def collection(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A collection holding the device key, the document-signer certificate, and a credential.
-
-    The keys, certificate, credential, and responses under tests/data were
-    built with `generation.mdoc` under fixed P-256 scalars: ds-certificate
-    certifies the key that signs credential.cbor, which binds device-key over
-    age_over_18 and age_over_21 in eu.europa.ec.av.1. other-key is a second
-    device key the credential does not bind. Each presentation.json holds a
-    DeviceResponse over the same transcript: presentation.json presents the
-    credential, presentation-other-credential.json presents a credential
-    signed under a second salt seed, and presentation-foreign-item.json
-    carries the credential's issuerAuth over that other credential's item.
-
-    admit.py resolves the collection through `admission.records`, so the
-    module's paths are pointed at the temporary directory.
-    """
+    """A collection holding the device key, the document-signer certificate, and a credential."""
     root = tmp_path / "vectors" / "mdoc"
     for subtree in ("keys", "certificates", "credentials", "presentations"):
         (root / subtree).mkdir(parents=True)

@@ -1,5 +1,3 @@
-"""key derives one key per seed and records the seed it used."""
-
 import re
 from pathlib import Path
 

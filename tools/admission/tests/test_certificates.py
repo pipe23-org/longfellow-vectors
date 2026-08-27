@@ -1,5 +1,3 @@
-"""admit.py certificate records constructed provenance and the commit that goes with it."""
-
 import json
 import sys
 from datetime import date
@@ -73,3 +71,29 @@ def test_ref_without_a_generator_is_refused(
 
     assert refused.value.code == 2
     assert "--ref requires --generator" in capsys.readouterr().err
+
+
+def test_generator_without_a_ref_is_refused(
+    collection: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "admit.py",
+            "certificate",
+            str(DATA / "ds-certificate.pem"),
+            "--generator",
+            GENERATOR,
+            "--name",
+            "signer",
+            "--role",
+            "document-signer",
+        ],
+    )
+
+    with pytest.raises(SystemExit) as refused:
+        admit.main()
+
+    assert refused.value.code == 2
+    assert "--generator requires --ref" in capsys.readouterr().err

@@ -1,5 +1,3 @@
-"""certificate: admit a PEM certificate and its verified signer and key relations."""
-
 import json
 import sys
 from pathlib import Path
@@ -12,22 +10,13 @@ from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
 
 from . import records
 
-DESCRIPTION = """\
-Admit a PEM certificate as a vector under vectors/mdoc/certificates/.
-The source is a PEM file holding one X.509 certificate.
-The vector derives sha256 from the bytes and, when the PEM parses as an X.509
-certificate with an EC P-256 key, public_key_x and public_key_y.
-docs/admission.md holds the rules that span the commands.
-"""
+DESCRIPTION = "Admit a PEM certificate under vectors/mdoc/certificates/."
 
 
 def _verify_certificate_signature(child: x509.Certificate, parent: x509.Certificate) -> None:
-    """Check child's signature against parent's key without reading extensions.
-
-    Certificate.extensions materialises every extension and raises on the AV
-    PKI's malformed issuerAltName; signature, tbs bytes, and the public key do
-    not touch the extensions block.
-    """
+    """Verify child's signature under parent's key."""
+    # Certificate.extensions raises on the AV test PKI's malformed issuerAltName; the
+    # signature check does not read extensions.
     key = parent.public_key()
     if not isinstance(key, ec.EllipticCurvePublicKey):
         sys.exit("error: only EC-signed certificates are supported")

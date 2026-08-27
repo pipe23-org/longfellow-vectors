@@ -1,5 +1,3 @@
-"""credential: admit IssuerSigned CBOR and its verified key and certificate relations."""
-
 import sys
 from pathlib import Path
 from typing import Any
@@ -16,27 +14,11 @@ from cryptography.hazmat.primitives.serialization import (
 
 from . import records
 
-DESCRIPTION = """\
-Admit a CBOR credential as a vector under vectors/mdoc/credentials/.
-The source is a file holding IssuerSigned CBOR, {nameSpaces, issuerAuth}, the
-structure an issuer delivers. A DeviceResponse is refused; admit one with
-admit.py presentation.
-The vector derives sha256 from the bytes and doctype from the MSO inside
-issuerAuth.
-docs/admission.md holds the rules that span the commands.
-"""
+DESCRIPTION = "Admit IssuerSigned CBOR under vectors/mdoc/credentials/."
 
 
 def _issuer_auth(blob: bytes) -> Any:
-    """The top-level issuerAuth of an IssuerSigned credential.
-
-    Args:
-        blob: The credential's CBOR bytes.
-
-    Returns:
-        The COSE_Sign1 array, or None when the bytes do not parse as
-        IssuerSigned.
-    """
+    """The top-level issuerAuth of an IssuerSigned credential."""
     try:
         issuer_signed = cbor2.loads(blob)
         return issuer_signed["issuerAuth"]
@@ -45,31 +27,11 @@ def _issuer_auth(blob: bytes) -> Any:
 
 
 def _mso(issuer_auth: Any) -> Any:
-    """The MSO an issuerAuth's payload carries.
-
-    Args:
-        issuer_auth: The COSE_Sign1 array, or None.
-
-    Returns:
-        The decoded MSO map, or None when the payload does not decode.
-    """
+    """The MSO an issuerAuth's payload carries."""
     try:
         return cbor2.loads(cbor2.loads(issuer_auth[2]).value)
     except Exception:
         return None
-
-
-def _refuse_device_response(blob: bytes) -> None:
-    """Exit when the bytes are a DeviceResponse, which belongs under presentations."""
-    try:
-        decoded = cbor2.loads(blob)
-    except Exception:
-        return
-    if isinstance(decoded, dict) and "documents" in decoded:
-        sys.exit(
-            "error: the bytes are a DeviceResponse, not IssuerSigned; a credential holds what "
-            "an issuer delivers, and a DeviceResponse is admitted with admit.py presentation"
-        )
 
 
 def import_credential(
@@ -84,7 +46,6 @@ def import_credential(
 ) -> None:
     source = Path(cbor_path)
     blob = source.read_bytes()
-    _refuse_device_response(blob)
     sidecar: dict[str, Any] = {
         "schema": "mdoc-credentials-v1.schema.json",
         "sha256": records.sha256(blob),

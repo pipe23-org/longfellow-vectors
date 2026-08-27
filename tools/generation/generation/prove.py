@@ -1,5 +1,3 @@
-"""proof: prove an admitted presentation with an admitted circuit and stage the proof."""
-
 import sys
 from datetime import datetime
 
@@ -10,16 +8,7 @@ from pylongfellow.mdoc import CircuitSpec, Error, PublicKey, RequestedAttribute
 
 from . import staging
 
-DESCRIPTION = """\
-Prove the named attributes over an admitted presentation, with an admitted
-circuit, on the named backend, and stage <name>.proof under
-tools/generation/staging/<name>/.
-The presentation supplies the mdoc, the transcript, the issuer public key, and
-the namespace and CBOR value of every attribute. The number of attributes has
-to equal the circuit's num_attributes.
-The printed command admits the proof with the statement copied from the
-presentation.
-"""
+DESCRIPTION = "Prove a presentation with a circuit and stage <name>.proof."
 
 
 def _claims(presentation: Presentation, attr_ids: list[str]) -> list[RequestedAttribute]:

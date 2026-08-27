@@ -1,5 +1,3 @@
-"""Collection paths, provenance, and the validated write path every command uses."""
-
 import argparse
 import hashlib
 import json
@@ -26,23 +24,11 @@ SCHEMAS = ROOT / "vectors" / "schemas"
 SYSTEM = "longfellow-libzk-v1"
 GIT = shutil.which("git") or "git"
 RECORD_NAME = re.compile(r"[a-z0-9][a-z0-9-]*")
-NAME_HELP = (
-    "vector name, matching ^[a-z0-9][a-z0-9-]*$: lowercase words joined by hyphens, "
-    "per docs/naming.md"
-)
-REPO_HELP = (
-    "source repository as host/owner/name; provenance records it with the commit and the "
-    "in-repo path read from the source file's own checkout"
-)
-GENERATOR_HELP = (
-    "what produced staged constructed bytes, as a tool and command; provenance records type "
-    "constructed with it in place of the repository, commit, and path"
-)
-COMMENT_HELP = "free-text comment to record on the sidecar"
-REF_HELP = (
-    "full commit hash of the generator at generation time, recorded with --generator; "
-    "omitted when the generator ran from an uncommitted tree"
-)
+NAME_HELP = "vector name, lowercase words joined by hyphens"
+REPO_HELP = "source repository as host/owner/name"
+GENERATOR_HELP = "command line that produced the bytes"
+COMMENT_HELP = "comment for the sidecar"
+REF_HELP = "commit of the generator, 40 hex digits"
 
 
 def record_name(value: str) -> str:
@@ -76,13 +62,14 @@ def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, A
     return record
 
 
-def constructed(generator: str, ref: str | None) -> dict[str, Any]:
-    """Constructed provenance: the generating command, its commit when known, and today."""
-    record: dict[str, Any] = {"type": "constructed", "generator": generator}
-    if ref is not None:
-        record["ref"] = ref
-    record["created"] = date.today().isoformat()
-    return record
+def constructed(generator: str, ref: str) -> dict[str, Any]:
+    """Constructed provenance."""
+    return {
+        "type": "constructed",
+        "generator": generator,
+        "ref": ref,
+        "created": date.today().isoformat(),
+    }
 
 
 def sha256(data: bytes) -> str:

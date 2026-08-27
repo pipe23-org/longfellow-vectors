@@ -1,5 +1,3 @@
-"""Readers for the DeviceResponse CBOR a presentation or credential carries."""
-
 import sys
 from typing import Any
 

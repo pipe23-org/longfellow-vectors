@@ -1,5 +1,3 @@
-"""prove stages a proof the backend it was made on verifies."""
-
 from datetime import UTC, datetime
 from pathlib import Path
 

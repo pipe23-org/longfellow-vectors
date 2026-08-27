@@ -1,16 +1,9 @@
-"""circuit: admit a circuit blob."""
-
 from pathlib import Path
 from typing import Any
 
 from . import records
 
-DESCRIPTION = """\
-Admit a circuit blob as a vector under vectors/mdoc/circuits/.
-The source is a circuit file an implementation exported.
-The vector derives sha256 from the bytes and nothing else.
-docs/admission.md holds the rules that span the commands.
-"""
+DESCRIPTION = "Admit a circuit blob under vectors/mdoc/circuits/."
 
 
 def import_circuit(

@@ -1,5 +1,3 @@
-"""presentation: admit a presentation as a sidecar with no blob."""
-
 import json
 import sys
 from pathlib import Path
@@ -9,27 +7,13 @@ import cbor2
 
 from . import mdoc, records
 
-DESCRIPTION = """\
-Admit a presentation as a vector under vectors/mdoc/presentations/, the
-sidecar alone.
-The source is a JSON file with an mdoc field and a transcript field, each
-holding hex.
-The vector derives doctype, issuer_public_key_x, issuer_public_key_y, and
-device_namespaces from the mdoc bytes.
---credential is verified against the credential vector's IssuerSigned: the
-presented issuerAuth has to equal the credential's, and every presented item
-has to be one of the credential's.
-docs/admission.md holds the rules that span the commands.
-"""
+DESCRIPTION = "Admit a presentation under vectors/mdoc/presentations/."
 
 
 def _presentation_sidecar(
     mdoc_hex: str, transcript_hex: str, provenance: dict[str, Any]
 ) -> dict[str, Any]:
-    """Build a presentation sidecar from mdoc and transcript hex.
-
-    Derived fields are omitted with a printed note when the mdoc does not parse.
-    """
+    """Build a presentation sidecar from mdoc and transcript hex."""
     sidecar: dict[str, Any] = {
         "schema": "mdoc-presentations-v1.schema.json",
         "mdoc": mdoc_hex,
@@ -60,12 +44,7 @@ def _presentation_sidecar(
 
 
 def _verify_credential(mdoc_hex: str, credential_name: str) -> None:
-    """Check that the response presents the named credential, and exit when it does not.
-
-    Args:
-        mdoc_hex: The response's CBOR DeviceResponse bytes, as hex.
-        credential_name: Credential vector the response presents.
-    """
+    """Check that the response presents the named credential, and exit when it does not."""
     try:
         credential = cbor2.loads((records.CREDENTIALS / f"{credential_name}.cbor").read_bytes())
         issuer_signed = cbor2.loads(bytes.fromhex(mdoc_hex))["documents"][0]["issuerSigned"]

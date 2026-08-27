@@ -1,5 +1,3 @@
-"""flip-bit stages a proof one bit from its source and prints how it was derived."""
-
 from pathlib import Path
 
 import pytest

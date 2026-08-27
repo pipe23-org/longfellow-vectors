@@ -1,5 +1,3 @@
-"""presentation device-signs a credential over a transcript and discloses what it is asked for."""
-
 import json
 from pathlib import Path
 

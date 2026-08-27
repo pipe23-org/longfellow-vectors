@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Write captured artifacts into the vectors collection.
+"""Admit vectors into the collection.
 
     uv run admit.py circuit <blob-path> --repo <host/owner/name> \\
         --name <name> --version <n> --num-attributes <n>
 
     uv run admit.py presentation <vector-json-path> \\
-        (--repo <host/owner/name> | --generator <string>) \\
+        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
         --name <name> [--credential <vector-name>]
 
     uv run admit.py proof <proof-path> \\
-        (--repo <host/owner/name> | --generator <string>) \\
+        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
         --name <name> [--prover <backend>] [--circuit <circuit-name>] \\
         [--timestamp <iso>] \\
         ( [--presentation <presentation-name>] [--attr <id>]... \\
@@ -18,26 +18,18 @@
           [--claim <namespace> <id> <cbor-hex>]... [--device-namespaces <hex>] )
 
     uv run admit.py key <pem-path> \\
-        (--repo <host/owner/name> | --generator <string>) \\
+        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
         --name <name> --role <iaca|document-signer|device>
 
     uv run admit.py credential <cbor-path> \\
-        (--repo <host/owner/name> | --generator <string>) \\
+        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
         --name <name> [--device-key <vector-name>] \\
         [--ds-certificate <vector-name>]
 
     uv run admit.py certificate <pem-path> \\
-        (--repo <host/owner/name> | --generator <string>) \\
+        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
         --name <name> --role <iaca|document-signer> [--signed-by <name>] \\
         [--key <vector-name>]
-
-admit.py admits externally produced bytes into the collection. Each command
-copies its source bytes byte-identically into vectors/mdoc/ and writes the JSON
-sidecar that governs them. New artifacts are constructed by
-tools/generation/generate.py.
-
-docs/admission.md holds the rules every command follows and the procedure for
-readmitting a vector from its source.
 """
 
 import argparse
@@ -68,13 +60,13 @@ def main() -> None:
         "--version",
         type=int,
         required=True,
-        help="circuit version the blob was exported at, recorded as given",
+        help="circuit version",
     )
     p_circuit.add_argument(
         "--num-attributes",
         type=int,
         required=True,
-        help="number of attributes the circuit proves over, recorded as given",
+        help="number of attributes the circuit proves over",
     )
 
     p_presentation = sub.add_parser(
@@ -83,7 +75,7 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p_presentation.add_argument(
-        "vector_path", help="JSON file holding the presentation's mdoc and transcript hex"
+        "vector_path", help="JSON file with mdoc and transcript fields, hex"
     )
     p_presentation_source = p_presentation.add_mutually_exclusive_group(required=True)
     p_presentation_source.add_argument("--repo", help=records.REPO_HELP)
@@ -98,8 +90,7 @@ def main() -> None:
     p_presentation.add_argument(
         "--credential",
         dest="credential_name",
-        help="admitted credential vector the DeviceResponse presents; the vector is refused "
-        "when the collection holds no credential of that name",
+        help="credential vector the response presents",
     )
 
     p_proof = sub.add_parser(
@@ -121,48 +112,42 @@ def main() -> None:
     p_proof.add_argument(
         "--presentation",
         dest="presentation_name",
-        help="admitted presentation vector the proof was made from; the statement fields are "
-        "copied from it, and the statement flags are refused alongside it",
+        help="presentation vector the proof was made from",
     )
     p_proof.add_argument(
         "--prover",
-        help="implementation that produced the proof bytes, by backend registry name, "
-        "e.g. google-cpp",
+        help="backend that made the proof, e.g. google-cpp",
     )
     p_proof.add_argument(
         "--circuit",
-        help="admitted circuit vector the proof was made with; the vector is refused when the "
-        "collection holds no circuit of that name",
+        help="circuit vector the proof was made with",
     )
     p_proof.add_argument(
         "--timestamp",
-        help="verification time the proof was made with, as an RFC 3339 date-time carrying a "
-        "UTC offset; recorded as given, and the schema rejects any other form",
+        help="verification time, RFC 3339 with a UTC offset",
     )
     p_proof.add_argument(
         "--attr",
         action="append",
         default=[],
         dest="attr_ids",
-        help="attribute id the proof discloses; its namespace and CBOR value are read from the "
-        "presentation's issuerSigned map; repeatable, and at least one is required with "
-        "--presentation",
+        help="attribute id the proof discloses (repeatable)",
     )
     p_proof.add_argument(
         "--doctype",
-        help="mdoc doctype the proof is scoped to; a statement flag, recorded as given",
+        help="doctype of the statement",
     )
     p_proof.add_argument(
         "--transcript",
-        help="session transcript the proof is bound to, hex; a statement flag, recorded lowercased",
+        help="session transcript, hex",
     )
     p_proof.add_argument(
         "--issuer-public-key-x",
-        help="issuer public key coordinate x, 64 hex digits; a statement flag, recorded lowercased",
+        help="issuer public key x, 64 hex digits",
     )
     p_proof.add_argument(
         "--issuer-public-key-y",
-        help="issuer public key coordinate y, 64 hex digits; a statement flag, recorded lowercased",
+        help="issuer public key y, 64 hex digits",
     )
     p_proof.add_argument(
         "--claim",
@@ -171,13 +156,11 @@ def main() -> None:
         dest="claims",
         nargs=3,
         metavar=("NAMESPACE", "ID", "CBOR_HEX"),
-        help="attribute the proof discloses, as namespace, id, and the CBOR value in hex; "
-        "a statement flag, repeatable, and at least one is required with the others",
+        help="claim as namespace, id, and CBOR value hex (repeatable)",
     )
     p_proof.add_argument(
         "--device-namespaces",
-        help="inner bytes of the tag-24 DeviceNameSpacesBytes, hex; the one statement flag "
-        "the others do not require",
+        help="DeviceNameSpaces map, CBOR hex",
     )
 
     p_key = sub.add_parser(
@@ -200,7 +183,7 @@ def main() -> None:
         "--role",
         required=True,
         choices=["iaca", "document-signer", "device"],
-        help="the key's position in the ISO 18013-5 trust chain, recorded as given",
+        help="role in the ISO 18013-5 trust chain",
     )
 
     p_credential = sub.add_parser(
@@ -208,7 +191,7 @@ def main() -> None:
         description=credentials.DESCRIPTION,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    p_credential.add_argument("cbor_path", help="CBOR credential file to admit")
+    p_credential.add_argument("cbor_path", help="IssuerSigned CBOR file to admit")
     p_cred_source = p_credential.add_mutually_exclusive_group(required=True)
     p_cred_source.add_argument("--repo", help=records.REPO_HELP)
     p_cred_source.add_argument("--generator", help=records.GENERATOR_HELP)
@@ -222,14 +205,12 @@ def main() -> None:
     p_credential.add_argument(
         "--device-key",
         dest="device_key_name",
-        help="admitted key vector whose public half must match the credential's deviceKeyInfo; "
-        "the vector is refused on mismatch",
+        help="key vector the MSO binds",
     )
     p_credential.add_argument(
         "--ds-certificate",
         dest="ds_certificate_name",
-        help="admitted certificate vector whose bytes must match the credential's x5chain leaf; "
-        "the vector is refused on mismatch",
+        help="certificate vector in the x5chain",
     )
 
     p_certificate = sub.add_parser(
@@ -252,19 +233,16 @@ def main() -> None:
         "--role",
         required=True,
         choices=["iaca", "document-signer"],
-        help="the certificate's position in the ISO 18013-5 trust chain, recorded as given",
+        help="role in the ISO 18013-5 trust chain",
     )
     p_certificate.add_argument(
         "--signed-by",
-        help="admitted certificate vector whose key must verify this certificate's signature; "
-        "the vector is refused when the signature does not verify",
+        help="certificate vector whose key signed this one",
     )
     p_certificate.add_argument(
         "--key",
         dest="key_name",
-        help="admitted key vector this certificate certifies; the certificate's "
-        "SubjectPublicKeyInfo fingerprint must equal the key vector's fingerprint, and the "
-        "vector is refused on mismatch",
+        help="key vector the certificate certifies",
     )
     for p_sidecar in (
         p_circuit,
@@ -279,6 +257,8 @@ def main() -> None:
     args = parser.parse_args()
     if getattr(args, "ref", None) is not None and args.generator is None:
         parser.error("--ref requires --generator")
+    if getattr(args, "generator", None) is not None and args.ref is None:
+        parser.error("--generator requires --ref")
     if args.command == "circuit":
         circuits.import_circuit(
             args.blob_path,

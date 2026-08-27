@@ -1,30 +1,14 @@
-"""flip-bit: derive a proof from an admitted one by flipping a single bit."""
-
 import sys
 
 from longfellow_vectors.mdoc import Proof
 
 from . import staging
 
-DESCRIPTION = """\
-Flip one bit of an admitted proof's bytes and stage the result as
-<name>.proof under tools/generation/staging/<name>/.
-The byte defaults to the middle of the proof and the bit to 0.
-The printed command admits the derived proof with the source proof's prover,
-circuit, statement, and timestamp, and a comment naming the derivation.
-"""
+DESCRIPTION = "Flip one bit of a proof and stage <name>.proof."
 
 
 def _statement_flags(source: Proof) -> list[str]:
-    """The admission flags carrying the statement of a proof made from no admitted presentation.
-
-    Args:
-        source: The proof vector the derived proof comes from.
-
-    Returns:
-        The statement flags for each statement field the source vector holds,
-        empty when it holds none.
-    """
+    """The admission flags carrying the statement of a proof made from no admitted presentation."""
     flags = []
     if source.doctype is not None:
         flags += ["--doctype", source.doctype]

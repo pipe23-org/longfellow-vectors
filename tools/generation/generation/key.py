@@ -1,5 +1,3 @@
-"""key: derive a P-256 private key from a seed and stage its PEM."""
-
 import hashlib
 import secrets
 
@@ -8,14 +6,7 @@ from cryptography.hazmat.primitives.serialization import Encoding, NoEncryption,
 
 from . import staging
 
-DESCRIPTION = """\
-Derive a P-256 private key from a seed and stage <name>.pem, a PKCS#8 PEM,
-under tools/generation/staging/<name>/.
-The private scalar is SHA-256 of the seed reduced into [1, n-1], so one seed
-always gives one key.
-The printed command admits the key with its role, and carries the seed whether
-it was given or generated.
-"""
+DESCRIPTION = "Derive a P-256 key from a seed and stage <name>.pem."
 
 # Order of the P-256 group, SEC 2 secp256r1 n.
 _ORDER = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551

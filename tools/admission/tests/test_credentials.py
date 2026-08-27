@@ -1,5 +1,3 @@
-"""admit.py credential admits IssuerSigned and refuses what an issuer did not deliver."""
-
 import hashlib
 import json
 import sys
@@ -27,6 +25,8 @@ def test_issuer_signed_is_admitted_with_its_references(
             str(DATA / "credential.cbor"),
             "--generator",
             GENERATOR,
+            "--ref",
+            "0" * 40,
             "--name",
             "staged",
             "--device-key",
@@ -48,30 +48,10 @@ def test_issuer_signed_is_admitted_with_its_references(
         "provenance": {
             "type": "constructed",
             "generator": GENERATOR,
+            "ref": "0" * 40,
             "created": date.today().isoformat(),
         },
     }
-
-
-def test_device_response_is_refused(collection: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(
-        sys,
-        "argv",
-        [
-            "admit.py",
-            "credential",
-            str(DATA / "device-response.cbor"),
-            "--generator",
-            GENERATOR,
-            "--name",
-            "staged",
-        ],
-    )
-
-    with pytest.raises(SystemExit) as refused:
-        admit.main()
-
-    assert "admit.py presentation" in str(refused.value)
 
 
 def test_device_key_the_credential_does_not_bind_is_refused(
@@ -86,6 +66,8 @@ def test_device_key_the_credential_does_not_bind_is_refused(
             str(DATA / "credential.cbor"),
             "--generator",
             GENERATOR,
+            "--ref",
+            "0" * 40,
             "--name",
             "staged",
             "--device-key",

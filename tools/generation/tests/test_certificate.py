@@ -1,5 +1,3 @@
-"""certificate signs under the key its inputs name and records the serial it used."""
-
 import hashlib
 import json
 import re

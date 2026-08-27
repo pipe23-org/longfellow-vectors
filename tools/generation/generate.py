@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Construct new vectors and stage them for admission.
+"""Construct vectors and stage them for admission.
 
     uv run generate.py key --name <name> \\
         --role <iaca|document-signer|device> [--seed <hex>]
@@ -25,18 +25,8 @@
     uv run generate.py flip-bit --proof <vector-name> \\
         [--name <name>] [--byte <index>] [--bit <0-7>]
 
-generate.py writes the bytes it constructs under
-tools/generation/staging/<name>/, which is not tracked, and prints the
-admit.py command that admits them, to be run from tools/admission. Each
-command reads the vectors it builds on from the collection by name.
-
-The printed command records constructed provenance: --generator holds the
-command line with every value the command generated filled in, and --ref the
-commit tools/generation runs from. --ref is omitted when tools/generation has
-uncommitted changes. Re-running the recorded command line reproduces the bytes
-for every command but proof, whose prover draws its own randomness.
-
-docs/admission.md holds the rules the admission commands follow.
+Each command writes under tools/generation/staging/<name>/ and prints the
+admit.py command that admits the result.
 """
 
 import argparse
@@ -62,12 +52,12 @@ def main() -> None:
         "--role",
         required=True,
         choices=["iaca", "document-signer", "device"],
-        help="the key's position in the ISO 18013-5 trust chain",
+        help="role in the ISO 18013-5 trust chain",
     )
     p_key.add_argument(
         "--seed",
         type=staging.hex_string,
-        help="seed the private scalar is derived from, hex; 32 random bytes when absent",
+        help="seed for the private scalar, hex (random when absent)",
     )
 
     p_certificate = sub.add_parser(
@@ -82,41 +72,38 @@ def main() -> None:
         "--key",
         required=True,
         dest="key_name",
-        help="admitted key vector the certificate certifies",
+        help="key vector the certificate certifies",
     )
     p_certificate.add_argument(
         "--signed-by",
-        help="admitted certificate vector whose key signs this one, resolved through its key "
-        "reference; the certificate is self-signed under --key when absent",
+        help="certificate vector whose key signs this one (self-signed when absent)",
     )
     p_certificate.add_argument("--subject", required=True, help="subject common name")
     p_certificate.add_argument(
         "--issuer",
-        help="issuer common name; the signer certificate's subject common name when absent, "
-        "and --subject on a self-signed certificate",
+        help="issuer common name (the signer's subject when absent)",
     )
     p_certificate.add_argument(
         "--ca",
         action="store_true",
-        help="build a CA certificate, basicConstraints CA and keyUsage keyCertSign, admitted "
-        "with role iaca; a leaf carries keyUsage digitalSignature and role document-signer",
+        help="CA certificate (a leaf when absent)",
     )
     p_certificate.add_argument(
         "--valid-from",
         required=True,
         type=staging.iso_datetime,
-        help="start of the validity window, as an ISO 8601 date-time carrying a UTC offset",
+        help="start of validity, ISO 8601 with a UTC offset",
     )
     p_certificate.add_argument(
         "--valid-until",
         required=True,
         type=staging.iso_datetime,
-        help="end of the validity window, as an ISO 8601 date-time carrying a UTC offset",
+        help="end of validity, ISO 8601 with a UTC offset",
     )
     p_certificate.add_argument(
         "--serial",
         type=int,
-        help="serial number to carry; x509.random_serial_number() when absent",
+        help="serial number (random when absent)",
     )
 
     p_credential = sub.add_parser(
@@ -131,19 +118,18 @@ def main() -> None:
         "--ds-certificate",
         required=True,
         dest="ds_certificate_name",
-        help="admitted document-signer certificate vector the x5chain carries; its key "
-        "reference resolves the key that signs the MSO",
+        help="document-signer certificate vector",
     )
     p_credential.add_argument(
         "--device-key",
         required=True,
         dest="device_key_name",
-        help="admitted key vector the MSO's deviceKeyInfo binds",
+        help="device key vector the MSO binds",
     )
     p_credential.add_argument(
         "--doctype",
         default="eu.europa.ec.av.1",
-        help="doctype the MSO carries; eu.europa.ec.av.1 when absent",
+        help="doctype (eu.europa.ec.av.1 when absent)",
     )
     p_credential.add_argument(
         "--claim",
@@ -152,24 +138,24 @@ def main() -> None:
         dest="claims",
         nargs=3,
         metavar=("NAMESPACE", "ID", "VALUE"),
-        help="issuer-signed claim, as namespace, id, and the value as JSON; repeatable",
+        help="claim as namespace, id, and JSON value (repeatable)",
     )
     p_credential.add_argument(
         "--valid-from",
         required=True,
         type=staging.iso_datetime,
-        help="MSO signed and validFrom timestamp, as an ISO 8601 date-time carrying a UTC offset",
+        help="MSO validFrom, ISO 8601 with a UTC offset",
     )
     p_credential.add_argument(
         "--valid-until",
         required=True,
         type=staging.iso_datetime,
-        help="MSO validUntil timestamp, as an ISO 8601 date-time carrying a UTC offset",
+        help="MSO validUntil, ISO 8601 with a UTC offset",
     )
     p_credential.add_argument(
         "--seed",
         type=staging.hex_string,
-        help="seed the IssuerSignedItem salts are derived from, hex; 32 random bytes when absent",
+        help="seed for the item salts, hex (random when absent)",
     )
 
     p_presentation = sub.add_parser(
@@ -184,14 +170,13 @@ def main() -> None:
         "--credential",
         required=True,
         dest="credential_name",
-        help="admitted credential vector to present; its device_key reference resolves the key "
-        "that signs the transcript",
+        help="credential vector to present",
     )
     p_presentation.add_argument(
         "--transcript",
         required=True,
         type=staging.hex_string,
-        help="CBOR SessionTranscript the device signature is bound to, hex",
+        help="session transcript, CBOR hex",
     )
     p_presentation.add_argument(
         "--device-namespace",
@@ -200,8 +185,7 @@ def main() -> None:
         dest="device_namespaces",
         nargs=3,
         metavar=("NAMESPACE", "ID", "VALUE"),
-        help="device-signed item, as namespace, id, and the value as JSON; repeatable, and "
-        "the empty map is signed when none is given",
+        help="device-signed item as namespace, id, and JSON value (repeatable)",
     )
     p_presentation.add_argument(
         "--disclose",
@@ -209,8 +193,7 @@ def main() -> None:
         default=[],
         nargs=2,
         metavar=("NAMESPACE", "ID"),
-        help="issuer-signed item of the credential to carry, as namespace and id; repeatable, "
-        "and every item the credential holds is carried when none is given",
+        help="item to disclose as namespace and id (repeatable, all when absent)",
     )
 
     p_proof = sub.add_parser(
@@ -223,33 +206,32 @@ def main() -> None:
         "--presentation",
         required=True,
         dest="presentation_name",
-        help="admitted presentation vector to prove over",
+        help="presentation vector to prove over",
     )
     p_proof.add_argument(
         "--circuit",
         required=True,
         dest="circuit_name",
-        help="admitted circuit vector to prove with",
+        help="circuit vector to prove with",
     )
     p_proof.add_argument(
         "--backend",
         required=True,
         choices=["google-cpp", "isrg-rust"],
-        help="implementation that produces the proof bytes, by backend registry name",
+        help="backend that makes the proof",
     )
     p_proof.add_argument(
         "--attr",
         action="append",
         required=True,
         dest="attr_ids",
-        help="attribute id to disclose; its namespace and CBOR value come from the "
-        "presentation, and the claims are proved in the order given; repeatable",
+        help="attribute id to disclose (repeatable, in order)",
     )
     p_proof.add_argument(
         "--timestamp",
         required=True,
         type=staging.iso_datetime,
-        help="verification time to prove at, as an ISO 8601 date-time carrying a UTC offset",
+        help="verification time, ISO 8601 with a UTC offset",
     )
 
     p_flip = sub.add_parser(
@@ -258,24 +240,23 @@ def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     p_flip.add_argument(
-        "--proof", required=True, dest="proof_name", help="admitted proof vector to derive from"
+        "--proof", required=True, dest="proof_name", help="proof vector to derive from"
     )
     p_flip.add_argument(
         "--name",
         type=staging.vector_name,
-        help=f"{staging.NAME_HELP}; defaults to the source name plus -bit-flipped",
+        help="vector name (the source name plus -bit-flipped when absent)",
     )
     p_flip.add_argument(
         "--byte",
         type=int,
         dest="byte_index",
-        help="index of the byte to flip a bit of; defaults to the middle byte, len // 2",
+        help="byte index (the middle byte when absent)",
     )
-    p_flip.add_argument(
-        "--bit", type=int, default=0, choices=range(8), help="bit of the byte to flip, 0 to 7"
-    )
+    p_flip.add_argument("--bit", type=int, default=0, choices=range(8), help="bit to flip, 0 to 7")
 
     args = parser.parse_args()
+    staging.committed_ref()
     command = shlex.join(["generate.py", *sys.argv[1:]])
     if args.command == "key":
         key.key(command, args.name, args.role, args.seed)
