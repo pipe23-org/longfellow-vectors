@@ -13,6 +13,7 @@ uv run generate.py <command> --help
 
 One command builds each vector type: `key`, `certificate`, `credential`,
 `presentation`, and `proof`. `flip-bit` derives a proof from an admitted proof.
+`tools/generation/README.md` lists the known gaps.
 
 ## Inputs
 
