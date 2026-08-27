@@ -3,6 +3,7 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
+import pytest
 from pylongfellow import Pylongfellow
 from pylongfellow.backends import google_cpp
 from pylongfellow.mdoc import PublicKey, RequestedAttribute
@@ -50,3 +51,19 @@ def test_prove_stages_a_proof_that_verifies(collection: Path) -> None:
         DOCTYPE,
         device_namespaces=presentation.device_namespaces,
     )
+
+
+def test_attribute_count_other_than_the_circuits_is_refused(collection: Path) -> None:
+    with pytest.raises(SystemExit) as refused:
+        prove.prove(
+            "generate.py proof",
+            NAME,
+            PRESENTATION_NAME,
+            CIRCUIT_NAME,
+            BACKEND,
+            [ATTR_ID, ATTR_ID],
+            TIMESTAMP,
+        )
+
+    assert "2 attributes given" in str(refused.value)
+    assert "proves over 1" in str(refused.value)

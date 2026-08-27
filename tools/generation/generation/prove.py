@@ -5,8 +5,8 @@ from datetime import datetime
 
 from longfellow_vectors.mdoc import Circuit, Presentation
 from pylongfellow import Pylongfellow
-from pylongfellow.backends import google_cpp
-from pylongfellow.mdoc import CircuitSpec, PublicKey, RequestedAttribute
+from pylongfellow.backends import BackendUnavailableError, google_cpp
+from pylongfellow.mdoc import CircuitSpec, Error, PublicKey, RequestedAttribute
 
 from . import staging
 
@@ -15,7 +15,8 @@ Prove the named attributes over an admitted presentation, with an admitted
 circuit, on the named backend, and stage <name>.proof under
 tools/generation/staging/<name>/.
 The presentation supplies the mdoc, the transcript, the issuer public key, and
-the namespace and CBOR value of every attribute.
+the namespace and CBOR value of every attribute. The number of attributes has
+to equal the circuit's num_attributes.
 The printed command admits the proof with the statement copied from the
 presentation.
 """
@@ -69,15 +70,27 @@ def prove(
         sys.exit(f"error: presentation {presentation_name!r} records no transcript")
     if presentation.issuer_public_key is None:
         sys.exit(f"error: presentation {presentation_name!r} records no issuer public key")
-    longfellow = Pylongfellow(backend=backend)
-    longfellow.load_circuit(_spec(backend, circuit), circuit.bytes)
-    proof = longfellow.prove(
-        presentation.mdoc,
-        PublicKey(presentation.issuer_public_key.x, presentation.issuer_public_key.y),
-        presentation.transcript,
-        _claims(presentation, attr_ids),
-        timestamp,
-    )
+    if len(attr_ids) != circuit.num_attributes:
+        sys.exit(
+            f"error: {len(attr_ids)} attributes given, and circuit {circuit_name!r} proves over "
+            f"{circuit.num_attributes}"
+        )
+    claims = _claims(presentation, attr_ids)
+    try:
+        longfellow = Pylongfellow(backend=backend)
+    except BackendUnavailableError as e:
+        sys.exit(f"error: backend {backend!r} is not available: {e}")
+    try:
+        longfellow.load_circuit(_spec(backend, circuit), circuit.bytes)
+        proof = longfellow.prove(
+            presentation.mdoc,
+            PublicKey(presentation.issuer_public_key.x, presentation.issuer_public_key.y),
+            presentation.transcript,
+            claims,
+            timestamp,
+        )
+    except (Error, ValueError) as e:
+        sys.exit(f"error: {backend} did not prove: {e}")
     path = staging.write(staging.stage(name) / f"{name}.proof", proof)
     flags = ["--prover", backend, "--circuit", circuit_name, "--presentation", presentation_name]
     for attr_id in attr_ids:

@@ -11,6 +11,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import NoReturn
 
+from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from longfellow_vectors import LongfellowVectors
@@ -92,7 +93,10 @@ def private_key(vector: Key) -> ec.EllipticCurvePrivateKey:
     Returns:
         The private key the PEM encodes.
     """
-    loaded = load_pem_private_key(vector.pem, password=None)
+    try:
+        loaded = load_pem_private_key(vector.pem, password=None)
+    except (ValueError, TypeError, UnsupportedAlgorithm):
+        sys.exit(f"error: key {vector.name!r} does not hold a private key")
     if not isinstance(loaded, ec.EllipticCurvePrivateKey):
         sys.exit(f"error: key {vector.name!r} does not hold an EC private key")
     return loaded

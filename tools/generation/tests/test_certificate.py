@@ -1,5 +1,7 @@
 """certificate signs under the key its inputs name and records the serial it used."""
 
+import hashlib
+import json
 import re
 from datetime import UTC, datetime
 from pathlib import Path
@@ -8,7 +10,11 @@ import pytest
 from cryptography import x509
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.serialization import Encoding, load_pem_private_key
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    PublicFormat,
+    load_pem_private_key,
+)
 
 from generation import certificate, staging
 
@@ -155,3 +161,41 @@ def test_signer_without_a_key_reference_is_refused(collection: Path) -> None:
         )
 
     assert "records no key vector" in str(refused.value)
+
+
+def test_key_vector_holding_a_public_key_is_refused(collection: Path) -> None:
+    private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
+    public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+    (collection / "keys" / "public-only.pem").write_bytes(public_pem)
+    (collection / "keys" / "public-only.json").write_text(
+        json.dumps(
+            {
+                "schema": "mdoc-keys-v1.schema.json",
+                "role": "document-signer",
+                "sha256": hashlib.sha256(public_pem).hexdigest(),
+                "provenance": {
+                    "type": "constructed",
+                    "generator": "tests/test_certificate.py",
+                    "created": "2026-08-27",
+                },
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+
+    with pytest.raises(SystemExit) as refused:
+        certificate.certificate(
+            "generate.py certificate --name leaf",
+            "leaf",
+            "public-only",
+            None,
+            SUBJECT,
+            None,
+            False,
+            VALID_FROM,
+            VALID_UNTIL,
+            SERIAL,
+        )
+
+    assert "does not hold a private key" in str(refused.value)
