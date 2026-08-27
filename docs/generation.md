@@ -61,7 +61,7 @@ names.
 | Flag | Effect |
 | --- | --- |
 | `--name` | Vector name, and the name of the staging directory. |
-| `--key` | Key vector the certificate certifies. |
+| `--key` | Key vector the certificate certifies. A public key alone suffices. A self-signed certificate needs the private key. |
 | `--signed-by` | Certificate vector whose key signs this one, resolved through that vector's `key` reference. The certificate is self-signed under `--key` when absent. |
 | `--subject` | Subject common name. |
 | `--issuer` | Issuer common name. The signer certificate's subject common name when absent, and `--subject` on a self-signed certificate. |

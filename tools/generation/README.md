@@ -57,7 +57,6 @@ You should not rely on this code.
 - `certificate` names subject and issuer by common name only and emits keyUsage and, with
   `--ca`, basicConstraints. No subject key identifier, authority key identifier, subject
   alternative name, CRL distribution point, or other ISO 18013-5 Annex B extension is emitted.
-  `--key` has to name a key vector holding a private key.
 - `key` derives P-256 keys only. Every signature is ES256.
 - `proof` bytes are not reproducible from the recorded command line. The attribute count has
   to equal the circuit's `num_attributes`. google-cpp neither proves nor verifies over a

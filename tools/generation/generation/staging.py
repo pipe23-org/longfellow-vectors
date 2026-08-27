@@ -13,7 +13,10 @@ from typing import NoReturn
 
 from cryptography.exceptions import UnsupportedAlgorithm
 from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.hazmat.primitives.serialization import (
+    load_pem_private_key,
+    load_pem_public_key,
+)
 from longfellow_vectors import LongfellowVectors
 from longfellow_vectors.mdoc import Key
 
@@ -99,6 +102,28 @@ def private_key(vector: Key) -> ec.EllipticCurvePrivateKey:
         sys.exit(f"error: key {vector.name!r} does not hold a private key")
     if not isinstance(loaded, ec.EllipticCurvePrivateKey):
         sys.exit(f"error: key {vector.name!r} does not hold an EC private key")
+    return loaded
+
+
+def public_key(vector: Key) -> ec.EllipticCurvePublicKey:
+    """The EC public key a key vector's PEM holds, from a private or a public key.
+
+    Args:
+        vector: Key vector to read.
+
+    Returns:
+        The public key the PEM encodes, or the public half of the private key
+        it encodes.
+    """
+    try:
+        loaded: object = load_pem_private_key(vector.pem, password=None).public_key()
+    except (ValueError, TypeError, UnsupportedAlgorithm):
+        try:
+            loaded = load_pem_public_key(vector.pem)
+        except (ValueError, UnsupportedAlgorithm):
+            sys.exit(f"error: key {vector.name!r} does not hold a key")
+    if not isinstance(loaded, ec.EllipticCurvePublicKey):
+        sys.exit(f"error: key {vector.name!r} does not hold an EC key")
     return loaded
 
 

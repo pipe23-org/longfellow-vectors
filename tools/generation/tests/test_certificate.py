@@ -163,7 +163,54 @@ def test_signer_without_a_key_reference_is_refused(collection: Path) -> None:
     assert "records no key vector" in str(refused.value)
 
 
-def test_key_vector_holding_a_public_key_is_refused(collection: Path) -> None:
+def test_public_key_only_key_vector_is_certified_under_the_signer(collection: Path) -> None:
+    private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
+    public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+    (collection / "keys" / "public-only.pem").write_bytes(public_pem)
+    (collection / "keys" / "public-only.json").write_text(
+        json.dumps(
+            {
+                "schema": "mdoc-keys-v1.schema.json",
+                "role": "document-signer",
+                "sha256": hashlib.sha256(public_pem).hexdigest(),
+                "provenance": {
+                    "type": "constructed",
+                    "generator": "tests/test_certificate.py",
+                    "created": "2026-08-27",
+                },
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+
+    certificate.certificate(
+        "generate.py certificate --name leaf",
+        "leaf",
+        "public-only",
+        CA_NAME,
+        SUBJECT,
+        None,
+        False,
+        VALID_FROM,
+        VALID_UNTIL,
+        SERIAL,
+    )
+
+    staged = x509.load_pem_x509_certificate((staging.STAGING / "leaf" / "leaf.pem").read_bytes())
+    assert (
+        staged.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
+        == public_pem
+    )
+    signer = staging.collection().mdoc.certificate(CA_NAME)
+    assert signer.key is not None, f"certificate {CA_NAME} records no key vector"
+    signing_key = load_pem_private_key(signer.key.pem, password=None)
+    signing_key.public_key().verify(
+        staged.signature, staged.tbs_certificate_bytes, ec.ECDSA(hashes.SHA256())
+    )
+
+
+def test_self_signing_a_public_key_only_key_vector_is_refused(collection: Path) -> None:
     private = load_pem_private_key(staging.collection().mdoc.key(KEY_NAME).pem, password=None)
     public_pem = private.public_key().public_bytes(Encoding.PEM, PublicFormat.SubjectPublicKeyInfo)
     (collection / "keys" / "public-only.pem").write_bytes(public_pem)
@@ -186,8 +233,8 @@ def test_key_vector_holding_a_public_key_is_refused(collection: Path) -> None:
 
     with pytest.raises(SystemExit) as refused:
         certificate.certificate(
-            "generate.py certificate --name leaf",
-            "leaf",
+            "generate.py certificate --name self-signed",
+            "self-signed",
             "public-only",
             None,
             SUBJECT,

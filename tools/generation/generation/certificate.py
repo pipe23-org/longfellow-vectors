@@ -17,6 +17,8 @@ reference resolves the signing key; without it the certificate is self-signed
 under the subject key.
 --ca builds a CA certificate, admitted with role iaca; a leaf is admitted with
 role document-signer.
+The key vector can hold a public key alone; a self-signed certificate needs
+its private key.
 The printed command admits the certificate with its role, its signer, and the
 key it certifies, and carries the serial number whether it was given or
 generated.
@@ -56,9 +58,9 @@ def certificate(
         subject_key = vectors.mdoc.key(key_name)
     except KeyError:
         staging.missing("key", key_name)
-    subject_private = staging.private_key(subject_key)
+    subject_public = staging.public_key(subject_key)
     if signed_by is None:
-        signing_key = subject_private
+        signing_key = staging.private_key(subject_key)
         issuer = issuer if issuer is not None else subject
     else:
         try:
@@ -75,7 +77,7 @@ def certificate(
         command = staging.command_with(command, "--serial", str(serial))
     built = mdoc.create_certificate(
         subject,
-        subject_private.public_key(),
+        subject_public,
         issuer,
         signing_key,
         valid_from,
