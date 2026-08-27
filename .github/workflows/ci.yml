@@ -116,4 +116,5 @@ jobs:
       - run: uv sync --locked
       - run: uv run --no-sync ruff check
       - run: uv run --no-sync ruff format --check
+      - run: uv run --no-sync python ../check_prose.py .
       - run: uv run --no-sync pytest
