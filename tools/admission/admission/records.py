@@ -32,7 +32,6 @@ REF_HELP = "commit of the generator, 40 hex digits"
 
 
 def record_name(value: str) -> str:
-    """Argparse type for --name: the vector naming convention's lowercase-hyphen form."""
     if not RECORD_NAME.fullmatch(value):
         raise argparse.ArgumentTypeError(
             f"{value!r} is not a vector name; names match ^[a-z0-9][a-z0-9-]*$"
@@ -48,7 +47,6 @@ def _git(source_dir: Path, *args: str) -> str:
 
 
 def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, Any]:
-    """Repository provenance for a source file inside a git checkout."""
     toplevel = Path(_git(source.parent, "rev-parse", "--show-toplevel"))
     record: dict[str, Any] = {
         "type": "repository",
@@ -63,7 +61,6 @@ def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, A
 
 
 def constructed(generator: str, ref: str) -> dict[str, Any]:
-    """Constructed provenance."""
     return {
         "type": "constructed",
         "generator": generator,

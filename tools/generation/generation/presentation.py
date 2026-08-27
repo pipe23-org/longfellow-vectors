@@ -10,7 +10,6 @@ DESCRIPTION = "Present a credential over a transcript and stage presentation.jso
 
 
 def _issuer_signed(credential_name: str, blob: bytes) -> dict[Any, Any]:
-    """The decoded IssuerSigned a credential vector's bytes hold."""
     try:
         issuer_signed = cbor2.loads(blob)
     except Exception:
@@ -27,7 +26,6 @@ def _issuer_signed(credential_name: str, blob: bytes) -> dict[Any, Any]:
 def _disclosed(
     namespaces: dict[Any, Any], disclose: list[list[str]], credential_name: str
 ) -> dict[Any, Any]:
-    """The issuer-signed items the response carries, keyed by namespace."""
     if not disclose:
         return namespaces
     requested = {(namespace, identifier) for namespace, identifier in disclose}

@@ -11,7 +11,6 @@ DESCRIPTION = "Certify a key vector and stage <name>.pem."
 
 
 def _common_name(certificate: x509.Certificate, name: str) -> str:
-    """The common name a certificate's subject carries."""
     attributes = certificate.subject.get_attributes_for_oid(NameOID.COMMON_NAME)
     if not attributes:
         sys.exit(f"error: certificate {name!r} has no subject common name; pass --issuer")

@@ -13,12 +13,12 @@ from cryptography.hazmat.primitives.serialization import (
 )
 
 from . import records
+from .mdoc import X5CHAIN
 
 DESCRIPTION = "Admit IssuerSigned CBOR under vectors/mdoc/credentials/."
 
 
 def _issuer_auth(blob: bytes) -> Any:
-    """The top-level issuerAuth of an IssuerSigned credential."""
     try:
         issuer_signed = cbor2.loads(blob)
         return issuer_signed["issuerAuth"]
@@ -27,7 +27,6 @@ def _issuer_auth(blob: bytes) -> Any:
 
 
 def _mso(issuer_auth: Any) -> Any:
-    """The MSO an issuerAuth's payload carries."""
     try:
         return cbor2.loads(cbor2.loads(issuer_auth[2]).value)
     except Exception:
@@ -85,7 +84,7 @@ def import_credential(
     if ds_certificate_name is not None:
         records.require_certificate(ds_certificate_name)
         try:
-            chain = issuer_auth[1][33]
+            chain = issuer_auth[1][X5CHAIN]
             leaf_der: bytes = chain[0] if isinstance(chain, list) else chain
         except Exception:
             sys.exit("error: credential does not parse; cannot verify --ds-certificate")

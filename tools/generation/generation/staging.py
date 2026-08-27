@@ -28,7 +28,6 @@ NAME_HELP = "vector name, lowercase words joined by hyphens"
 
 
 def vector_name(value: str) -> str:
-    """Argparse type for --name: the vector naming convention's lowercase-hyphen form."""
     if not VECTOR_NAME.fullmatch(value):
         raise argparse.ArgumentTypeError(
             f"{value!r} is not a vector name; names match ^[a-z0-9][a-z0-9-]*$"
@@ -37,14 +36,12 @@ def vector_name(value: str) -> str:
 
 
 def hex_string(value: str) -> str:
-    """Argparse type for a hex flag: an even, positive number of hex digits, lowercased."""
     if not HEX.fullmatch(value):
         raise argparse.ArgumentTypeError(f"{value!r} is not an even-length hex string")
     return value.lower()
 
 
 def iso_datetime(value: str) -> datetime:
-    """Argparse type for a date-time flag: an ISO 8601 string carrying a UTC offset."""
     try:
         parsed = datetime.fromisoformat(value)
     except ValueError as e:
@@ -55,17 +52,14 @@ def iso_datetime(value: str) -> datetime:
 
 
 def rfc3339(value: datetime) -> str:
-    """Render a timezone-aware datetime in the form the vector schemas take."""
     return value.isoformat()
 
 
 def collection() -> LongfellowVectors:
-    """The collection in this checkout, which the commands read named vectors from."""
     return LongfellowVectors(root=VECTORS)
 
 
 def namespaces(triples: list[list[str]]) -> dict[str, dict[str, object]]:
-    """Group namespace, id, and JSON value triples into the nested map the builder takes."""
     grouped: dict[str, dict[str, object]] = {}
     for namespace, identifier, value in triples:
         try:
@@ -76,7 +70,6 @@ def namespaces(triples: list[list[str]]) -> dict[str, dict[str, object]]:
 
 
 def private_key(vector: Key) -> ec.EllipticCurvePrivateKey:
-    """The EC private key a key vector's PEM holds."""
     try:
         loaded = load_pem_private_key(vector.pem, password=None)
     except (ValueError, TypeError, UnsupportedAlgorithm):
@@ -87,7 +80,6 @@ def private_key(vector: Key) -> ec.EllipticCurvePrivateKey:
 
 
 def public_key(vector: Key) -> ec.EllipticCurvePublicKey:
-    """The EC public key a key vector's PEM holds, from a private or a public key."""
     try:
         loaded: object = load_pem_private_key(vector.pem, password=None).public_key()
     except (ValueError, TypeError, UnsupportedAlgorithm):
@@ -101,26 +93,22 @@ def public_key(vector: Key) -> ec.EllipticCurvePublicKey:
 
 
 def missing(vector_type: str, name: str) -> NoReturn:
-    """Exit naming a vector the collection does not hold."""
     sys.exit(f"error: {vector_type} {name!r} not in the collection; admit it first")
 
 
 def stage(name: str) -> Path:
-    """Create and return the staging directory a command writes its files into."""
     directory = STAGING / name
     directory.mkdir(parents=True, exist_ok=True)
     return directory
 
 
 def write(path: Path, data: bytes) -> Path:
-    """Write a staged file and print where it went."""
     path.write_bytes(data)
     print(f"wrote {os.path.relpath(path)}")
     return path
 
 
 def generator_ref() -> str | None:
-    """The commit tools/generation runs from, or None when the directory has uncommitted changes."""
     here = Path(__file__).resolve().parent.parent
     status = subprocess.run(
         ["git", "-C", str(here), "status", "--porcelain", "."], capture_output=True, text=True
@@ -134,7 +122,6 @@ def generator_ref() -> str | None:
 
 
 def committed_ref() -> str:
-    """The commit tools/generation runs from; exits when the tree has uncommitted changes."""
     ref = generator_ref()
     if ref is None:
         sys.exit("error: tools/generation has uncommitted changes; commit them first")
@@ -142,7 +129,6 @@ def committed_ref() -> str:
 
 
 def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
-    """The admit.py command that admits a staged file, as an argument list."""
     return [
         "uv",
         "run",
@@ -160,12 +146,10 @@ def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) ->
 
 
 def command_with(command: str, *flags: str) -> str:
-    """The generate.py command line with values it generated appended as flags."""
     return shlex.join([*shlex.split(command), *flags])
 
 
 def print_commands(commands: list[list[str]]) -> None:
-    """Print the admission commands for one command's staged files, one per line."""
     print("\nadmit from tools/admission:")
     for command in commands:
         print(" ".join(shlex.quote(word) for word in command))

@@ -12,7 +12,6 @@ DESCRIPTION = "Prove a presentation with a circuit and stage <name>.proof."
 
 
 def _claims(presentation: Presentation, attr_ids: list[str]) -> list[RequestedAttribute]:
-    """The presentation's claims for the given ids, in the order given."""
     by_id = {claim.id: claim for claim in presentation.claims()}
     selected = []
     for attr_id in attr_ids:
@@ -26,14 +25,11 @@ def _claims(presentation: Presentation, attr_ids: list[str]) -> list[RequestedAt
 
 
 def _spec(backend: str, circuit: Circuit) -> CircuitSpec:
-    """The CircuitSpec the backend needs to load the circuit vector's bytes."""
     if backend == "google-cpp":
         spec = google_cpp.find_zk_spec(circuit.system, google_cpp.circuit_id(circuit.bytes))
         if spec is None:
             sys.exit(f"error: the linked library has no spec for circuit {circuit.name!r}")
         return spec
-    # The isrg-rust backend reads version and num_attributes from the spec and
-    # nothing else.
     return CircuitSpec("", "0" * 64, circuit.num_attributes, circuit.version, 0, 0)
 
 

@@ -14,9 +14,6 @@ DESCRIPTION = "Admit a PEM certificate under vectors/mdoc/certificates/."
 
 
 def _verify_certificate_signature(child: x509.Certificate, parent: x509.Certificate) -> None:
-    """Verify child's signature under parent's key."""
-    # Certificate.extensions raises on the AV test PKI's malformed issuerAltName; the
-    # signature check does not read extensions.
     key = parent.public_key()
     if not isinstance(key, ec.EllipticCurvePublicKey):
         sys.exit("error: only EC-signed certificates are supported")

@@ -27,13 +27,11 @@ PROVENANCE = {
 
 @pytest.fixture(scope="session")
 def circuit() -> bytes:
-    """google/longfellow-zk v7 one-attribute circuit export at fe83ec6."""
     return (DATA / "v7-1attr.circuit").read_bytes()
 
 
 @pytest.fixture
 def collection(tmp_path: Path, circuit: bytes, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A collection holding a trust chain, a credential, a presentation, a circuit, and a proof."""
     root = tmp_path / "mdoc"
     for subtree in ("keys", "certificates", "credentials", "presentations", "circuits", "proofs"):
         (root / subtree).mkdir(parents=True)

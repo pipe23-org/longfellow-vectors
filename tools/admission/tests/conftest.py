@@ -18,7 +18,6 @@ PROVENANCE = {
 
 @pytest.fixture
 def collection(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    """A collection holding the device key, the document-signer certificate, and a credential."""
     root = tmp_path / "vectors" / "mdoc"
     for subtree in ("keys", "certificates", "credentials", "presentations"):
         (root / subtree).mkdir(parents=True)

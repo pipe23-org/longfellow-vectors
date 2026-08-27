@@ -58,8 +58,7 @@ instance.
 
 `Credential.claims()` parses the vector's IssuerSigned and
 `Presentation.claims()` the vector's DeviceResponse; both return the
-issuer-signed claims in document order, as a tuple of `Claim`. Each call
-re-parses the bytes.
+issuer-signed claims in document order, as a tuple of `Claim`.
 
 `Proof.statement()` returns the `Statement` the vector's `doctype`,
 `transcript`, `issuer_public_key`, `claims`, `timestamp`, and

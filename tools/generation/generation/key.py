@@ -8,13 +8,11 @@ from . import staging
 
 DESCRIPTION = "Derive a P-256 key from a seed and stage <name>.pem."
 
-# Order of the P-256 group, SEC 2 secp256r1 n.
-_ORDER = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
+_P256_ORDER = 0xFFFFFFFF00000000FFFFFFFFFFFFFFFFBCE6FAADA7179E84F3B9CAC2FC632551
 
 
 def _scalar(seed: bytes) -> int:
-    """The private scalar a seed fixes: SHA-256 of the seed reduced into [1, n-1]."""
-    return int.from_bytes(hashlib.sha256(seed).digest(), "big") % (_ORDER - 1) + 1
+    return int.from_bytes(hashlib.sha256(seed).digest(), "big") % (_P256_ORDER - 1) + 1
 
 
 def key(command: str, name: str, role: str, seed: str | None) -> None:

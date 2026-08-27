@@ -8,7 +8,6 @@ DESCRIPTION = "Flip one bit of a proof and stage <name>.proof."
 
 
 def _statement_flags(source: Proof) -> list[str]:
-    """The admission flags carrying the statement of a proof made from no admitted presentation."""
     flags = []
     if source.doctype is not None:
         flags += ["--doctype", source.doctype]

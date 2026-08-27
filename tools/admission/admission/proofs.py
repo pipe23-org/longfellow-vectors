@@ -11,7 +11,6 @@ DESCRIPTION = "Admit a proof under vectors/mdoc/proofs/."
 def statement_from_flags(
     parser: argparse.ArgumentParser, args: argparse.Namespace
 ) -> dict[str, Any] | None:
-    """The statement the `proof` statement flags supply, or None when none is given."""
     required = {
         "doctype": args.doctype,
         "transcript": args.transcript,

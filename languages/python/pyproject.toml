@@ -75,6 +75,8 @@ testpaths = ["tests"]
 [tool.interrogate]
 fail-under = 100
 ignore-init-module = false
+ignore-semiprivate = true
+ignore-private = true
 
 [tool.coverage.run]
 branch = true
