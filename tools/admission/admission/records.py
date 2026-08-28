@@ -46,6 +46,8 @@ def _git(source_dir: Path, *args: str) -> str:
 
 def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, Any]:
     toplevel = Path(_git(source.parent, "rev-parse", "--show-toplevel"))
+    if _git(source.parent, "status", "--porcelain"):
+        sys.exit(f"error: {toplevel} has uncommitted changes; commit them first")
     record: dict[str, Any] = {
         "type": "repository",
         "repo": repo,
