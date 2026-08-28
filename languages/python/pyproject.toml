@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "longfellow-vectors"
-version = "0.0.1"
+version = "0.1.0"
 description = "Test vectors for Longfellow zero-knowledge proof implementations: keys, credentials, presentations, circuits, certificates, and proofs with citable provenance."
 readme = "README.md"
 requires-python = ">=3.11"

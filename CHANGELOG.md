@@ -1,16 +1,16 @@
 # Changelog
 
-## Unreleased
+## 0.1.0 - 2026-08-28
 
-- Admitted the first vectors: eight google circuit exports, the abetterinternet mdoc_zk presentation and its two google-cpp proofs, a constructed IACA and document-signer PKI with an age-verification credential presented twice over one transcript, and three derived proofs. Twenty-two vectors.
 - **BACKWARDS INCOMPATIBLE:** `generate.py proof --attr` now takes a namespace and an attribute id, matching `admit.py proof --attr`, and the admission commands `proof` and `flip-bit` print carry both. (#13)
 - **BACKWARDS INCOMPATIBLE:** `admit.py proof --attr` now takes a namespace and an attribute id; previously it took an id alone and refused the whole credential when any id appeared under more than one namespace. (#12)
 - **BACKWARDS INCOMPATIBLE:** `admit.py proof` now requires `--timestamp` whenever a statement is written, with `--presentation` and alongside the statement flags; previously a proof could be admitted whose recorded statement could never be read back. (#12)
 - **BACKWARDS INCOMPATIBLE:** Removed `index`, `via`, `license`, and `copyright` from repository provenance. No flag wrote any of them. (#12)
-- `admit.py` now refuses a name the collection already holds; previously a second admission replaced the vector, leaving references verified against the replaced bytes. (#12)
-- `admit.py` now refuses a source checkout carrying uncommitted changes; previously it recorded HEAD as the ref whether or not that commit held the bytes being admitted. (#11)
 - **BACKWARDS INCOMPATIBLE:** Removed `captured` from repository provenance and `ref` and `created` from constructed provenance; `captured` and `created` were required. A sidecar carrying any of the three is rejected. Repository provenance keeps `ref`, derived from the source checkout. (#10)
 - **BACKWARDS INCOMPATIBLE:** Credential vectors now hold `IssuerSigned` CBOR, `{nameSpaces, issuerAuth}`; previously they held a `DeviceResponse`. `Credential.claims()` reads the top-level `nameSpaces` instead of `documents[0].issuerSigned.nameSpaces`. (#8)
+- Admitted the first vectors: eight google circuit exports, the abetterinternet mdoc_zk presentation and its two google-cpp proofs, a constructed IACA and document-signer PKI with an age-verification credential presented twice over one transcript, and three derived proofs. Twenty-two vectors.
+- `admit.py` now refuses a name the collection already holds; previously a second admission replaced the vector, leaving references verified against the replaced bytes. (#12)
+- `admit.py` now refuses a source checkout carrying uncommitted changes; previously it recorded HEAD as the ref whether or not that commit held the bytes being admitted. (#11)
 - `tools/add_vector.py` is now `tools/admission/admit.py`, a uv project under `tools/admission/`, and its commands are named by vector type: `circuit`, `presentation`, `proof`, `key`, `credential`, and `certificate`, previously `import-circuit`, `import-presentation`, `import-proof`, `import-key`, `import-credential`, and `import-certificate`. Flags are unchanged. (#8)
 - Added `tools/generation/generate.py`, a uv project under `tools/generation/` pinned to pylongfellow 0.5.2, with one construction command per vector type, `key`, `certificate`, `credential`, `presentation`, and `proof`, and `flip-bit`, which derives a proof from an admitted proof. Each command reads the vectors it builds on from the collection by name and prints the `admit.py` command that admits its output. (#8)
 - The `generator` field of constructed provenance now holds the generating command line with every value the command generated filled in, and re-running it reproduces the bytes for every `generate.py` command but `proof`; previously it named a tool and mode. Signatures use the RFC 6979 nonce, key scalars and `IssuerSignedItem` salts derive from a seed, and a seed or certificate serial the command generated is filled into the recorded command line. (#8)
