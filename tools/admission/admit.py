@@ -11,8 +11,7 @@
     uv run admit.py proof <proof-path> \\
         (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--prover <backend>] [--circuit <circuit-name>] \\
-        [--timestamp <iso>] \\
-        ( [--presentation <presentation-name>] [--attr <id>]... \\
+        ( [--presentation <presentation-name>] [--attr <namespace> <id>]... --timestamp <iso> \\
         | --doctype <doctype> --transcript <hex> \\
           --issuer-public-key-x <hex> --issuer-public-key-y <hex> \\
           [--claim <namespace> <id> <cbor-hex>]... [--device-namespaces <hex>] )
@@ -124,10 +123,12 @@ def main() -> None:
     )
     p_proof.add_argument(
         "--attr",
+        nargs=2,
+        metavar=("NAMESPACE", "ID"),
         action="append",
         default=[],
         dest="attr_ids",
-        help="disclosed attribute id (repeatable)",
+        help="disclosed attribute, as namespace and id (repeatable)",
     )
     p_proof.add_argument(
         "--doctype",

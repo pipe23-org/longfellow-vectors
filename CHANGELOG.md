@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **BACKWARDS INCOMPATIBLE:** `admit.py proof --attr` now takes a namespace and an attribute id; previously it took an id alone and refused the whole credential when any id appeared under more than one namespace. (#12)
+- **BACKWARDS INCOMPATIBLE:** `admit.py proof` now requires `--timestamp` whenever a statement is written, with `--presentation` and alongside the statement flags; previously a proof could be admitted whose recorded statement could never be read back. (#12)
+- **BACKWARDS INCOMPATIBLE:** Removed `index`, `via`, `license`, and `copyright` from repository provenance. No flag wrote any of them. (#12)
+- `admit.py` now refuses a name the collection already holds; previously a second admission replaced the vector, leaving references verified against the replaced bytes. (#12)
 - `admit.py` now refuses a source checkout carrying uncommitted changes; previously it recorded HEAD as the ref whether or not that commit held the bytes being admitted. (#11)
 - **BACKWARDS INCOMPATIBLE:** Removed `captured` from repository provenance and `ref` and `created` from constructed provenance; `captured` and `created` were required. A sidecar carrying any of the three is rejected. Repository provenance keeps `ref`, derived from the source checkout. (#10)
 - **BACKWARDS INCOMPATIBLE:** Credential vectors now hold `IssuerSigned` CBOR, `{nameSpaces, issuerAuth}`; previously they held a `DeviceResponse`. `Credential.claims()` reads the top-level `nameSpaces` instead of `documents[0].issuerSigned.nameSpaces`. (#8)

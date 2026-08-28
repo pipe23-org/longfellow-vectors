@@ -117,11 +117,7 @@ class Provenance:
     repo: str | None = None
     ref: str | None = None
     path: str | None = None
-    index: str | None = None
-    via: str | None = None
     generator: str | None = None
-    license: str | None = None
-    copyright: str | None = None
 
 
 @dataclass(frozen=True)

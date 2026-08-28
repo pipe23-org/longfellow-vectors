@@ -35,3 +35,27 @@ def test_generator_provenance(collection: Path, monkeypatch: pytest.MonkeyPatch)
         "type": "constructed",
         "generator": GENERATOR,
     }
+
+
+def test_existing_name_refused(collection: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    argv = [
+        "admit.py",
+        "certificate",
+        str(DATA / "ds-certificate.pem"),
+        "--generator",
+        GENERATOR,
+        "--name",
+        "signer",
+        "--role",
+        "document-signer",
+    ]
+    monkeypatch.setattr(sys, "argv", argv)
+    admit.main()
+    before = (records.CERTIFICATES / "signer.json").read_text()
+    monkeypatch.setattr(sys, "argv", argv)
+
+    with pytest.raises(SystemExit) as refused:
+        admit.main()
+
+    assert "remove the vector to readmit it" in str(refused.value)
+    assert (records.CERTIFICATES / "signer.json").read_text() == before

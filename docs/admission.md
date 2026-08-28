@@ -137,9 +137,9 @@ certificate that carries no signature hash algorithm.
 | `path` | Proof blob to admit, copied to `vectors/mdoc/proofs/<name>.proof`. |
 | `--prover` | Backend registry name, recorded as given. |
 | `--circuit` | Circuit vector the proof was made with. Refused when the collection holds no circuit of that name. |
-| `--timestamp` | Verification time, recorded as given. The schema rejects anything other than an RFC 3339 date-time with a UTC offset. |
+| `--timestamp` | Verification time, recorded as given. Required whenever a statement is written. The schema rejects anything other than an RFC 3339 date-time with a UTC offset. |
 | `--presentation` | Presentation vector the statement is copied from. |
-| `--attr` | Attribute id the proof discloses. Repeatable, and requires `--presentation`. |
+| `--attr` | Attribute the proof discloses, as namespace and id. Repeatable, and requires `--presentation`. |
 | `--doctype`, `--transcript`, `--issuer-public-key-x`, `--issuer-public-key-y`, `--claim`, `--device-namespaces` | The statement, supplied on the command line. |
 | `--repo`, `--generator` | Provenance, as above. |
 | `--name` | Vector name. |
@@ -150,15 +150,16 @@ exclusive.
 
 With `--presentation`, `doctype`, `transcript`, `issuer_public_key_x`,
 `issuer_public_key_y`, and `device_namespaces` are copied from the presentation
-vector, each of them that the vector carries. Each `--attr` names an
-attribute id, and
-the claim's namespace and CBOR value are read from that presentation's
-`issuerSigned` map. At least one `--attr` is required, and an id the map does
-not hold is refused.
+vector, each of them that the vector carries. Each `--attr` names a namespace
+and an attribute id, and the claim's CBOR value is read from that
+presentation's `issuerSigned` map. At least one `--attr` and a `--timestamp`
+are required, and a namespace and id the map does not hold is refused. One
+attribute id may appear under more than one namespace.
 
 With the statement flags, the values are written as given, with hex
 lowercased. `--doctype`, `--transcript`, `--issuer-public-key-x`,
-`--issuer-public-key-y`, and at least one `--claim` are required together.
+`--issuer-public-key-y`, `--timestamp`, and at least one `--claim` are
+required together.
 `--device-namespaces` is optional. `--attr` alongside them is refused.
 
 Given neither, the vector holds the proof bytes and the provenance alone.
@@ -177,4 +178,6 @@ A vector whose provenance is `type: "repository"` carries what a re-run needs.
    reference names, the statement flags, and `--comment`.
 
 The new sidecar's `ref` and `path` come from the checkout, so the re-run
-writes the same bytes as the recorded sidecar.
+writes the same bytes as the recorded sidecar. Admission refuses a name the
+collection already holds, so the vector's blob and sidecar are removed before
+the re-run.

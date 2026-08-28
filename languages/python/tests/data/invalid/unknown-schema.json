@@ -8,9 +8,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "circuits/tiny.circuit",
-    "index": "circuits[0]",
-    "via": "an intermediate export"
+    "path": "circuits/tiny.circuit"
   },
   "comment": "Vector naming widget.schema.json, which no schema file declares."
 }
