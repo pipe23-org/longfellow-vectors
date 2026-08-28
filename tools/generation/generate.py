@@ -20,7 +20,7 @@
 
     uv run generate.py proof --name <name> \\
         --presentation <vector-name> --circuit <vector-name> \\
-        --backend <google-cpp|isrg-rust> --attr <id>... --timestamp <iso>
+        --backend <google-cpp|isrg-rust> --attr <namespace> <id>... --timestamp <iso>
 
     uv run generate.py flip-bit --proof <vector-name> \\
         [--name <name>] [--byte <index>] [--bit <0-7>]
@@ -222,10 +222,12 @@ def main() -> None:
     )
     p_proof.add_argument(
         "--attr",
+        nargs=2,
+        metavar=("NAMESPACE", "ID"),
         action="append",
         required=True,
         dest="attr_ids",
-        help="disclosed attribute id (repeatable, in order)",
+        help="disclosed attribute, as namespace and id (repeatable, in order)",
     )
     p_proof.add_argument(
         "--timestamp",

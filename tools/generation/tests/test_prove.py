@@ -11,7 +11,9 @@ from generation import prove, staging
 PRESENTATION_NAME = "smoke"
 CIRCUIT_NAME = "v7-1attr"
 BACKEND = "google-cpp"
+NAMESPACE = "eu.europa.ec.av.1"
 ATTR_ID = "age_over_18"
+ATTR = [NAMESPACE, ATTR_ID]
 DOCTYPE = "eu.europa.ec.av.1"
 NAME = "proved"
 TIMESTAMP = datetime(2026, 8, 2, tzinfo=UTC)
@@ -24,7 +26,7 @@ def test_proof_verifies(collection: Path) -> None:
         PRESENTATION_NAME,
         CIRCUIT_NAME,
         BACKEND,
-        [ATTR_ID],
+        [ATTR],
         TIMESTAMP,
     )
 
@@ -59,7 +61,7 @@ def test_wrong_attribute_count_rejected(collection: Path) -> None:
             PRESENTATION_NAME,
             CIRCUIT_NAME,
             BACKEND,
-            [ATTR_ID, ATTR_ID],
+            [ATTR, ATTR],
             TIMESTAMP,
         )
 

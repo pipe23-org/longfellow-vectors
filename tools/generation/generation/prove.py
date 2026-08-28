@@ -11,14 +11,15 @@ from . import staging
 DESCRIPTION = "Generate a proof."
 
 
-def _claims(presentation: Presentation, attr_ids: list[str]) -> list[RequestedAttribute]:
-    by_id = {claim.id: claim for claim in presentation.claims()}
+def _claims(presentation: Presentation, attrs: list[list[str]]) -> list[RequestedAttribute]:
+    by_key = {(claim.namespace, claim.id): claim for claim in presentation.claims()}
     selected = []
-    for attr_id in attr_ids:
-        claim = by_id.get(attr_id)
+    for namespace, attr_id in attrs:
+        claim = by_key.get((namespace, attr_id))
         if claim is None:
             sys.exit(
-                f"error: attribute id {attr_id!r} is not in presentation {presentation.name!r}"
+                f"error: attribute {namespace}/{attr_id} is not in "
+                f"presentation {presentation.name!r}"
             )
         selected.append(RequestedAttribute(claim.namespace, claim.id, claim.cbor_value))
     return selected
@@ -39,7 +40,7 @@ def prove(
     presentation_name: str,
     circuit_name: str,
     backend: str,
-    attr_ids: list[str],
+    attr_ids: list[list[str]],
     timestamp: datetime,
 ) -> None:
     vectors = staging.collection()
@@ -78,7 +79,7 @@ def prove(
         sys.exit(f"error: {backend} did not prove: {e}")
     path = staging.write(staging.stage(name) / f"{name}.proof", proof)
     flags = ["--prover", backend, "--circuit", circuit_name, "--presentation", presentation_name]
-    for attr_id in attr_ids:
-        flags += ["--attr", attr_id]
+    for namespace, attr_id in attr_ids:
+        flags += ["--attr", namespace, attr_id]
     flags += ["--timestamp", staging.rfc3339(timestamp)]
     staging.print_commands([staging.admit("proof", path, name, command, *flags)])

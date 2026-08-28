@@ -106,7 +106,7 @@ Stages `<name>.proof`.
 | `--presentation` | Presentation vector to prove over. It supplies the mdoc, the transcript, the issuer public key, and the namespace and CBOR value of every attribute. |
 | `--circuit` | Circuit vector to prove with. |
 | `--backend` | `google-cpp` or `isrg-rust`, the implementation that produces the proof bytes. |
-| `--attr` | Attribute id to disclose. Repeatable, and the claims are proved in the order given. |
+| `--attr` | Attribute to disclose, as namespace and id. Repeatable, and the claims are proved in the order given. |
 | `--timestamp` | Verification time to prove at, an ISO 8601 date-time carrying a UTC offset. |
 
 ## flip-bit
@@ -142,6 +142,6 @@ uv run generate.py credential --name av-over-18 --ds-certificate ds-vectors-2026
 uv run admit.py credential ../generation/staging/av-over-18/av-over-18.cbor --generator 'generate.py credential --name av-over-18 --ds-certificate ds-vectors-2026-2031 --device-key device-vectors-01 --claim eu.europa.ec.av.1 age_over_18 true --valid-from 2026-01-01T00:00:00Z --valid-until 2027-01-01T00:00:00Z --seed 03' --name av-over-18 --device-key device-vectors-01 --ds-certificate ds-vectors-2026-2031
 uv run generate.py presentation --name av-over-18-20260826 --credential av-over-18 --transcript 83f6f68265646361706958200000000000000000000000000000000000000000000000000000000000000000
 uv run admit.py presentation ../generation/staging/av-over-18-20260826/presentation.json --generator 'generate.py presentation --name av-over-18-20260826 --credential av-over-18 --transcript 83f6f68265646361706958200000000000000000000000000000000000000000000000000000000000000000' --name av-over-18-20260826 --credential av-over-18
-uv run generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr age_over_18 --timestamp 2026-08-26T00:00:00Z
-uv run admit.py proof ../generation/staging/google-cpp-av-over-18-20260826-v7-1attr/google-cpp-av-over-18-20260826-v7-1attr.proof --generator 'generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr age_over_18 --timestamp 2026-08-26T00:00:00Z' --name google-cpp-av-over-18-20260826-v7-1attr --prover google-cpp --circuit google-v7-1attr --presentation av-over-18-20260826 --attr age_over_18 --timestamp 2026-08-26T00:00:00+00:00
+uv run generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr eu.europa.ec.av.1 age_over_18 --timestamp 2026-08-26T00:00:00Z
+uv run admit.py proof ../generation/staging/google-cpp-av-over-18-20260826-v7-1attr/google-cpp-av-over-18-20260826-v7-1attr.proof --generator 'generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr eu.europa.ec.av.1 age_over_18 --timestamp 2026-08-26T00:00:00Z' --name google-cpp-av-over-18-20260826-v7-1attr --prover google-cpp --circuit google-v7-1attr --presentation av-over-18-20260826 --attr eu.europa.ec.av.1 age_over_18 --timestamp 2026-08-26T00:00:00+00:00
 ```
