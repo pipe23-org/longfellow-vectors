@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **BACKWARDS INCOMPATIBLE:** `generate.py proof --attr` now takes a namespace and an attribute id, matching `admit.py proof --attr`, and the admission commands `proof` and `flip-bit` print carry both. (#13)
 - **BACKWARDS INCOMPATIBLE:** `admit.py proof --attr` now takes a namespace and an attribute id; previously it took an id alone and refused the whole credential when any id appeared under more than one namespace. (#12)
 - **BACKWARDS INCOMPATIBLE:** `admit.py proof` now requires `--timestamp` whenever a statement is written, with `--presentation` and alongside the statement flags; previously a proof could be admitted whose recorded statement could never be read back. (#12)
 - **BACKWARDS INCOMPATIBLE:** Removed `index`, `via`, `license`, and `copyright` from repository provenance. No flag wrote any of them. (#12)

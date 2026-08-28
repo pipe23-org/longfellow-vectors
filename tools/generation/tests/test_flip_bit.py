@@ -11,7 +11,8 @@ BIT = 0
 COMMAND = "generate.py flip-bit --proof source"
 COMMAND_TAIL = (
     "--name source-bit-flipped "
-    "--prover google-cpp --circuit v7-1attr --presentation smoke --attr age_over_18 "
+    "--prover google-cpp --circuit v7-1attr --presentation smoke "
+    "--attr eu.europa.ec.av.1 age_over_18 "
     "--timestamp 2026-08-02T00:00:00+00:00 "
     "--comment 'source with bit 0 of byte 32 flipped'"
 )

@@ -51,7 +51,7 @@ def flip_bit(
     if source.presentation is not None:
         flags += ["--presentation", source.presentation.name]
         for claim in source.claims or ():
-            flags += ["--attr", claim.id]
+            flags += ["--attr", claim.namespace, claim.id]
     else:
         flags += _statement_flags(source)
     if source.timestamp is not None:
