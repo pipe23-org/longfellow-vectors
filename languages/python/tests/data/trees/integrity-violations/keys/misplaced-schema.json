@@ -6,8 +6,7 @@
   "num_attributes": 1,
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-25"
+    "generator": "fixture"
   },
   "comment": "Sidecar sitting in keys/ that names the circuits schema."
 }

@@ -10,8 +10,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "inputs/bare.json",
-    "captured": "2026-08-21"
+    "path": "inputs/bare.json"
   },
   "comment": "Presentation vector for the loader tests under repository provenance, carrying doctype, device_namespaces, transcript, and the issuer key. credential is absent."
 }

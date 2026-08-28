@@ -8,8 +8,7 @@
   "private_key": "9999999999999999999999999999999999999999999999999999999999999999",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-21"
+    "generator": "fixture"
   },
   "comment": "Key vector for the loader tests, carrying fingerprint, public_key_x, public_key_y, and private_key. The values are synthetic and do not derive from the PEM."
 }

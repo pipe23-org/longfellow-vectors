@@ -4,8 +4,7 @@
   "sha256": "c2d1b1d7045a2f9a81b22d7ec361e19491a5bc6870107b716bf46479bff3f79c",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-25"
+    "generator": "fixture"
   },
   "comment": "Key vector whose PEM is a real EC P-256 private key, for the der tests. fingerprint, public_key_x, public_key_y, and private_key are absent."
 }

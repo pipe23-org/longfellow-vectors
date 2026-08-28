@@ -8,8 +8,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "circuits/other.circuit",
-    "captured": "2026-08-08"
+    "path": "circuits/other.circuit"
   },
   "comment": "Circuit vector for the loader tests, at version 7 over one attribute. Its blob is one byte; provenance carries neither index nor via."
 }

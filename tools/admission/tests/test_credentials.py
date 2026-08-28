@@ -1,7 +1,6 @@
 import hashlib
 import json
 import sys
-from datetime import date
 from pathlib import Path
 
 import pytest
@@ -25,8 +24,6 @@ def test_credential_admitted_with_references(
             str(DATA / "credential.cbor"),
             "--generator",
             GENERATOR,
-            "--ref",
-            "0" * 40,
             "--name",
             "staged",
             "--device-key",
@@ -48,8 +45,6 @@ def test_credential_admitted_with_references(
         "provenance": {
             "type": "constructed",
             "generator": GENERATOR,
-            "ref": "0" * 40,
-            "created": date.today().isoformat(),
         },
     }
 
@@ -64,8 +59,6 @@ def test_wrong_device_key_rejected(collection: Path, monkeypatch: pytest.MonkeyP
             str(DATA / "credential.cbor"),
             "--generator",
             GENERATOR,
-            "--ref",
-            "0" * 40,
             "--name",
             "staged",
             "--device-key",

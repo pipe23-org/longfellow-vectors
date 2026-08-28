@@ -5,11 +5,11 @@
         --name <name> --version <n> --num-attributes <n>
 
     uv run admit.py presentation <vector-json-path> \\
-        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
+        (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--credential <vector-name>]
 
     uv run admit.py proof <proof-path> \\
-        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
+        (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--prover <backend>] [--circuit <circuit-name>] \\
         [--timestamp <iso>] \\
         ( [--presentation <presentation-name>] [--attr <id>]... \\
@@ -18,16 +18,16 @@
           [--claim <namespace> <id> <cbor-hex>]... [--device-namespaces <hex>] )
 
     uv run admit.py key <pem-path> \\
-        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
+        (--repo <host/owner/name> | --generator <string>) \\
         --name <name> --role <iaca|document-signer|device>
 
     uv run admit.py credential <cbor-path> \\
-        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
+        (--repo <host/owner/name> | --generator <string>) \\
         --name <name> [--device-key <vector-name>] \\
         [--ds-certificate <vector-name>]
 
     uv run admit.py certificate <pem-path> \\
-        (--repo <host/owner/name> | --generator <string> --ref <commit>) \\
+        (--repo <host/owner/name> | --generator <string>) \\
         --name <name> --role <iaca|document-signer> [--signed-by <name>] \\
         [--key <vector-name>]
 """
@@ -78,7 +78,6 @@ def main() -> None:
     p_presentation_source = p_presentation.add_mutually_exclusive_group(required=True)
     p_presentation_source.add_argument("--repo", help=records.REPO_HELP)
     p_presentation_source.add_argument("--generator", help=records.GENERATOR_HELP)
-    p_presentation.add_argument("--ref", help=records.REF_HELP)
     p_presentation.add_argument(
         "--name",
         required=True,
@@ -100,7 +99,6 @@ def main() -> None:
     p_proof_source = p_proof.add_mutually_exclusive_group(required=True)
     p_proof_source.add_argument("--repo", help=records.REPO_HELP)
     p_proof_source.add_argument("--generator", help=records.GENERATOR_HELP)
-    p_proof.add_argument("--ref", help=records.REF_HELP)
     p_proof.add_argument(
         "--name",
         required=True,
@@ -170,7 +168,6 @@ def main() -> None:
     p_key_source = p_key.add_mutually_exclusive_group(required=True)
     p_key_source.add_argument("--repo", help=records.REPO_HELP)
     p_key_source.add_argument("--generator", help=records.GENERATOR_HELP)
-    p_key.add_argument("--ref", help=records.REF_HELP)
     p_key.add_argument(
         "--name",
         required=True,
@@ -193,7 +190,6 @@ def main() -> None:
     p_cred_source = p_credential.add_mutually_exclusive_group(required=True)
     p_cred_source.add_argument("--repo", help=records.REPO_HELP)
     p_cred_source.add_argument("--generator", help=records.GENERATOR_HELP)
-    p_credential.add_argument("--ref", help=records.REF_HELP)
     p_credential.add_argument(
         "--name",
         required=True,
@@ -220,7 +216,6 @@ def main() -> None:
     p_certificate_source = p_certificate.add_mutually_exclusive_group(required=True)
     p_certificate_source.add_argument("--repo", help=records.REPO_HELP)
     p_certificate_source.add_argument("--generator", help=records.GENERATOR_HELP)
-    p_certificate.add_argument("--ref", help=records.REF_HELP)
     p_certificate.add_argument(
         "--name",
         required=True,
@@ -253,10 +248,6 @@ def main() -> None:
         p_sidecar.add_argument("--comment", help=records.COMMENT_HELP)
 
     args = parser.parse_args()
-    if getattr(args, "ref", None) is not None and args.generator is None:
-        parser.error("--ref requires --generator")
-    if getattr(args, "generator", None) is not None and args.ref is None:
-        parser.error("--generator requires --ref")
     if args.command == "circuit":
         circuits.import_circuit(
             args.path,
@@ -271,7 +262,6 @@ def main() -> None:
             args.path,
             args.repo,
             args.generator,
-            args.ref,
             args.name,
             args.credential_name,
             args.comment,
@@ -281,7 +271,6 @@ def main() -> None:
             args.path,
             args.repo,
             args.generator,
-            args.ref,
             args.name,
             args.presentation_name,
             args.prover,
@@ -296,7 +285,6 @@ def main() -> None:
             args.path,
             args.repo,
             args.generator,
-            args.ref,
             args.name,
             args.role,
             args.comment,
@@ -306,7 +294,6 @@ def main() -> None:
             args.path,
             args.repo,
             args.generator,
-            args.ref,
             args.name,
             args.device_key_name,
             args.ds_certificate_name,
@@ -317,7 +304,6 @@ def main() -> None:
             args.path,
             args.repo,
             args.generator,
-            args.ref,
             args.name,
             args.role,
             args.signed_by,

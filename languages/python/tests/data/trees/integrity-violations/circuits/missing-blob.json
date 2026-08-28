@@ -6,8 +6,7 @@
   "num_attributes": 1,
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-08"
+    "generator": "fixture"
   },
   "comment": "Circuit vector whose blob file is absent."
 }

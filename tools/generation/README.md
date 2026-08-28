@@ -21,7 +21,7 @@ $ uv run generate.py key --name device-vectors-01 --role device --seed 02
 wrote staging/device-vectors-01/device-vectors-01.pem
 
 admit from tools/admission:
-uv run admit.py key ../generation/staging/device-vectors-01/device-vectors-01.pem --generator 'generate.py key --name device-vectors-01 --role device --seed 02' --ref f4e345b2b2915f8315af0debd11fe93a93677139 --name device-vectors-01 --role device
+uv run admit.py key ../generation/staging/device-vectors-01/device-vectors-01.pem --generator 'generate.py key --name device-vectors-01 --role device --seed 02' --name device-vectors-01 --role device
 ```
 
 Re-running the command line a vector's `generator` records reproduces its bytes for every

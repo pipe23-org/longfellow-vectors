@@ -8,8 +8,7 @@
   "key": "full-key",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-24"
+    "generator": "fixture"
   },
   "comment": "Certificate vector for the loader tests, carrying public_key_x, public_key_y, signed_by, and key."
 }

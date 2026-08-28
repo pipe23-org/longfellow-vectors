@@ -19,7 +19,6 @@ def import_key(
     pem_path: str,
     repo: str | None,
     generator: str | None,
-    ref: str | None,
     name: str,
     role: str,
     comment: str | None,
@@ -62,7 +61,7 @@ def import_key(
     if repo is not None:
         sidecar["provenance"] = records.provenance(source, repo)
     else:
-        sidecar["provenance"] = records.constructed(generator, ref)
+        sidecar["provenance"] = records.constructed(generator)
     if comment is not None:
         sidecar["comment"] = comment
     records.write_record(records.KEYS / f"{name}.pem", pem, sidecar)

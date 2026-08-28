@@ -6,8 +6,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "certificates/root-ca.pem",
-    "captured": "2026-08-08"
+    "path": "certificates/root-ca.pem"
   },
   "comment": "Self-signed IACA certificate for the loader tests. public_key_x, public_key_y, signed_by, and key are absent; its issuerAltName carries a URI outside the claimed profile (https://example.com/issues/1)."
 }

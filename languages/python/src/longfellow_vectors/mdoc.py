@@ -119,9 +119,7 @@ class Provenance:
     path: str | None = None
     index: str | None = None
     via: str | None = None
-    captured: str | None = None
     generator: str | None = None
-    created: str | None = None
     license: str | None = None
     copyright: str | None = None
 

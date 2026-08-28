@@ -28,11 +28,10 @@ No sidecar names that file in its `schema` field.
 | --- | --- | --- | --- |
 | `type` | `"repository"` | yes | The shape this provenance takes. |
 | `repo` | string | yes | Source repository as host/owner/name, e.g. `github.com/google/longfellow-zk`. |
-| `ref` | 40 lowercase hex digits | yes | Full commit hash the bytes were captured at. |
+| `ref` | 40 lowercase hex digits | yes | Full commit hash the bytes were copied out of. |
 | `path` | string | yes | Path of the source artifact within the repository at `ref`. |
 | `index` | string | no | Position within the source artifact when the bytes are one of several it holds, e.g. `mdoc_tests[15]`. |
 | `via` | string | no | Intermediate artifact the bytes passed through, when not captured directly. |
-| `captured` | `YYYY-MM-DD` | yes | Date the bytes were copied out of the source. |
 | `license` | string | no | SPDX identifier of the source's license, recorded when that license requires copied bytes to carry its terms, e.g. `MPL-2.0`. |
 | `copyright` | string | no | Copyright notice retained from the source, e.g. `Copyright 2025 ISRG`. |
 
@@ -43,8 +42,6 @@ repository.
 | --- | --- | --- | --- |
 | `type` | `"constructed"` | yes | The shape this provenance takes. |
 | `generator` | string | yes | The generating command with every value the command generated filled in, e.g. `generate.py flip-bit --proof <name> --byte 3`. Re-running it reproduces the bytes for every command except `proof`. |
-| `ref` | 40 lowercase hex digits | no | Full commit hash of the generator at generation time. |
-| `created` | `YYYY-MM-DD` | yes | Date the bytes were generated. |
 
 ## Keys
 

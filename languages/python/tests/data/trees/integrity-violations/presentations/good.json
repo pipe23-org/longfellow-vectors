@@ -8,8 +8,7 @@
   "issuer_public_key_y": "6666666666666666666666666666666666666666666666666666666666666666",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-21"
+    "generator": "fixture"
   },
   "comment": "Presentation vector the subtree accepts. goodproof references it."
 }

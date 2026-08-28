@@ -46,7 +46,7 @@
               "pattern": "^[0-9a-f]{40}(?![\\s\\S])",
               "minLength": 40,
               "maxLength": 40,
-              "description": "Full commit hash the bytes were captured at."
+              "description": "Full commit hash the bytes were copied out of."
             },
             "path": {
               "type": "string",
@@ -63,14 +63,6 @@
               "minLength": 1,
               "description": "Intermediate artifact the bytes passed through, when not captured directly."
             },
-            "captured": {
-              "type": "string",
-              "format": "date",
-              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?![\\s\\S])",
-              "minLength": 10,
-              "maxLength": 10,
-              "description": "Date the bytes were copied out of the source, as YYYY-MM-DD."
-            },
             "license": {
               "type": "string",
               "minLength": 1,
@@ -82,7 +74,7 @@
               "description": "Copyright notice retained from the source, e.g. Copyright 2025 ISRG."
             }
           },
-          "required": ["type", "repo", "ref", "path", "captured"],
+          "required": ["type", "repo", "ref", "path"],
           "additionalProperties": false
         },
         {
@@ -92,24 +84,9 @@
               "type": "string",
               "minLength": 1,
               "description": "The generating command with every value the command generated filled in, e.g. generate.py flip-bit --proof <name> --byte 3. Re-running it reproduces the bytes for every command except proof."
-            },
-            "ref": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{40}(?![\\s\\S])",
-              "minLength": 40,
-              "maxLength": 40,
-              "description": "Full commit hash of the generator at generation time."
-            },
-            "created": {
-              "type": "string",
-              "format": "date",
-              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(?![\\s\\S])",
-              "minLength": 10,
-              "maxLength": 10,
-              "description": "Date the bytes were generated, as YYYY-MM-DD."
             }
           },
-          "required": ["type", "generator", "created"],
+          "required": ["type", "generator"],
           "additionalProperties": false
         }
       ]

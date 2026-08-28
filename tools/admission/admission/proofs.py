@@ -51,7 +51,6 @@ def import_proof(
     proof_path: str,
     repo: str | None,
     generator: str | None,
-    ref: str | None,
     name: str,
     presentation_name: str | None,
     prover: str | None,
@@ -70,7 +69,7 @@ def import_proof(
     if repo is not None:
         provenance: dict[str, Any] = records.provenance(source, repo)
     else:
-        provenance = records.constructed(generator, ref)
+        provenance = records.constructed(generator)
     sidecar: dict[str, Any] = {"schema": "mdoc-proofs-v1.schema.json"}
     if prover is not None:
         sidecar["prover"] = prover

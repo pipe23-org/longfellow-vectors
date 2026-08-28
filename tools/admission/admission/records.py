@@ -5,7 +5,6 @@ import re
 import shutil
 import subprocess
 import sys
-from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -28,7 +27,6 @@ NAME_HELP = "vector name"
 REPO_HELP = "source repository as host/owner/name"
 GENERATOR_HELP = "generator command line"
 COMMENT_HELP = "comment on the vector"
-REF_HELP = "generator commit hash"
 
 
 def record_name(value: str) -> str:
@@ -53,20 +51,14 @@ def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, A
         "repo": repo,
         "ref": _git(source.parent, "rev-parse", "HEAD"),
         "path": str(source.resolve().relative_to(toplevel)),
-        "captured": date.today().isoformat(),
     }
     if index is not None:
         record["index"] = index
     return record
 
 
-def constructed(generator: str, ref: str) -> dict[str, Any]:
-    return {
-        "type": "constructed",
-        "generator": generator,
-        "ref": ref,
-        "created": date.today().isoformat(),
-    }
+def constructed(generator: str) -> dict[str, Any]:
+    return {"type": "constructed", "generator": generator}
 
 
 def sha256(data: bytes) -> str:

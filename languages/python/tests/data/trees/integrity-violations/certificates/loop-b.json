@@ -5,8 +5,7 @@
   "signed_by": "loop-a",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-22"
+    "generator": "fixture"
   },
   "comment": "Certificate vector whose signed_by names loop-a, closing a signing cycle."
 }

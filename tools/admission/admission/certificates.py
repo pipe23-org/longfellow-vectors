@@ -30,7 +30,6 @@ def import_certificate(
     pem_path: str,
     repo: str | None,
     generator: str | None,
-    ref: str | None,
     name: str,
     role: str,
     signed_by: str | None,
@@ -62,7 +61,7 @@ def import_certificate(
     if repo is not None:
         sidecar["provenance"] = records.provenance(source, repo)
     else:
-        sidecar["provenance"] = records.constructed(generator, ref)
+        sidecar["provenance"] = records.constructed(generator)
     if certificate is None and (signed_by is not None or key_name is not None):
         sys.exit("error: PEM does not parse; --signed-by and --key cannot be verified")
     if signed_by is not None:

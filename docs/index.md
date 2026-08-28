@@ -41,8 +41,7 @@ names the schema it validates against in its own `schema` field.
     "type": "repository",
     "repo": "github.com/pipe23-org/pylongfellow",
     "ref": "28345228f01626ac1a84602f829efe81bd591fcd",
-    "path": "tests/differential/circuits/v7-1attr.circuit",
-    "captured": "2026-08-25"
+    "path": "tests/differential/circuits/v7-1attr.circuit"
   }
 }
 ```
