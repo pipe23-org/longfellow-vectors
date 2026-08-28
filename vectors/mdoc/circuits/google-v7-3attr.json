@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-circuits-v1.schema.json",
+  "system": "longfellow-libzk-v1",
+  "sha256": "25fb28acd806a15b88538ee612f0da47bf29e6dcb0803f2c268c87f3f224b968",
+  "version": 7,
+  "num_attributes": 3,
+  "provenance": {
+    "type": "repository",
+    "repo": "github.com/google/longfellow-zk",
+    "ref": "fe83ec6c4efa5f98bc2439c8b06e5eccd153aca0",
+    "path": "lib/circuits/mdoc/circuits/8ee4849ae1293ae6fe5f9082ce3e5e15c4f198f2998c682fa1b727237d6d252f"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "schema": "mdoc-proofs-v1.schema.json",
+  "prover": "google-cpp",
+  "circuit": "google-v7-1attr",
+  "sha256": "73f4978304de6b9b2619d58c0a0a6406267172351ef98dd4a77c05675f689744",
+  "doctype": "org.iso.18013.5.1.mDL",
+  "claims": [
+    {
+      "namespace": "org.iso.18013.5.1",
+      "id": "issue_date",
+      "cbor_value": "d903ec6a323032342d30332d3135"
+    }
+  ],
+  "transcript": "83f6f6847142726f7773657248616e646f76657276315820f93ebac4ce4d9901b9aea472145ae5421f8fbecbe5f0389683f59f08fcf90e455833a363636174016474797065016764657461696c73a1676261736555726c75687474703a2f2f6c6f63616c686f73743a3830383058203c79914b7f81a1c2558fc81619dd4a074d32143e6cf6895fe47da156d1c5b0ae",
+  "issuer_public_key_x": "dc1c1f55cff4cd5c76cf4169278f7217667f86ee81d8669b63f2e19bc12a0c9f",
+  "issuer_public_key_y": "12355dd0385fed3bc33bedc9781b9aad47b33e4c24704b8d14288b1b3cb45c28",
+  "device_namespaces": "a0",
+  "presentation": "mdl-mustermann",
+  "timestamp": "2024-10-01T09:00:00+00:00",
+  "provenance": {
+    "type": "constructed",
+    "generator": "generate.py flip-bit --proof google-cpp-mdl-mustermann-v7-1attr --bit 0"
+  },
+  "comment": "google-cpp-mdl-mustermann-v7-1attr with bit 0 of byte 180330 flipped"
+}

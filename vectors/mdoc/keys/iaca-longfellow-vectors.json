@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-keys-v1.schema.json",
+  "role": "iaca",
+  "sha256": "21bc1ad19acc225aacb7f8cf05685738019a44fe219ef5edc371d161468b4f84",
+  "fingerprint": "dbdadfbf6441632bccac9ab27f92e8c90369a5985b39954a396ff8088c9fdc7f",
+  "public_key_x": "11365a882500041cc90cd8d67476a476f0a82d9d5742467b73aac350f28bb6ad",
+  "public_key_y": "f2a95e2f7092731a71151aa545ad50d9d9a9b2efa6f44e53b766366960f632f4",
+  "private_key": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459b",
+  "provenance": {
+    "type": "constructed",
+    "generator": "generate.py key --name iaca-longfellow-vectors --role iaca --seed 01"
+  }
+}

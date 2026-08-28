@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-keys-v1.schema.json",
+  "role": "document-signer",
+  "sha256": "9bd1f0191b58d8e604916c82fd50311848c80c843e8513d33a9951af763d8127",
+  "fingerprint": "a6f7dbea9656c264b145b9a188d6a8e266d861671d6cf7fe00ab93a8bf359247",
+  "public_key_x": "e8118c66659f0a4a542316e04a392d2186faeb883c90aa8a7a4dbf38aa4961b4",
+  "public_key_y": "3fb1b7483b826a7c9cf26c0f06d788a53ead6a3f365c42a3c67e51142e2af6cf",
+  "private_key": "dbc1b4c900ffe48d575b5da5c638040125f65db0fe3e24494b76ea986457d987",
+  "provenance": {
+    "type": "constructed",
+    "generator": "generate.py key --name ds-longfellow-vectors --role document-signer --seed 02"
+  }
+}

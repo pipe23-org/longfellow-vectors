@@ -1,0 +1,12 @@
+{
+  "schema": "mdoc-certificates-v1.schema.json",
+  "role": "iaca",
+  "sha256": "53c26f8edc6cde91117d6e9a08aebc31eb0d630eea65f5223a737b92b319b418",
+  "public_key_x": "11365a882500041cc90cd8d67476a476f0a82d9d5742467b73aac350f28bb6ad",
+  "public_key_y": "f2a95e2f7092731a71151aa545ad50d9d9a9b2efa6f44e53b766366960f632f4",
+  "provenance": {
+    "type": "constructed",
+    "generator": "generate.py certificate --name iaca-longfellow-vectors-2026-2036 --key iaca-longfellow-vectors --ca --subject longfellow-vectors-iaca --valid-from 2026-01-01T00:00:00Z --valid-until 2036-01-01T00:00:00Z --serial 1"
+  },
+  "key": "iaca-longfellow-vectors"
+}
