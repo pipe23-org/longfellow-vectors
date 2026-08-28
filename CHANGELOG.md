@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- `admit.py` now refuses a source checkout carrying uncommitted changes; previously it recorded HEAD as the ref whether or not that commit held the bytes being admitted. (#11)
 - **BACKWARDS INCOMPATIBLE:** Removed `captured` from repository provenance and `ref` and `created` from constructed provenance; `captured` and `created` were required. A sidecar carrying any of the three is rejected. Repository provenance keeps `ref`, derived from the source checkout. (#10)
 - **BACKWARDS INCOMPATIBLE:** Credential vectors now hold `IssuerSigned` CBOR, `{nameSpaces, issuerAuth}`; previously they held a `DeviceResponse`. `Credential.claims()` reads the top-level `nameSpaces` instead of `documents[0].issuerSigned.nameSpaces`. (#8)
 - `tools/add_vector.py` is now `tools/admission/admit.py`, a uv project under `tools/admission/`, and its commands are named by vector type: `circuit`, `presentation`, `proof`, `key`, `credential`, and `certificate`, previously `import-circuit`, `import-presentation`, `import-proof`, `import-key`, `import-credential`, and `import-certificate`. Flags are unchanged. (#8)

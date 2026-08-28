@@ -29,7 +29,7 @@ copies the source's `mdoc` and `transcript` hex into the sidecar.
 `--repo` names the source repository as host/owner/name. The commit and the
 in-repo path are read from the source file's own git checkout, so the file
 passed on the command line has to sit inside a checkout of the repository
-`--repo` names.
+`--repo` names. A checkout carrying uncommitted changes is refused.
 
 `--generator` holds the command line that produced staged bytes. Provenance
 then records `type: "constructed"` with that command line.
