@@ -1,0 +1,13 @@
+{
+  "schema": "mdoc-keys-v1.schema.json",
+  "role": "device",
+  "sha256": "45ef1b48dc8bc870fb5cef6dcdddcb62bd53ae3d5d12744b20052a64c7a36dd3",
+  "fingerprint": "092564775a83233578598bc316c3f15f60132e5dd48271ef495758acf5795acf",
+  "public_key_x": "3c37d5ff88be8fd69de39dbfa90f2588795016c55db78a351705b34d9d6f5a36",
+  "public_key_y": "b671d93ff661f73490b7731a2b2bee0c2037a9935423781ed756b999f6f9e1e3",
+  "private_key": "084fed08b978af4d7d196a7446a86b58009e636b611db16211b65a9aadff29c6",
+  "provenance": {
+    "type": "constructed",
+    "generator": "generate.py key --name device-longfellow-vectors-01 --role device --seed 03"
+  }
+}

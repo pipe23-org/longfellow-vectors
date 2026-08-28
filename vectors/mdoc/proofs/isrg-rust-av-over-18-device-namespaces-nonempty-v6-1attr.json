@@ -1,0 +1,24 @@
+{
+  "schema": "mdoc-proofs-v1.schema.json",
+  "prover": "isrg-rust",
+  "circuit": "google-v6-1attr",
+  "sha256": "553140437a1784e54f1ff82eb6d9d07d5c79d8718a84b3c48f7c50b58c10a78e",
+  "doctype": "eu.europa.ec.av.1",
+  "claims": [
+    {
+      "namespace": "eu.europa.ec.av.1",
+      "id": "age_over_18",
+      "cbor_value": "f5"
+    }
+  ],
+  "transcript": "83f6f68265646361706958200000000000000000000000000000000000000000000000000000000000000000",
+  "issuer_public_key_x": "e8118c66659f0a4a542316e04a392d2186faeb883c90aa8a7a4dbf38aa4961b4",
+  "issuer_public_key_y": "3fb1b7483b826a7c9cf26c0f06d788a53ead6a3f365c42a3c67e51142e2af6cf",
+  "device_namespaces": "a17165752e6575726f70612e65632e61762e31a1636e796d666e796d2d3031",
+  "presentation": "av-over-18-device-namespaces-nonempty",
+  "timestamp": "2026-07-02T00:00:00+00:00",
+  "provenance": {
+    "type": "constructed",
+    "generator": "generate.py proof --name isrg-rust-av-over-18-device-namespaces-nonempty-v6-1attr --presentation av-over-18-device-namespaces-nonempty --circuit google-v6-1attr --backend isrg-rust --attr eu.europa.ec.av.1 age_over_18 --timestamp 2026-07-02T00:00:00Z"
+  }
+}
