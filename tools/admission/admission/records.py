@@ -44,7 +44,7 @@ def _git(source_dir: Path, *args: str) -> str:
     return result.stdout.strip()
 
 
-def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, Any]:
+def provenance(source: Path, repo: str) -> dict[str, Any]:
     toplevel = Path(_git(source.parent, "rev-parse", "--show-toplevel"))
     if _git(source.parent, "status", "--porcelain"):
         sys.exit(f"error: {toplevel} has uncommitted changes; commit them first")
@@ -54,8 +54,6 @@ def provenance(source: Path, repo: str, index: str | None = None) -> dict[str, A
         "ref": _git(source.parent, "rev-parse", "HEAD"),
         "path": str(source.resolve().relative_to(toplevel)),
     }
-    if index is not None:
-        record["index"] = index
     return record
 
 
@@ -88,7 +86,14 @@ def _validate(sidecar: dict[str, Any]) -> None:
         sys.exit("error: sidecar rejected by schema; nothing written")
 
 
+def _require_absent(*paths: Path) -> None:
+    for path in paths:
+        if path.exists():
+            sys.exit(f"error: {path.relative_to(ROOT)} exists; remove the vector to readmit it")
+
+
 def write_record(blob_path: Path, blob: bytes, sidecar: dict[str, Any]) -> None:
+    _require_absent(blob_path, blob_path.with_suffix(".json"))
     _validate(sidecar)
     blob_path.parent.mkdir(parents=True, exist_ok=True)
     blob_path.write_bytes(blob)
@@ -98,9 +103,10 @@ def write_record(blob_path: Path, blob: bytes, sidecar: dict[str, Any]) -> None:
 
 
 def write_presentation(name: str, sidecar: dict[str, Any]) -> None:
+    sidecar_path = PRESENTATIONS / f"{name}.json"
+    _require_absent(sidecar_path)
     _validate(sidecar)
     PRESENTATIONS.mkdir(parents=True, exist_ok=True)
-    sidecar_path = PRESENTATIONS / f"{name}.json"
     sidecar_path.write_text(json.dumps(sidecar, indent=2) + "\n")
     print(f"wrote {sidecar_path.relative_to(ROOT)}")
 

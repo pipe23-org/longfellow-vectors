@@ -52,26 +52,6 @@
               "type": "string",
               "minLength": 1,
               "description": "Path of the source artifact within the repository at ref."
-            },
-            "index": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Position within the source artifact when the bytes are one of several it holds, e.g. mdoc_tests[15]."
-            },
-            "via": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Intermediate artifact the bytes passed through, when not captured directly."
-            },
-            "license": {
-              "type": "string",
-              "minLength": 1,
-              "description": "SPDX identifier of the source's license, recorded when that license requires copied bytes to carry its terms, e.g. MPL-2.0."
-            },
-            "copyright": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Copyright notice retained from the source, e.g. Copyright 2025 ISRG."
             }
           },
           "required": ["type", "repo", "ref", "path"],

@@ -18,13 +18,14 @@ PROVENANCE = {
 @pytest.fixture
 def collection(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     root = tmp_path / "vectors" / "mdoc"
-    for subtree in ("keys", "certificates", "credentials", "presentations"):
+    for subtree in ("keys", "certificates", "credentials", "presentations", "proofs"):
         (root / subtree).mkdir(parents=True)
     monkeypatch.setattr(records, "ROOT", tmp_path)
     monkeypatch.setattr(records, "KEYS", root / "keys")
     monkeypatch.setattr(records, "CERTIFICATES", root / "certificates")
     monkeypatch.setattr(records, "CREDENTIALS", root / "credentials")
     monkeypatch.setattr(records, "PRESENTATIONS", root / "presentations")
+    monkeypatch.setattr(records, "PROOFS", root / "proofs")
 
     for name in ("device-key", "other-key"):
         pem = (DATA / f"{name}.pem").read_bytes()

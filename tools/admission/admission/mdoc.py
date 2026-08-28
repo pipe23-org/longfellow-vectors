@@ -7,26 +7,25 @@ from cryptography import x509
 X5CHAIN = 33
 
 
-def _issuer_signed_elements(mdoc_bytes: bytes) -> dict[str, tuple[str, bytes]]:
+def _issuer_signed_elements(mdoc_bytes: bytes) -> dict[tuple[str, str], bytes]:
     response = cbor2.loads(mdoc_bytes)
-    elements: dict[str, tuple[str, bytes]] = {}
+    elements: dict[tuple[str, str], bytes] = {}
     for namespace, items in response["documents"][0]["issuerSigned"]["nameSpaces"].items():
         for item in items:
             inner = cbor2.loads(item.value)
-            identifier = inner["elementIdentifier"]
-            if identifier in elements:
-                sys.exit(f"error: attribute id {identifier!r} appears in multiple namespaces")
-            elements[identifier] = (namespace, cbor2.dumps(inner["elementValue"]))
+            elements[namespace, inner["elementIdentifier"]] = cbor2.dumps(inner["elementValue"])
     return elements
 
 
-def claims_from_ids(ids: list[str], mdoc_bytes: bytes) -> list[dict[str, Any]]:
+def claims_from_ids(ids: list[list[str]], mdoc_bytes: bytes) -> list[dict[str, Any]]:
     elements = _issuer_signed_elements(mdoc_bytes)
     claims = []
-    for claim_id in ids:
-        if claim_id not in elements:
-            sys.exit(f"error: attribute id {claim_id!r} not in the credential's issuerSigned")
-        namespace, element_value = elements[claim_id]
+    for namespace, claim_id in ids:
+        if (namespace, claim_id) not in elements:
+            sys.exit(
+                f"error: attribute {namespace}/{claim_id} not in the credential's issuerSigned"
+            )
+        element_value = elements[namespace, claim_id]
         claims.append({"namespace": namespace, "id": claim_id, "cbor_value": element_value.hex()})
     return claims
 

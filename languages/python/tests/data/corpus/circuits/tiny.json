@@ -8,9 +8,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "circuits/tiny.circuit",
-    "index": "circuits[0]",
-    "via": "an intermediate export"
+    "path": "circuits/tiny.circuit"
   },
   "comment": "Circuit vector for the loader tests, at version 6 over one attribute. Its blob is empty; provenance carries index and via."
 }

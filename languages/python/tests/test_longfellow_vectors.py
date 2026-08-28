@@ -351,8 +351,6 @@ def test_presentation_repository_provenance() -> None:
     assert presentation.provenance.repo == "github.com/example/fixtures"
     assert presentation.provenance.ref == "ab" * 20
     assert presentation.provenance.path == "inputs/bare.json"
-    assert presentation.provenance.index is None
-    assert presentation.provenance.via is None
     assert presentation.provenance.generator is None
 
 
@@ -427,18 +425,6 @@ def test_circuit_fields() -> None:
     assert circuit.sha256 == EMPTY_SHA256
     assert circuit.version == 6
     assert circuit.num_attributes == 1
-    assert circuit.provenance.index == "circuits[0]"
-    assert circuit.provenance.via == "an intermediate export"
-
-
-def test_circuit_provenance_optional_fields_absent() -> None:
-    vectors = LongfellowVectors(VALID_COLLECTION)
-    circuit = vectors.mdoc.circuit("other")
-    assert circuit.sha256 == "8349d0fe15cb2c176df2f7007df8f7e8651bfdca6836bcfcd7029398c28a1797"
-    assert circuit.version == 7
-    assert circuit.num_attributes == 1
-    assert circuit.provenance.index is None
-    assert circuit.provenance.via is None
 
 
 def test_circuit_fractional_version_rejected(tmp_path: Path) -> None:

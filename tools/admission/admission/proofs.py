@@ -30,6 +30,8 @@ def statement_from_flags(
     missing = [f"--{key.replace('_', '-')}" for key, value in required.items() if value is None]
     if not args.claims:
         missing.append("--claim")
+    if args.timestamp is None:
+        missing.append("--timestamp")
     if missing:
         parser.error(f"the statement flags are required together; missing {', '.join(missing)}")
     statement: dict[str, Any] = {
@@ -56,7 +58,7 @@ def import_proof(
     prover: str | None,
     circuit: str | None,
     timestamp: str | None,
-    attr_ids: list[str],
+    attr_ids: list[list[str]],
     statement: dict[str, Any] | None,
     comment: str | None,
 ) -> None:
@@ -79,6 +81,8 @@ def import_proof(
     if presentation_name is not None:
         if not attr_ids:
             sys.exit("error: at least one --attr is required")
+        if timestamp is None:
+            sys.exit("error: --timestamp is required with --presentation")
         presentation_doc = records.load_presentation(presentation_name)
         mdoc_bytes = bytes.fromhex(presentation_doc["mdoc"])
         if "doctype" in presentation_doc:

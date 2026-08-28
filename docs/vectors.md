@@ -30,10 +30,6 @@ No sidecar names that file in its `schema` field.
 | `repo` | string | yes | Source repository as host/owner/name, e.g. `github.com/google/longfellow-zk`. |
 | `ref` | 40 lowercase hex digits | yes | Full commit hash the bytes were copied out of. |
 | `path` | string | yes | Path of the source artifact within the repository at `ref`. |
-| `index` | string | no | Position within the source artifact when the bytes are one of several it holds, e.g. `mdoc_tests[15]`. |
-| `via` | string | no | Intermediate artifact the bytes passed through, when not captured directly. |
-| `license` | string | no | SPDX identifier of the source's license, recorded when that license requires copied bytes to carry its terms, e.g. `MPL-2.0`. |
-| `copyright` | string | no | Copyright notice retained from the source, e.g. `Copyright 2025 ISRG`. |
 
 `type: "constructed"` records bytes that a tool produced outside any
 repository.
