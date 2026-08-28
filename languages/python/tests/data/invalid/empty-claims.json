@@ -13,8 +13,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "proofs/placeholder.proof",
-    "captured": "2026-08-21"
+    "path": "proofs/placeholder.proof"
   },
   "comment": "Proof vector whose claims array is empty."
 }

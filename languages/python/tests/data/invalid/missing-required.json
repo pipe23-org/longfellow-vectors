@@ -6,7 +6,6 @@
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
     "path": "circuits/tiny.circuit",
-    "captured": "2026-08-08",
     "index": "circuits[0]",
     "via": "an intermediate export"
   },

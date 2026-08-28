@@ -8,8 +8,7 @@
   "issuer_public_key_y": "3593cc05ab614499a3dfb575167c1a68348a8fa3293e98a2b17acbfcda7e62f4",
   "provenance": {
     "type": "constructed",
-    "generator": "tools/generation/generate.py presentation",
-    "created": "2026-08-25"
+    "generator": "tools/generation/generate.py presentation"
   },
   "comment": "Presentation over one age_over_18 claim, staged by the presentation command and used as the collection the prove and flip-bit tests read."
 }

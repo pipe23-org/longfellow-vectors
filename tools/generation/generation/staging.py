@@ -108,24 +108,17 @@ def write(path: Path, data: bytes) -> Path:
     return path
 
 
-def generator_ref() -> str | None:
+def is_committed() -> bool:
     here = Path(__file__).resolve().parent.parent
     status = subprocess.run(
         ["git", "-C", str(here), "status", "--porcelain", "."], capture_output=True, text=True
     )
-    if status.returncode != 0 or status.stdout.strip():
-        return None
-    head = subprocess.run(
-        ["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True, check=True
-    )
-    return head.stdout.strip()
+    return status.returncode == 0 and not status.stdout.strip()
 
 
-def committed_ref() -> str:
-    ref = generator_ref()
-    if ref is None:
+def require_committed() -> None:
+    if not is_committed():
         sys.exit("error: tools/generation has uncommitted changes; commit them first")
-    return ref
 
 
 def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) -> list[str]:
@@ -137,8 +130,6 @@ def admit(vector_type: str, path: Path, name: str, command: str, *flags: str) ->
         os.path.relpath(path, ADMISSION),
         "--generator",
         command,
-        "--ref",
-        committed_ref(),
         "--name",
         name,
         *flags,

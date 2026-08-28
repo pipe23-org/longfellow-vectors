@@ -3,8 +3,7 @@
   "mdoc": "a0",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-24"
+    "generator": "fixture"
   },
   "comment": "Presentation vector holding mdoc and provenance alone. Every content field is absent, and the one-byte mdoc makes claims() raise."
 }

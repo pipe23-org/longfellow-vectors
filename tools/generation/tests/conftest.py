@@ -21,7 +21,6 @@ SOURCE_PROOF = bytes(range(64))
 PROVENANCE = {
     "type": "constructed",
     "generator": "tools/generation/tests/conftest.py",
-    "created": "2026-08-25",
 }
 
 
@@ -147,5 +146,5 @@ def collection(tmp_path: Path, circuit: bytes, monkeypatch: pytest.MonkeyPatch) 
 
     monkeypatch.setattr(staging, "VECTORS", root)
     monkeypatch.setattr(staging, "STAGING", tmp_path / "staging")
-    monkeypatch.setattr(staging, "generator_ref", lambda: "0" * 40)
+    monkeypatch.setattr(staging, "is_committed", lambda: True)
     return root

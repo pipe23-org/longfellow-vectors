@@ -5,8 +5,7 @@
   "signed_by": "root-of-nothing",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-08"
+    "generator": "fixture"
   },
   "comment": "Certificate vector whose signed_by names no certificate vector."
 }

@@ -27,9 +27,8 @@ The printed command admits the staged bytes with constructed provenance. It
 runs from `tools/admission`. The staged path it carries is written relative to
 that directory. Its reference flags are filled in from the generating
 command's inputs. `--generator` holds the `generate.py` command line with every
-value the command generated filled in. `--ref` holds the commit
-`tools/generation` runs from. A command refuses to run from an uncommitted
-tree. [Admission](admission.md) has the rules the printed
+value the command generated filled in. A command refuses to run from an
+uncommitted tree. [Admission](admission.md) has the rules the printed
 commands follow.
 
 ## Reproduction
@@ -134,15 +133,15 @@ one the `generate.py` command above it printed.
 
 ```
 uv run generate.py key --name ds-vectors --role document-signer --seed 01
-uv run admit.py key ../generation/staging/ds-vectors/ds-vectors.pem --generator 'generate.py key --name ds-vectors --role document-signer --seed 01' --ref 39aa5d8cb9d4dceb60558743bbf06d39117cdd43 --name ds-vectors --role document-signer
+uv run admit.py key ../generation/staging/ds-vectors/ds-vectors.pem --generator 'generate.py key --name ds-vectors --role document-signer --seed 01' --name ds-vectors --role document-signer
 uv run generate.py key --name device-vectors-01 --role device --seed 02
-uv run admit.py key ../generation/staging/device-vectors-01/device-vectors-01.pem --generator 'generate.py key --name device-vectors-01 --role device --seed 02' --ref 39aa5d8cb9d4dceb60558743bbf06d39117cdd43 --name device-vectors-01 --role device
+uv run admit.py key ../generation/staging/device-vectors-01/device-vectors-01.pem --generator 'generate.py key --name device-vectors-01 --role device --seed 02' --name device-vectors-01 --role device
 uv run generate.py certificate --name ds-vectors-2026-2031 --key ds-vectors --subject pipe23-vectors-ds --valid-from 2026-01-01T00:00:00Z --valid-until 2031-01-01T00:00:00Z --serial 1
-uv run admit.py certificate ../generation/staging/ds-vectors-2026-2031/ds-vectors-2026-2031.pem --generator 'generate.py certificate --name ds-vectors-2026-2031 --key ds-vectors --subject pipe23-vectors-ds --valid-from 2026-01-01T00:00:00Z --valid-until 2031-01-01T00:00:00Z --serial 1' --ref 39aa5d8cb9d4dceb60558743bbf06d39117cdd43 --name ds-vectors-2026-2031 --role document-signer --key ds-vectors
+uv run admit.py certificate ../generation/staging/ds-vectors-2026-2031/ds-vectors-2026-2031.pem --generator 'generate.py certificate --name ds-vectors-2026-2031 --key ds-vectors --subject pipe23-vectors-ds --valid-from 2026-01-01T00:00:00Z --valid-until 2031-01-01T00:00:00Z --serial 1' --name ds-vectors-2026-2031 --role document-signer --key ds-vectors
 uv run generate.py credential --name av-over-18 --ds-certificate ds-vectors-2026-2031 --device-key device-vectors-01 --claim eu.europa.ec.av.1 age_over_18 true --valid-from 2026-01-01T00:00:00Z --valid-until 2027-01-01T00:00:00Z --seed 03
-uv run admit.py credential ../generation/staging/av-over-18/av-over-18.cbor --generator 'generate.py credential --name av-over-18 --ds-certificate ds-vectors-2026-2031 --device-key device-vectors-01 --claim eu.europa.ec.av.1 age_over_18 true --valid-from 2026-01-01T00:00:00Z --valid-until 2027-01-01T00:00:00Z --seed 03' --ref 39aa5d8cb9d4dceb60558743bbf06d39117cdd43 --name av-over-18 --device-key device-vectors-01 --ds-certificate ds-vectors-2026-2031
+uv run admit.py credential ../generation/staging/av-over-18/av-over-18.cbor --generator 'generate.py credential --name av-over-18 --ds-certificate ds-vectors-2026-2031 --device-key device-vectors-01 --claim eu.europa.ec.av.1 age_over_18 true --valid-from 2026-01-01T00:00:00Z --valid-until 2027-01-01T00:00:00Z --seed 03' --name av-over-18 --device-key device-vectors-01 --ds-certificate ds-vectors-2026-2031
 uv run generate.py presentation --name av-over-18-20260826 --credential av-over-18 --transcript 83f6f68265646361706958200000000000000000000000000000000000000000000000000000000000000000
-uv run admit.py presentation ../generation/staging/av-over-18-20260826/presentation.json --generator 'generate.py presentation --name av-over-18-20260826 --credential av-over-18 --transcript 83f6f68265646361706958200000000000000000000000000000000000000000000000000000000000000000' --ref 39aa5d8cb9d4dceb60558743bbf06d39117cdd43 --name av-over-18-20260826 --credential av-over-18
+uv run admit.py presentation ../generation/staging/av-over-18-20260826/presentation.json --generator 'generate.py presentation --name av-over-18-20260826 --credential av-over-18 --transcript 83f6f68265646361706958200000000000000000000000000000000000000000000000000000000000000000' --name av-over-18-20260826 --credential av-over-18
 uv run generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr age_over_18 --timestamp 2026-08-26T00:00:00Z
-uv run admit.py proof ../generation/staging/google-cpp-av-over-18-20260826-v7-1attr/google-cpp-av-over-18-20260826-v7-1attr.proof --generator 'generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr age_over_18 --timestamp 2026-08-26T00:00:00Z' --ref 39aa5d8cb9d4dceb60558743bbf06d39117cdd43 --name google-cpp-av-over-18-20260826-v7-1attr --prover google-cpp --circuit google-v7-1attr --presentation av-over-18-20260826 --attr age_over_18 --timestamp 2026-08-26T00:00:00+00:00
+uv run admit.py proof ../generation/staging/google-cpp-av-over-18-20260826-v7-1attr/google-cpp-av-over-18-20260826-v7-1attr.proof --generator 'generate.py proof --name google-cpp-av-over-18-20260826-v7-1attr --presentation av-over-18-20260826 --circuit google-v7-1attr --backend google-cpp --attr age_over_18 --timestamp 2026-08-26T00:00:00Z' --name google-cpp-av-over-18-20260826-v7-1attr --prover google-cpp --circuit google-v7-1attr --presentation av-over-18-20260826 --attr age_over_18 --timestamp 2026-08-26T00:00:00+00:00
 ```

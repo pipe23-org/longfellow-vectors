@@ -10,8 +10,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abc",
-    "path": "inputs/x.json",
-    "captured": "2026-08-21"
+    "path": "inputs/x.json"
   },
   "comment": "Presentation vector whose provenance ref is three hex digits."
 }

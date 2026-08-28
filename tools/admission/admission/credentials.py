@@ -37,7 +37,6 @@ def import_credential(
     cbor_path: str,
     repo: str | None,
     generator: str | None,
-    ref: str | None,
     name: str,
     device_key_name: str | None,
     ds_certificate_name: str | None,
@@ -97,7 +96,7 @@ def import_credential(
     if repo is not None:
         sidecar["provenance"] = records.provenance(source, repo)
     else:
-        sidecar["provenance"] = records.constructed(generator, ref)
+        sidecar["provenance"] = records.constructed(generator)
     if comment is not None:
         sidecar["comment"] = comment
     records.write_record(records.CREDENTIALS / f"{name}.cbor", blob, sidecar)

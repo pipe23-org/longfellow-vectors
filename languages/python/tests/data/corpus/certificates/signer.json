@@ -7,8 +7,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "certificates/signer.pem",
-    "captured": "2026-08-08"
+    "path": "certificates/signer.pem"
   },
   "comment": "Document-signer certificate for the loader tests, carrying signed_by. public_key_x, public_key_y, and key are absent."
 }

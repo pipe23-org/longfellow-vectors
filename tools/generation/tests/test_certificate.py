@@ -172,7 +172,6 @@ def test_public_key_only_subject(collection: Path) -> None:
                 "provenance": {
                     "type": "constructed",
                     "generator": "tests/test_certificate.py",
-                    "created": "2026-08-27",
                 },
             },
             indent=2,
@@ -219,7 +218,6 @@ def test_self_signing_public_key_only_rejected(collection: Path) -> None:
                 "provenance": {
                     "type": "constructed",
                     "generator": "tests/test_certificate.py",
-                    "created": "2026-08-27",
                 },
             },
             indent=2,

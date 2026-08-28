@@ -19,8 +19,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "proofs/badhash.proof",
-    "captured": "2026-08-21"
+    "path": "proofs/badhash.proof"
   },
   "comment": "Proof vector whose sha256 does not match its blob."
 }

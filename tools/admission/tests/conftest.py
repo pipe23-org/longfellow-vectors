@@ -12,7 +12,6 @@ DOCTYPE = "eu.europa.ec.av.1"
 PROVENANCE = {
     "type": "constructed",
     "generator": "tools/admission/tests/conftest.py",
-    "created": "2026-08-26",
 }
 
 

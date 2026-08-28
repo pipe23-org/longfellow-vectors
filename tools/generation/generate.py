@@ -254,7 +254,7 @@ def main() -> None:
     p_flip.add_argument("--bit", type=int, default=0, choices=range(8), help="bit index, 0 to 7")
 
     args = parser.parse_args()
-    staging.committed_ref()
+    staging.require_committed()
     command = shlex.join(["generate.py", *sys.argv[1:]])
     if args.command == "key":
         key.key(command, args.name, args.role, args.seed)

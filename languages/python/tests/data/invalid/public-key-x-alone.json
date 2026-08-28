@@ -7,8 +7,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "certificates/root-ca.pem",
-    "captured": "2026-08-08"
+    "path": "certificates/root-ca.pem"
   },
   "comment": "Certificate vector carrying public_key_x with public_key_y absent."
 }

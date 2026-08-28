@@ -19,8 +19,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "proofs/badref.proof",
-    "captured": "2026-08-21"
+    "path": "proofs/badref.proof"
   },
   "comment": "Proof vector whose circuit names no circuit vector."
 }

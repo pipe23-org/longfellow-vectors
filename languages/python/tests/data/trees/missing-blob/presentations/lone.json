@@ -10,8 +10,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "inputs/lone.json",
-    "captured": "2026-08-21"
+    "path": "inputs/lone.json"
   },
   "comment": "Presentation vector in a tree that holds no blob files. Presentations carry none, so this vector loads."
 }

@@ -77,14 +77,8 @@ REJECTED_SIDECAR_MESSAGES = [
     ),
     pytest.param("empty-claims.json", r"\[\] should be non-empty", id="empty-claims"),
     pytest.param("bad-timestamp.json", r"'garbage' is not a 'date-time'", id="bad-timestamp"),
-    pytest.param("bad-date.json", r"'2026-13-01' is not a 'date'", id="bad-date"),
     pytest.param("nonstring-formats.json", r"5 is not of type 'string'", id="nonstring-timestamp"),
     pytest.param("trailing-newline.json", r"does not match", id="trailing-newline"),
-    pytest.param(
-        "date-basic-form.json",
-        r"is not valid under any of the given schemas",
-        id="date-basic-form",
-    ),
     pytest.param(
         "timestamp-bare-date.json",
         r"'2024-10-01' is not a 'date-time'",
@@ -194,7 +188,6 @@ def test_key_fields() -> None:
     assert key.comment is not None
     assert key.provenance.type == "constructed"
     assert key.provenance.generator == "fixture"
-    assert key.provenance.created == "2026-08-21"
 
 
 def test_key_optional_fields_absent() -> None:
@@ -346,11 +339,9 @@ def test_presentation_constructed_provenance() -> None:
     presentation = vectors.mdoc.presentation("full")
     assert presentation.provenance.type == "constructed"
     assert presentation.provenance.generator == "tools/generation/generate.py presentation"
-    assert presentation.provenance.created == "2026-08-21"
-    assert presentation.provenance.ref == "dd" * 20
+    assert presentation.provenance.ref is None
     assert presentation.provenance.repo is None
     assert presentation.provenance.path is None
-    assert presentation.provenance.captured is None
 
 
 def test_presentation_repository_provenance() -> None:
@@ -360,11 +351,9 @@ def test_presentation_repository_provenance() -> None:
     assert presentation.provenance.repo == "github.com/example/fixtures"
     assert presentation.provenance.ref == "ab" * 20
     assert presentation.provenance.path == "inputs/bare.json"
-    assert presentation.provenance.captured == "2026-08-21"
     assert presentation.provenance.index is None
     assert presentation.provenance.via is None
     assert presentation.provenance.generator is None
-    assert presentation.provenance.created is None
 
 
 def test_presentation_optional_fields_absent() -> None:
@@ -377,7 +366,6 @@ def test_presentation_optional_fields_absent() -> None:
     assert presentation.credential is None
     assert presentation.provenance.type == "constructed"
     assert presentation.provenance.generator == "fixture"
-    assert presentation.provenance.created == "2026-08-24"
 
 
 def test_presentation_issuer_public_key() -> None:
@@ -523,7 +511,6 @@ def test_proof_statement_fields_absent() -> None:
     assert proof.presentation is None
     assert proof.provenance.type == "constructed"
     assert proof.provenance.generator == "fixture"
-    assert proof.provenance.created == "2026-08-24"
 
 
 def test_proof_issuer_public_key() -> None:
@@ -654,7 +641,6 @@ def test_certificate_signer_loaded_first(tmp_path: Path) -> None:
                     "provenance": {
                         "type": "constructed",
                         "generator": "fixture",
-                        "created": "2026-08-22",
                     },
                     **reference,
                 }

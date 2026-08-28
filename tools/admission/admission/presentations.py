@@ -75,7 +75,6 @@ def import_presentation(
     vector_path: str,
     repo: str | None,
     generator: str | None,
-    ref: str | None,
     name: str,
     credential_name: str | None,
     comment: str | None,
@@ -85,7 +84,7 @@ def import_presentation(
     if repo is not None:
         provenance: dict[str, Any] = records.provenance(source, repo)
     else:
-        provenance = records.constructed(generator, ref)
+        provenance = records.constructed(generator)
     sidecar = _presentation_sidecar(vector["mdoc"], vector["transcript"], provenance)
     if credential_name is not None:
         records.require_credential(credential_name)

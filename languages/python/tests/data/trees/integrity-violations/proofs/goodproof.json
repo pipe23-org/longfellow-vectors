@@ -21,8 +21,7 @@
     "type": "repository",
     "repo": "github.com/example/fixtures",
     "ref": "abababababababababababababababababababab",
-    "path": "proofs/goodproof.proof",
-    "captured": "2026-08-21"
+    "path": "proofs/goodproof.proof"
   },
   "comment": "Proof vector whose sidecar, blob, and references agree. The subtree's clean vector."
 }

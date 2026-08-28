@@ -9,9 +9,7 @@
   "credential": "full-cred",
   "provenance": {
     "type": "constructed",
-    "generator": "tools/generation/generate.py presentation",
-    "ref": "dddddddddddddddddddddddddddddddddddddddd",
-    "created": "2026-08-21"
+    "generator": "tools/generation/generate.py presentation"
   },
   "comment": "Presentation vector for the loader tests under constructed provenance, carrying every content field and a credential reference."
 }

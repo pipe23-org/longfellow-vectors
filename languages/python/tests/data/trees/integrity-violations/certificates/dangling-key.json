@@ -5,8 +5,7 @@
   "key": "no-such-key",
   "provenance": {
     "type": "constructed",
-    "generator": "fixture",
-    "created": "2026-08-24"
+    "generator": "fixture"
   },
   "comment": "Certificate vector whose key names no key vector."
 }
