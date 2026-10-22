@@ -1,9 +1,9 @@
+import json
 from datetime import UTC, datetime
 from pathlib import Path
 
 import pytest
 from pylongfellow import Pylongfellow
-from pylongfellow.backends import google_cpp
 from pylongfellow.mdoc import PublicKey, RequestedAttribute
 
 from generation import prove, staging
@@ -38,10 +38,7 @@ def test_proof_verifies(collection: Path) -> None:
     assert presentation.issuer_public_key is not None
     assert presentation.transcript is not None
     longfellow = Pylongfellow(backend=BACKEND)
-    longfellow.load_circuit(
-        google_cpp.find_zk_spec(circuit.system, google_cpp.circuit_id(circuit.bytes)),
-        circuit.bytes,
-    )
+    longfellow.load_circuit(circuit.bytes, circuit.version, circuit.num_attributes)
     longfellow.verify(
         PublicKey(presentation.issuer_public_key.x, presentation.issuer_public_key.y),
         presentation.transcript,
@@ -67,3 +64,24 @@ def test_wrong_attribute_count_rejected(collection: Path) -> None:
 
     assert "2 attributes given" in str(refused.value)
     assert "proves over 1" in str(refused.value)
+
+
+def test_unknown_circuit_version_rejected(collection: Path) -> None:
+    sidecar = collection / "circuits" / f"{CIRCUIT_NAME}.json"
+    record = json.loads(sidecar.read_text())
+    record["version"] = 99
+    sidecar.write_text(json.dumps(record, indent=2) + "\n")
+
+    with pytest.raises(SystemExit) as refused:
+        prove.prove(
+            "generate.py proof",
+            NAME,
+            PRESENTATION_NAME,
+            CIRCUIT_NAME,
+            BACKEND,
+            [ATTR],
+            TIMESTAMP,
+        )
+
+    assert "google-cpp did not prove" in str(refused.value)
+    assert "no circuit with version 99" in str(refused.value)
