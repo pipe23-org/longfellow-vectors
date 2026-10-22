@@ -7,7 +7,7 @@ dependencies = [
     "cbor2>=5",
     "cryptography>=42",
     "longfellow-vectors",
-    "pylongfellow==0.5.2",
+    "pylongfellow==0.6.0",
 ]
 
 [tool.uv]
