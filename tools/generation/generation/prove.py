@@ -1,10 +1,10 @@
 import sys
 from datetime import datetime
 
-from longfellow_vectors.mdoc import Circuit, Presentation
+from longfellow_vectors.mdoc import Presentation
 from pylongfellow import Pylongfellow
-from pylongfellow.backends import BackendUnavailableError, google_cpp
-from pylongfellow.mdoc import CircuitSpec, Error, PublicKey, RequestedAttribute
+from pylongfellow.backends import BackendUnavailableError
+from pylongfellow.mdoc import Error, PublicKey, RequestedAttribute
 
 from . import staging
 
@@ -23,15 +23,6 @@ def _claims(presentation: Presentation, attrs: list[list[str]]) -> list[Requeste
             )
         selected.append(RequestedAttribute(claim.namespace, claim.id, claim.cbor_value))
     return selected
-
-
-def _spec(backend: str, circuit: Circuit) -> CircuitSpec:
-    if backend == "google-cpp":
-        spec = google_cpp.find_zk_spec(circuit.system, google_cpp.circuit_id(circuit.bytes))
-        if spec is None:
-            sys.exit(f"error: the linked library has no spec for circuit {circuit.name!r}")
-        return spec
-    return CircuitSpec("", "0" * 64, circuit.num_attributes, circuit.version, 0, 0)
 
 
 def prove(
@@ -67,7 +58,7 @@ def prove(
     except BackendUnavailableError as e:
         sys.exit(f"error: backend {backend!r} is not available: {e}")
     try:
-        longfellow.load_circuit(_spec(backend, circuit), circuit.bytes)
+        longfellow.load_circuit(circuit.bytes, circuit.version, circuit.num_attributes)
         proof = longfellow.prove(
             presentation.mdoc,
             PublicKey(presentation.issuer_public_key.x, presentation.issuer_public_key.y),

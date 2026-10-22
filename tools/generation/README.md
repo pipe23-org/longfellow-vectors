@@ -63,9 +63,7 @@ You should not rely on this code.
   non-empty device namespace map, and the prover fails with
   `MDOC_PROVER_DEVICE_SIGNATURE_FAILURE`. isrg-rust does both.
 - No command constructs or derives a circuit, and `admit.py circuit` takes `--repo` only.
-- Circuit versions 6 and 7 only. The pin is pylongfellow 0.5.2. `proof` loads circuits through
-  `CircuitSpec` and `google_cpp.find_zk_spec`, which pylongfellow 0.6 removes. The pin bump
-  rewrites `generation/prove.py` and `tests/test_prove.py`.
+- Circuit versions 6 and 7 only.
 - The fixtures under `tests/data` do not record the seeds they were built from.
 
 ## License
