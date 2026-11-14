@@ -11,3 +11,7 @@ updates:
     directories: ["/languages/python", "/tools/admission", "/tools/generation"]
     schedule:
       interval: "weekly"
+    groups:
+      python:
+        patterns: ["*"]
+        exclude-patterns: ["pylongfellow"]
