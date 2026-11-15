@@ -1,5 +1,5 @@
 version = 1
-revision = 5
+revision = 3
 requires-python = ">=3.11"
 
 [[package]]
@@ -412,7 +412,7 @@ requires-dist = [
     { name = "cbor2", specifier = ">=5" },
     { name = "cryptography", specifier = ">=42" },
     { name = "longfellow-vectors", editable = "../../languages/python" },
-    { name = "pylongfellow", specifier = "==0.7.0" },
+    { name = "pylongfellow", specifier = "==0.8.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -459,7 +459,7 @@ wheels = [
 
 [[package]]
 name = "pylongfellow"
-version = "0.7.0"
+version = "0.8.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cbor2" },
@@ -467,16 +467,16 @@ dependencies = [
     { name = "cryptography" },
     { name = "zstandard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/4a/65/eeef1bc4302a5298da6ea5536a3c409979587c9d09bbf49967da906be3e3/pylongfellow-0.7.0.tar.gz", hash = "sha256:82e9a2c5fc081a17fadafe95c854be4fd9940e5347f0708edfbd84e587041952", size = 16990840, upload-time = "2026-08-30T12:53:53.128Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f4/14/f3af516a25f1559b033033d766b06de0d1b6fc7890bb6467b8181503b318/pylongfellow-0.8.0.tar.gz", hash = "sha256:74903c250e7cf866d460e3abb12e809f082b45c0a166f107f35f03b2f840755a", size = 36933627, upload-time = "2026-11-14T15:33:27.069Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/98/31/9381ee9d2463037d9402a55448e6bb499acfbed1f996ee214218f4ad8359/pylongfellow-0.7.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:b059133d6ae156d41354eda6ce0027024a994aab32b06e8df45222a6f48016bb", size = 2728959, upload-time = "2026-08-30T12:53:36.4Z" },
-    { url = "https://files.pythonhosted.org/packages/07/df/d73815a68b3117820fef9af36425b8039690b9a0c2645d1bfe3ef5ed502b/pylongfellow-0.7.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:09caea05a17dede431f68d325e46cde5d13182f21209175b703eae2d9f2f0504", size = 4382459, upload-time = "2026-08-30T12:53:38.34Z" },
-    { url = "https://files.pythonhosted.org/packages/d2/ec/f4503d89251910ebfd039f29909e3ece4e5975aadc013404e17dc3947c77/pylongfellow-0.7.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:478ec11ef93886612538c7788ae6595acec2b29dfa0f5144a88108b3f85a6cfa", size = 2729010, upload-time = "2026-08-30T12:53:40.29Z" },
-    { url = "https://files.pythonhosted.org/packages/e4/75/23ba0b86dd02219fb3f749fc78a95073fbff7bff71e293fda1de96eaa595/pylongfellow-0.7.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:b1fcb7f77f94cb637780c8b6cb973fec5bcd50edc4786b0c57bca0f468020a08", size = 4382454, upload-time = "2026-08-30T12:53:42.403Z" },
-    { url = "https://files.pythonhosted.org/packages/32/f1/a0f101bccec958a356bad3669022a1665107e46a7ff7bb424274d2ec4699/pylongfellow-0.7.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:6d01ddd1406254ca009c57cfe2452f4104a2cf2990837664aea3442629537fa1", size = 2729013, upload-time = "2026-08-30T12:53:44.242Z" },
-    { url = "https://files.pythonhosted.org/packages/5e/8a/a23f4827ec29f1b30a14ff531cacaaf67e0daab3bbef9f48372e51bc16b2/pylongfellow-0.7.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:414c75b121bf64c9d84edee30515d07ccdf5db4f6b39a6e2b6bbab14ae50717c", size = 4382451, upload-time = "2026-08-30T12:53:46.116Z" },
-    { url = "https://files.pythonhosted.org/packages/f2/19/35aae467cace49dec5a9247969f0059ebc8193a57f88d0e8b077c7c00244/pylongfellow-0.7.0-cp314-cp314-manylinux_2_28_x86_64.whl", hash = "sha256:079942e0b425465ac1b7d47e954429725f6ca44d508813972cd9ba004c3554fe", size = 2729013, upload-time = "2026-08-30T12:53:48.49Z" },
-    { url = "https://files.pythonhosted.org/packages/1c/ea/e3a6c36b43b0133d507d5c48b94b2a4ea14ec0dd2c90d59c8e22772b5eb2/pylongfellow-0.7.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:193f6f2ee6db628394fbfe1b20b19ed199671a0b8b2041c1c2003dcfb2be75b1", size = 4382448, upload-time = "2026-08-30T12:53:50.387Z" },
+    { url = "https://files.pythonhosted.org/packages/da/b3/374b02ccbad76d251396ff24eacc128a6236a12f432a8f27c4641a3cc6db/pylongfellow-0.8.0-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:75e8804e0daa0992bc8396ed3f05fed7ce299ede4c1dc0faf769ab635064a4d7", size = 3477147, upload-time = "2026-11-14T15:33:12.502Z" },
+    { url = "https://files.pythonhosted.org/packages/c6/b8/f6509e190ebdabb6b42e722a5a7e11291ba79874a6087b387f1a9340828f/pylongfellow-0.8.0-cp311-cp311-musllinux_1_2_x86_64.whl", hash = "sha256:3ff72b1df0f42d0d892030c2bc551ffe10b1c282c0d074c983f1a05c5540c8c7", size = 5132157, upload-time = "2026-11-14T15:33:14.257Z" },
+    { url = "https://files.pythonhosted.org/packages/87/c5/9565eb37057cd08a74e9db080f226a31367c73f0cc9a1260251de87c6027/pylongfellow-0.8.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:52fbdb7ef60403785ef86d2ec1700fc05ae7e7d320f45d85b64e0f172eaa52cc", size = 3477143, upload-time = "2026-11-14T15:33:15.9Z" },
+    { url = "https://files.pythonhosted.org/packages/41/a3/4c00472223342a8f3f715c2ebf222513e5225e040154c168edfad2d31657/pylongfellow-0.8.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:8f0ef9bba60383ff31a85f311719fdc5271cd3624da7979a79092885eed00e5f", size = 5132165, upload-time = "2026-11-14T15:33:17.583Z" },
+    { url = "https://files.pythonhosted.org/packages/bb/9f/f6c9627f2b62e13b2dce88a7cd1973f33b2a3e5d407c7d35ad56f3fea206/pylongfellow-0.8.0-cp313-cp313-manylinux_2_28_x86_64.whl", hash = "sha256:8349bcce347aadf0783f446aed19c218fe1ff107771ce72341e891365f71635c", size = 3477144, upload-time = "2026-11-14T15:33:19.221Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/2c/1926927f2b1d30e9e93126d25ba10c96c297d0abb793de124b0bf8020a3f/pylongfellow-0.8.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:580f43e81ef00d044b543c421c75edddd743121bc47f3089e80d7f46fd47e675", size = 5132165, upload-time = "2026-11-14T15:33:21.067Z" },
+    { url = "https://files.pythonhosted.org/packages/10/b8/211a5aa7f32d0d511ef8f90719024a251ad3ae2eec334ffd99137a4f5279/pylongfellow-0.8.0-cp314-cp314-manylinux_2_28_x86_64.whl", hash = "sha256:f8b124a8a03ce88081cc29337bd690ed5faed0b40692bff65960695973f3c3ef", size = 3477144, upload-time = "2026-11-14T15:33:22.869Z" },
+    { url = "https://files.pythonhosted.org/packages/8e/ec/88fa8896af0d8d5af8ae4004f325c1bf2a7419beacbb5622a84aa8673c69/pylongfellow-0.8.0-cp314-cp314-musllinux_1_2_x86_64.whl", hash = "sha256:8da0124a98bc4623148a72fd18e868df49df547297f5d98c71f73a6b47d73ccd", size = 5132161, upload-time = "2026-11-14T15:33:24.889Z" },
 ]
 
 [[package]]

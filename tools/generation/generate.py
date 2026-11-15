@@ -20,7 +20,7 @@
 
     uv run generate.py proof --name <name> \\
         --presentation <vector-name> --circuit <vector-name> \\
-        --backend <google-cpp|isrg-rust> --attr <namespace> <id>... --timestamp <iso>
+        --backend <google-cpp|isrg-rust|lf-rust> --attr <namespace> <id>... --timestamp <iso>
 
     uv run generate.py flip-bit --proof <vector-name> \\
         [--name <name>] [--byte <index>] [--bit <0-7>]
@@ -217,7 +217,7 @@ def main() -> None:
     p_proof.add_argument(
         "--backend",
         required=True,
-        choices=["google-cpp", "isrg-rust"],
+        choices=["google-cpp", "isrg-rust", "lf-rust"],
         help="prover backend",
     )
     p_proof.add_argument(
