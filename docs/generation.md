@@ -105,7 +105,7 @@ Stages `<name>.proof`.
 | `--name` | Vector name, and the name of the staging directory. |
 | `--presentation` | Presentation vector to prove over. It supplies the mdoc, the transcript, the issuer public key, and the namespace and CBOR value of every attribute. |
 | `--circuit` | Circuit vector to prove with. |
-| `--backend` | `google-cpp` or `isrg-rust`, the implementation that produces the proof bytes. |
+| `--backend` | `google-cpp`, `isrg-rust`, or `lf-rust`, the implementation that produces the proof bytes. |
 | `--attr` | Attribute to disclose, as namespace and id. Repeatable, and the claims are proved in the order given. |
 | `--timestamp` | Verification time to prove at, an ISO 8601 date-time carrying a UTC offset. |
 

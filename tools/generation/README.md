@@ -59,9 +59,10 @@ You should not rely on this code.
   alternative name, CRL distribution point, or other ISO 18013-5 Annex B extension is emitted.
 - `key` derives P-256 keys only. Every signature is ES256.
 - `proof` bytes are not reproducible from the recorded command line. The attribute count has
-  to equal the circuit's `num_attributes`. google-cpp neither proves nor verifies over a
-  non-empty device namespace map, and the prover fails with
-  `MDOC_PROVER_DEVICE_SIGNATURE_FAILURE`. isrg-rust does both.
+  to equal the circuit's `num_attributes`. google-cpp and lf-rust neither prove nor verify over
+  a non-empty device namespace map. The prover fails with
+  `MDOC_PROVER_DEVICE_SIGNATURE_FAILURE` on google-cpp and with `GeneralFailure` on lf-rust.
+  isrg-rust does both.
 - No command constructs or derives a circuit, and `admit.py circuit` takes `--repo` only.
 - Circuit versions 6 and 7 only.
 - The fixtures under `tests/data` do not record the seeds they were built from.
