@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Added the `org.iso.18013.5.1.mDL` credentials `mdl-sex-two-namespaces-iso-first` and `mdl-sex-two-namespaces-aamva-first`, which hold `sex` under both `org.iso.18013.5.1` and `org.iso.18013.5.1.aamva` and differ in namespace order, and one presentation of each. (#NN)
+- Added the `org.iso.18013.5.1.mDL` credentials `mdl-sex-two-namespaces-iso-first` and `mdl-sex-two-namespaces-aamva-first`, which hold `sex` under both `org.iso.18013.5.1` and `org.iso.18013.5.1.aamva` and differ in namespace order, and one presentation of each. (#38)
 
 ## 0.1.0 - 2026-08-28
 
