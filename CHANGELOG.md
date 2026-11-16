@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added the `org.iso.18013.5.1.mDL` credentials `mdl-sex-two-namespaces-iso-first` and `mdl-sex-two-namespaces-aamva-first`, which hold `sex` under both `org.iso.18013.5.1` and `org.iso.18013.5.1.aamva` and differ in namespace order, and one presentation of each. (#NN)
+
 ## 0.1.0 - 2026-08-28
 
 - **BACKWARDS INCOMPATIBLE:** `generate.py proof --attr` now takes a namespace and an attribute id, matching `admit.py proof --attr`, and the admission commands `proof` and `flip-bit` print carry both. (#13)
